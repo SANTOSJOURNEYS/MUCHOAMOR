@@ -10,6 +10,17 @@
     <link rel="apple-touch-icon" href="icon.png">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Estilos adicionales para forzar que el modal esté oculto */
+        #date-check {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            z-index: -999 !important;
+            position: absolute !important;
+            pointer-events: none !important;
+        }
+    </style>
 </head>
 <body>
     <div id="game-container">
@@ -33,13 +44,13 @@
                 </div>
             </div>
         </div>
-
+        
         <div id="pet-container">
             <div id="pet-name">Rachel Bunny</div>
             <div id="pet-sprite"></div>
             <div id="message-bubble" class="hidden"></div>
         </div>
-
+        
         <div id="action-buttons">
             <button id="feed-btn" class="action-btn">
                 <span class="btn-icon">🥕</span>
@@ -59,12 +70,25 @@
             </button>
         </div>
     </div>
-
-    <div id="date-check" class="hidden">
-        <div id="anniversary-message"></div>
-        <button id="close-anniversary">Cerrar</button>
-    </div>
-
+    
+    <!-- Eliminamos completamente el modal de fechas especiales -->
+    
+    <script>
+    // Script inline para garantizar que el modal esté siempre oculto
+    window.onload = function() {
+        // Asegurar que el modal no aparezca
+        const dateCheck = document.getElementById('date-check');
+        if (dateCheck) {
+            dateCheck.style.display = 'none';
+            dateCheck.style.visibility = 'hidden';
+            dateCheck.style.opacity = '0';
+            dateCheck.style.zIndex = '-999';
+            dateCheck.style.position = 'absolute';
+            dateCheck.style.pointerEvents = 'none';
+        }
+    };
+    </script>
+    
     <script src="sprites.js"></script>
     <script src="messages.js"></script>
     <script src="game.js"></script>
