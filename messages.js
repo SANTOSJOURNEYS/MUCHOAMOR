@@ -53,14 +53,14 @@ const anniversaryMessages = {
     "7-18": {
         title: "¡FELIZ CUMPLEAÑOS MI NIÑA!",
         message: "¡Feliz cumple mi Love! Te quiero mucho, eres muy importante para mi, me haces muy feliz."
-    }
-};
- // 18 de noviembre - Aniversario de pareja
+    },
+    // 18 de noviembre - Aniversario de pareja
     "11-18": {
         title: "¡FELIZ ANIVERSARIO, MI WIFE!",
         message: "Hoy es nuestro día especial, cada día a tu lado es un regalo. Te quiero más que ayer y menos que mañana. ¡Feliz aniversario mi amor!"
     }
 };
+
 // Mensajes para botón especial
 const specialMessages = [
     "TE QUIERO MUCHO ERES LA MEJOR GORDA",
@@ -69,6 +69,7 @@ const specialMessages = [
     "Eres la mujer más EMPOWERGIRL del mundo",
     "¿HACEMOS UN HIJO?"
 ];
+
 // Resultados del mini-juego
 const gameResultMessages = {
     win: [
@@ -99,7 +100,7 @@ function checkSpecialDate() {
     const today = new Date();
     const month = today.getMonth() + 1;
     const day = today.getDate();
-    const dateKey = `${month}-${day}`;
+    const dateKey = month + "-" + day;
     
     return anniversaryMessages[dateKey];
 }
@@ -110,7 +111,7 @@ function isSpecialYear() {
     return currentYear >= 2025 && currentYear <= 2050;
 }
 
-// Hacer que estas funciones y variables sean globalmente accesibles
+// Exponer funciones y variables globalmente
 window.getRandomMessage = getRandomMessage;
 window.checkSpecialDate = checkSpecialDate;
 window.isSpecialYear = isSpecialYear;
