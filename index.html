@@ -51,19 +51,20 @@
         </div>
         
         <div id="action-buttons">
-            <button id="feed-btn" class="action-btn">
+            <!-- Añadir onclick a los botones -->
+            <button id="feed-btn" class="action-btn" onclick="feedPet()">
                 <span class="btn-icon">🥕</span>
                 <span class="btn-text">Alimentar</span>
             </button>
-            <button id="play-btn" class="action-btn">
+            <button id="play-btn" class="action-btn" onclick="playWithPet()">
                 <span class="btn-icon">🎨</span>
                 <span class="btn-text">Jugar</span>
             </button>
-            <button id="sleep-btn" class="action-btn">
+            <button id="sleep-btn" class="action-btn" onclick="toggleSleep()">
                 <span class="btn-icon">💤</span>
                 <span class="btn-text">Dormir</span>
             </button>
-            <button id="special-btn" class="action-btn">
+            <button id="special-btn" class="action-btn" onclick="showSpecialMessage()">
                 <span class="btn-icon">💌</span>
                 <span class="btn-text">Mensaje</span>
             </button>
@@ -91,6 +92,7 @@
     };
     </script>
     
+    <!-- Añadir el script de inicialización antes de los otros scripts -->
     <script src="tamagotchi-init.js"></script>
     <script src="sprites.js"></script>
     <script src="messages.js"></script>
