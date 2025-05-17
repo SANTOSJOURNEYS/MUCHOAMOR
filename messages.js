@@ -111,7 +111,7 @@ function isSpecialYear() {
     return currentYear >= 2025 && currentYear <= 2050;
 }
 
-// Exponer funciones y variables globalmente
+// Asegurar que todas las funciones y variables estén disponibles globalmente
 window.getRandomMessage = getRandomMessage;
 window.checkSpecialDate = checkSpecialDate;
 window.isSpecialYear = isSpecialYear;
@@ -123,3 +123,5 @@ window.sadMessages = sadMessages;
 window.specialMessages = specialMessages;
 window.anniversaryMessages = anniversaryMessages;
 window.gameResultMessages = gameResultMessages;
+
+console.log("Messages.js cargado correctamente y funciones exportadas globalmente");
