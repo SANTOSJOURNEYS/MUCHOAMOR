@@ -1,5 +1,4 @@
 // Sprites y estados para el conejo Tamagotchi
-// Estas son constantes para los diferentes estados del conejo
 
 // Estados disponibles del conejo
 const PET_STATES = {
@@ -114,7 +113,7 @@ function changeSprite(state) {
     }
 }
 
-// Exportar funciones para su uso global
+// Hacer que las funciones y variables sean accesibles globalmente
 window.PET_STATES = PET_STATES;
 window.initSprites = initSprites;
 window.changeSprite = changeSprite;
