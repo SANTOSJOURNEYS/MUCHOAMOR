@@ -86,11 +86,8 @@ function isSpecialYear() {
     const currentYear = new Date().getFullYear();
     return currentYear >= 2025 && currentYear <= 2050;
 }
-// Al final de tu archivo messages.js, agrega esto:
-window.getRandomMessage = getRandomMessage;
-window.checkSpecialDate = checkSpecialDate;
-window.isSpecialYear = isSpecialYear;
-// Asegúrate de que estas funciones sean globalmente accesibles
+
+// Hacer que estas funciones y variables sean globalmente accesibles
 window.getRandomMessage = getRandomMessage;
 window.checkSpecialDate = checkSpecialDate;
 window.isSpecialYear = isSpecialYear;
