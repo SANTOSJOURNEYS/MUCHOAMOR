@@ -51,19 +51,19 @@
         </div>
         
         <div id="action-buttons">
-            <button id="feed-btn" class="action-btn">
+            <button id="feed-btn" class="action-btn" onclick="feedPet()">
                 <span class="btn-icon">🥕</span>
                 <span class="btn-text">Alimentar</span>
             </button>
-            <button id="play-btn" class="action-btn">
+            <button id="play-btn" class="action-btn" onclick="playWithPet()">
                 <span class="btn-icon">🎨</span>
                 <span class="btn-text">Jugar</span>
             </button>
-            <button id="sleep-btn" class="action-btn">
+            <button id="sleep-btn" class="action-btn" onclick="toggleSleep()">
                 <span class="btn-icon">💤</span>
                 <span class="btn-text">Dormir</span>
             </button>
-            <button id="special-btn" class="action-btn">
+            <button id="special-btn" class="action-btn" onclick="showSpecialMessage()">
                 <span class="btn-icon">💌</span>
                 <span class="btn-text">Mensaje</span>
             </button>
@@ -74,12 +74,8 @@
         <div id="anniversary-message"></div>
         <button id="close-anniversary">Cerrar</button>
     </div>
-
-    <!-- Cargar scripts en el orden correcto -->
-    <script src="sprites.js"></script>
-    <script src="messages.js"></script>
-    <script src="game.js"></script>
-    <!-- Script de arreglo al final, cuando ya están cargados todos los otros scripts -->
-    <script src="tamagotchi-fix.js"></script>
+    
+    <!-- Cargamos un solo archivo JavaScript combinado -->
+    <script src="tamagotchi-combined.js"></script>
 </body>
 </html>
