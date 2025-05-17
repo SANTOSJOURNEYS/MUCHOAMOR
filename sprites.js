@@ -8,67 +8,18 @@ const PET_STATES = {
     SLEEPING: 'sleeping',
     SAD: 'sad'
 };
-// Cambiar el sprite según el estado
-function changeSprite(state) {
-    console.log("changeSprite: Cambiando sprite a estado:", state);
+// Inicializar los sprites según el estado
+function initSprites() {
+    console.log("initSprites: Inicializando sprites");
     
+    // Asegurarse de que el elemento del sprite existe
     const petSprite = document.getElementById('pet-sprite');
     if (!petSprite) {
-        console.error("changeSprite: Error - Elemento del sprite no encontrado");
+        console.error("initSprites: Error - Elemento del sprite no encontrado");
         return;
     }
     
-    // Quitar animaciones y clases actuales
-    petSprite.style.animation = 'none';
-    petSprite.classList.remove('normal', 'eating', 'playing', 'sleeping', 'sad');
-    
-    // Aplicar nueva animación y clase según estado
-    switch (state) {
-        case PET_STATES.NORMAL:
-            console.log("changeSprite: Aplicando animación de estado normal");
-            petSprite.style.animation = 'idle 2s infinite ease-in-out';
-            petSprite.classList.add('normal');
-            break;
-        case PET_STATES.EATING:
-            console.log("changeSprite: Aplicando animación de estado comiendo");
-            petSprite.style.animation = 'eating 0.5s infinite ease-in-out';
-            petSprite.classList.add('eating');
-            break;
-        case PET_STATES.PLAYING:
-            console.log("changeSprite: Aplicando animación de estado jugando");
-            petSprite.style.animation = 'playing 0.8s infinite ease-in-out';
-            petSprite.classList.add('playing');
-            break;
-        case PET_STATES.SLEEPING:
-            console.log("changeSprite: Aplicando animación de estado durmiendo");
-            petSprite.style.animation = 'sleeping 2s infinite ease-in-out';
-            petSprite.classList.add('sleeping');
-            petSprite.style.filter = 'brightness(0.8)';
-            break;
-        case PET_STATES.SAD:
-            console.log("changeSprite: Aplicando animación de estado triste");
-            petSprite.style.animation = 'sad 3s infinite ease-in-out';
-            petSprite.classList.add('sad');
-            petSprite.style.filter = 'grayscale(0.3)';
-            break;
-        default:
-            console.log("changeSprite: Estado desconocido, usando estado normal");
-            petSprite.style.animation = 'idle 2s infinite ease-in-out';
-            petSprite.classList.add('normal');
-    }
-    
-    // Restablecer filtros si no está durmiendo o triste
-    if (state !== PET_STATES.SLEEPING && state !== PET_STATES.SAD) {
-        petSprite.style.filter = 'none';
-    }
-    
-    console.log("changeSprite: Sprite actualizado correctamente");
-}
-// Inicializar los sprites según el estado
-function initSprites() {
-    // Asegurarse de que el elemento del sprite existe
-    const petSprite = document.getElementById('pet-sprite');
-    if (!petSprite) return;
+    console.log("initSprites: Configurando animaciones");
     
     // Configurar animación para el estado normal
     const normalAnimation = `
@@ -120,53 +71,26 @@ function initSprites() {
     styleSheet.textContent = normalAnimation + eatingAnimation + playingAnimation + sleepingAnimation + sadAnimation;
     document.head.appendChild(styleSheet);
     
+    console.log("initSprites: Animaciones configuradas correctamente");
+    
     // Configurar estado inicial
+    console.log("initSprites: Configurando estado inicial a NORMAL");
     changeSprite(PET_STATES.NORMAL);
 }
 
 // Cambiar el sprite según el estado
 function changeSprite(state) {
+    console.log("changeSprite: Cambiando sprite a estado:", state);
+    
     const petSprite = document.getElementById('pet-sprite');
-    if (!petSprite) return;
+    if (!petSprite) {
+        console.error("changeSprite: Error - Elemento del sprite no encontrado");
+        return;
+    }
     
     // Quitar animaciones y clases actuales
     petSprite.style.animation = 'none';
     petSprite.classList.remove('normal', 'eating', 'playing', 'sleeping', 'sad');
-    
-    // Aplicar nueva animación y clase según estado
-    switch (state) {
-        case PET_STATES.NORMAL:
-            petSprite.style.animation = 'idle 2s infinite ease-in-out';
-            petSprite.classList.add('normal');
-            break;
-        case PET_STATES.EATING:
-            petSprite.style.animation = 'eating 0.5s infinite ease-in-out';
-            petSprite.classList.add('eating');
-            break;
-        case PET_STATES.PLAYING:
-            petSprite.style.animation = 'playing 0.8s infinite ease-in-out';
-            petSprite.classList.add('playing');
-            break;
-        case PET_STATES.SLEEPING:
-            petSprite.style.animation = 'sleeping 2s infinite ease-in-out';
-            petSprite.classList.add('sleeping');
-            petSprite.style.filter = 'brightness(0.8)';
-            break;
-        case PET_STATES.SAD:
-            petSprite.style.animation = 'sad 3s infinite ease-in-out';
-            petSprite.classList.add('sad');
-            petSprite.style.filter = 'grayscale(0.3)';
-            break;
-        default:
-            petSprite.style.animation = 'idle 2s infinite ease-in-out';
-            petSprite.classList.add('normal');
-    }
-    
-    // Restablecer filtros si no está durmiendo o triste
-    if (state !== PET_STATES.SLEEPING && state !== PET_STATES.SAD) {
-        petSprite.style.filter = 'none';
-    }
-}
 
 // Hacer que las funciones y variables sean accesibles globalmente
 window.PET_STATES = PET_STATES;
