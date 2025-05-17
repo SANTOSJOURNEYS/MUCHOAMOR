@@ -1499,3 +1499,27 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Botón de mensaje especial NO encontrado');
     }
 });
+// Verificar y registrar mensajes en la consola
+console.log("Game.js - Iniciando carga");
+
+// Funciones de comprobación para asegurar que todo está disponible
+function safeGetRandomMessage(array) {
+    // Usar una función segura que verifique primero si está disponible
+    if (typeof window.getRandomMessage === 'function' && Array.isArray(array) && array.length > 0) {
+        return window.getRandomMessage(array);
+    } else if (typeof getRandomMessage === 'function' && Array.isArray(array) && array.length > 0) {
+        return getRandomMessage(array);
+    } else if (Array.isArray(array) && array.length > 0) {
+        // Implementar la función localmente si no está disponible
+        const randomIndex = Math.floor(Math.random() * array.length);
+        return array[randomIndex];
+    }
+    return "Mensaje predeterminado";
+}
+
+// Exponer las funciones cruciales globalmente al inicio
+window.feedPet = feedPet;
+window.playWithPet = playWithPet;
+window.toggleSleep = toggleSleep;
+window.showSpecialMessage = showSpecialMessage;
+window.showMessage = showMessage;
