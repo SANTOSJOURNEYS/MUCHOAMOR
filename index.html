@@ -11,7 +11,6 @@
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* Estilos adicionales para forzar que el modal esté oculto */
         #date-check {
             display: none !important;
             visibility: hidden !important;
@@ -71,7 +70,10 @@
         </div>
     </div>
     
-    <!-- Eliminamos completamente el modal de fechas especiales -->
+    <div id="date-check" class="hidden">
+        <div id="anniversary-message"></div>
+        <button id="close-anniversary">Cerrar</button>
+    </div>
     
     <script>
     // Script inline para garantizar que el modal esté siempre oculto
