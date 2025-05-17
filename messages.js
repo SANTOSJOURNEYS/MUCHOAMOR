@@ -90,3 +90,14 @@ function isSpecialYear() {
 window.getRandomMessage = getRandomMessage;
 window.checkSpecialDate = checkSpecialDate;
 window.isSpecialYear = isSpecialYear;
+// Asegúrate de que estas funciones sean globalmente accesibles
+window.getRandomMessage = getRandomMessage;
+window.checkSpecialDate = checkSpecialDate;
+window.isSpecialYear = isSpecialYear;
+window.randomMessages = randomMessages;
+window.feedMessages = feedMessages;
+window.playMessages = playMessages;
+window.sleepMessages = sleepMessages;
+window.sadMessages = sadMessages;
+window.specialMessages = specialMessages;
+window.anniversaryMessages = anniversaryMessages;
