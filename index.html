@@ -51,20 +51,19 @@
         </div>
         
         <div id="action-buttons">
-            <!-- Añadir onclick a los botones -->
-            <button id="feed-btn" class="action-btn" onclick="feedPet()">
+            <button id="feed-btn" class="action-btn">
                 <span class="btn-icon">🥕</span>
                 <span class="btn-text">Alimentar</span>
             </button>
-            <button id="play-btn" class="action-btn" onclick="playWithPet()">
+            <button id="play-btn" class="action-btn">
                 <span class="btn-icon">🎨</span>
                 <span class="btn-text">Jugar</span>
             </button>
-            <button id="sleep-btn" class="action-btn" onclick="toggleSleep()">
+            <button id="sleep-btn" class="action-btn">
                 <span class="btn-icon">💤</span>
                 <span class="btn-text">Dormir</span>
             </button>
-            <button id="special-btn" class="action-btn" onclick="showSpecialMessage()">
+            <button id="special-btn" class="action-btn">
                 <span class="btn-icon">💌</span>
                 <span class="btn-text">Mensaje</span>
             </button>
@@ -75,27 +74,12 @@
         <div id="anniversary-message"></div>
         <button id="close-anniversary">Cerrar</button>
     </div>
-    
-    <script>
-    // Script inline para garantizar que el modal esté siempre oculto
-    window.onload = function() {
-        // Asegurar que el modal no aparezca
-        const dateCheck = document.getElementById('date-check');
-        if (dateCheck) {
-            dateCheck.style.display = 'none';
-            dateCheck.style.visibility = 'hidden';
-            dateCheck.style.opacity = '0';
-            dateCheck.style.zIndex = '-999';
-            dateCheck.style.position = 'absolute';
-            dateCheck.style.pointerEvents = 'none';
-        }
-    };
-    </script>
-    
-    <!-- Añadir el script de inicialización antes de los otros scripts -->
-    <script src="tamagotchi-init.js"></script>
+
+    <!-- Cargar scripts en el orden correcto -->
     <script src="sprites.js"></script>
     <script src="messages.js"></script>
     <script src="game.js"></script>
+    <!-- Script de arreglo al final, cuando ya están cargados todos los otros scripts -->
+    <script src="tamagotchi-fix.js"></script>
 </body>
 </html>
