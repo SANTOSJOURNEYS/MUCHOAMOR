@@ -55,7 +55,12 @@ const anniversaryMessages = {
         message: "¡Feliz cumple mi Love! Te quiero mucho, eres muy importante para mi, me haces muy feliz."
     }
 };
-
+ // 18 de noviembre - Aniversario de pareja
+    "11-18": {
+        title: "¡FELIZ ANIVERSARIO, MI WIFE!",
+        message: "Hoy es nuestro día especial, cada día a tu lado es un regalo. Te quiero más que ayer y menos que mañana. ¡Feliz aniversario mi amor!"
+    }
+};
 // Mensajes para botón especial
 const specialMessages = [
     "TE QUIERO MUCHO ERES LA MEJOR GORDA",
