@@ -225,27 +225,47 @@ function setupEventListeners() {
 
 // Función para actualizar las barras de estado
 function updateStatusBars() {
+    console.log("updateStatusBars: Actualizando barras - hambre:", gameState.hunger, "felicidad:", gameState.happiness, "energía:", gameState.energy);
+    
+    if (!elements.hungerBar || !elements.happinessBar || !elements.energyBar) {
+        console.error("updateStatusBars: Error - Elementos de barra no disponibles", {
+            hungerBar: !!elements.hungerBar,
+            happinessBar: !!elements.happinessBar,
+            energyBar: !!elements.energyBar
+        });
+        return;
+    }
+    
     elements.hungerBar.style.width = `${gameState.hunger}%`;
     elements.happinessBar.style.width = `${gameState.happiness}%`;
     elements.energyBar.style.width = `${gameState.energy}%`;
     
+    console.log("updateStatusBars: Barras actualizadas correctamente");
+    
+    // Verificar si debemos cambiar el estado del conejo basado en los niveles
     checkStatus();
 }
 
 // Función para verificar el estado general del conejo
 function checkStatus() {
+    console.log("checkStatus: Verificando estado general del conejo");
+    
     // Si cualquiera de los valores está por debajo del umbral de tristeza
     if (gameState.hunger <= CONFIG.sadThreshold || 
         gameState.happiness <= CONFIG.sadThreshold || 
         gameState.energy <= CONFIG.sadThreshold) {
         
+        console.log("checkStatus: Al menos un valor está por debajo del umbral de tristeza");
+        
         // Si no estamos en medio de una acción, mostrar tristeza
         if (!gameState.isEating && !gameState.isPlaying && !gameState.isSleeping) {
+            console.log("checkStatus: El conejo no está ocupado, cambiando a estado SAD");
             changeSprite(PET_STATES.SAD);
             gameState.state = PET_STATES.SAD;
             
             // Si está muy triste, mostrar un mensaje
             if (Math.random() < 0.3) { // 30% de probabilidad
+                console.log("checkStatus: Mostrando mensaje de tristeza");
                 // Usar safeGetRandomMessage en lugar de getRandomMessage
                 let message = safeGetRandomMessage(sadMessages);
                 showMessage(message);
@@ -253,12 +273,13 @@ function checkStatus() {
         }
     } else if (gameState.state === PET_STATES.SAD && !gameState.isEating && 
               !gameState.isPlaying && !gameState.isSleeping) {
-        // Si ya no está triste, volver al estado normal
+        console.log("checkStatus: El conejo estaba triste pero ya no, cambiando a estado NORMAL");
         changeSprite(PET_STATES.NORMAL);
         gameState.state = PET_STATES.NORMAL;
+    } else {
+        console.log("checkStatus: No hay cambios necesarios en el estado");
     }
 }
-
 // Función para disminuir los valores con el tiempo
 function decreaseValues() {
     // Disminuir hambre
@@ -290,51 +311,66 @@ function feedPet() {
     console.log("feedPet: Función llamada");
     
     // No permitir alimentar si ya está comiendo
-    if (gameState.isEating) return;
+    if (gameState.isEating) {
+        console.log("feedPet: El conejo ya está comiendo, ignorando clic");
+        return;
+    }
     
     // No permitir alimentar si está durmiendo
     if (gameState.isSleeping) {
+        console.log("feedPet: El conejo está durmiendo, mostrando mensaje");
         showMessage("Zzz... Estoy durmiendo Gorda, después te como...");
         return;
     }
     
+    console.log("feedPet: Iniciando alimentación");
     gameState.isEating = true;
     
     // Cambiar sprite y mostrar mensaje
+    console.log("feedPet: Cambiando sprite a EATING");
     changeSprite(PET_STATES.EATING);
     
     // Usar safeGetRandomMessage en lugar de getRandomMessage
+    console.log("feedPet: Obteniendo mensaje aleatorio de alimentación");
     let message = safeGetRandomMessage(feedMessages);
+    console.log("feedPet: Mensaje seleccionado:", message);
     showMessage(message);
     
     // Aumentar hambre
+    console.log("feedPet: Valores antes - hambre:", gameState.hunger, "felicidad:", gameState.happiness);
     gameState.hunger = Math.min(100, gameState.hunger + 20);
     
     // Aumentar felicidad un poco
     gameState.happiness = Math.min(100, gameState.happiness + 5);
+    console.log("feedPet: Valores después - hambre:", gameState.hunger, "felicidad:", gameState.happiness);
     
     // Actualizar barras
+    console.log("feedPet: Actualizando barras de estado");
     updateStatusBars();
     
     // Volver al estado normal después de la animación
+    console.log("feedPet: Configurando temporizador para volver al estado normal");
     clearTimeout(timers.action);
     timers.action = setTimeout(() => {
+        console.log("feedPet: Temporizador activado, volviendo al estado normal");
         gameState.isEating = false;
         if (gameState.hunger <= CONFIG.sadThreshold || 
             gameState.happiness <= CONFIG.sadThreshold || 
             gameState.energy <= CONFIG.sadThreshold) {
+            console.log("feedPet: Conejo sigue triste, cambiando a estado SAD");
             changeSprite(PET_STATES.SAD);
             gameState.state = PET_STATES.SAD;
         } else {
+            console.log("feedPet: Conejo feliz, cambiando a estado NORMAL");
             changeSprite(PET_STATES.NORMAL);
             gameState.state = PET_STATES.NORMAL;
         }
     }, CONFIG.animationDuration);
     
     // Guardar el estado
+    console.log("feedPet: Guardando estado del juego");
     saveGameState();
 }
-
 // Función para jugar con el conejo
 function playWithPet() {
     console.log("playWithPet: Función llamada");
@@ -440,6 +476,13 @@ function showSpecialMessage() {
 
 // Función para mostrar un mensaje en la burbuja
 function showMessage(message, duration = 3000) {
+    console.log("showMessage: Mostrando mensaje:", message);
+    
+    if (!elements.messageBubble) {
+        console.error("showMessage: Error - Burbuja de mensaje no disponible");
+        return;
+    }
+    
     elements.messageBubble.textContent = message;
     elements.messageBubble.classList.remove('hidden');
     
@@ -448,6 +491,7 @@ function showMessage(message, duration = 3000) {
     
     // Configurar temporizador para ocultar el mensaje
     timers.message = setTimeout(() => {
+        console.log("showMessage: Ocultando mensaje después de", duration, "ms");
         elements.messageBubble.classList.add('hidden');
     }, duration);
 }
