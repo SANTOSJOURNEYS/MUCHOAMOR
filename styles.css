@@ -10,92 +10,104 @@
 
 body {
     font-family: 'Arial Rounded MT Bold', 'Arial', sans-serif;
-    background-color: #87CEEB; /* Azul celeste - color favorito de Rachel */
-    color: #444;
-    height: 100vh;
-    width: 100vw;
-    overflow: hidden;
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    justify-content: space-between;
+    min-height: 100vh;
+    background-color: #f0f8ff;
+    color: #333;
 }
 
 #game-container {
+    position: relative;
     width: 100%;
-    max-width: 500px;
-    height: 100%;
+    max-width: 400px;
+    background: white;
+    border-radius: 25px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px;
+    height: 90vh;
+    max-height: 700px;
+    padding-bottom: 20px;
+    border: 5px solid #87CEEB;
+    transition: all 0.3s ease;
 }
 
 #status-bar {
-    width: 100%;
     display: flex;
     justify-content: space-around;
-    background-color: #fff;
-    border-radius: 20px;
-    padding: 10px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    margin-bottom: 10px;
+    padding: 15px;
+    background-color: #e6f7ff;
+    border-bottom: 2px solid #d1e8ff;
 }
 
 .status-item {
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 30%;
 }
 
 .status-label {
     font-size: 14px;
     margin-bottom: 5px;
+    color: #555;
 }
 
 .status-value {
-    width: 60px;
+    width: 100%;
     height: 10px;
-    background-color: #eee;
+    background: #eee;
     border-radius: 5px;
     overflow: hidden;
 }
 
 .status-fill {
     height: 100%;
-    background-color: #4682B4; /* Azul acero para las barras de estado */
-    transition: width 0.3s ease;
-    width: 100%;
+    border-radius: 5px;
+    transition: width 0.5s ease;
 }
 
+#hunger-bar {
+    background: linear-gradient(to right, #ff9966, #ff5e62);
+    width: 80%;
+}
+
+#happiness-bar {
+    background: linear-gradient(to right, #56CCF2, #2F80ED);
+    width: 80%;
+}
+
+#energy-bar {
+    background: linear-gradient(to right, #EECDA3, #EF629F);
+    width: 80%;
+}
 #pet-container {
-    position: relative;
-    width: 100%;
-    height: 260px;
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin: 20px 0;
+    position: relative;
+    padding: 20px;
+    overflow: hidden;
+    background: linear-gradient(to bottom, #e6f7ff 0%, #ffffff 100%);
 }
 
 #pet-name {
-    position: absolute;
-    top: 0;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: bold;
-    color: #333;
-    background-color: rgba(255, 255, 255, 0.7);
-    padding: 5px 15px;
-    border-radius: 15px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom: 15px;
+    color: #4682B4;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
 }
 
 #pet-sprite {
     width: 200px;
     height: 200px;
-    background-image: url('icon.png'); 
+    background-image: url('icon.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -105,37 +117,38 @@ body {
 
 #message-bubble {
     position: absolute;
-    background-color: white;
-    border-radius: 15px;
+    top: 30px;
+    background: white;
     padding: 10px 15px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-    top: -40px;
+    border-radius: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     max-width: 80%;
     text-align: center;
-    z-index: 10;
     transform-origin: bottom center;
-    animation: pop-in 0.3s forwards;
+    animation: bubble-in 0.3s ease-out;
+    z-index: 10;
+    border: 2px solid #87CEEB;
+    font-size: 14px;
 }
 
-#message-bubble:after {
-    content: '';
-    position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0;
-    height: 0;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-top: 10px solid white;
+@keyframes bubble-in {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 #action-buttons {
-    width: 100%;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, 1fr);
     gap: 10px;
-    padding: 10px;
+    padding: 15px;
+    background-color: #f5f5f5;
+    border-top: 2px solid #e0e0e0;
 }
 
 .action-btn {
@@ -143,19 +156,26 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: white;
+    padding: 12px;
     border: none;
     border-radius: 15px;
-    padding: 10px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-    transition: all 0.2s ease;
+    background: #87CEEB;
+    color: white;
+    font-weight: bold;
     cursor: pointer;
-    height: 80px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    background: #5CACEE;
 }
 
 .action-btn:active {
-    transform: scale(0.95);
-    box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+    transform: translateY(1px);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 .btn-icon {
@@ -165,59 +185,72 @@ body {
 
 .btn-text {
     font-size: 12px;
-    font-weight: bold;
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
+/* Modal para fechas especiales */
 #date-check {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.8);
+    background-color: rgba(0,0,0,0.7);
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     z-index: 100;
 }
 
 #anniversary-message {
-    background-color: white;
+    background: white;
+    padding: 30px;
     border-radius: 20px;
-    padding: 20px;
-    margin: 20px;
-    text-align: center;
     max-width: 80%;
-    font-size: 18px;
+    text-align: center;
+    animation: pop-in 0.5s ease-out;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    border: 5px solid #87CEEB;
+}
+
+#anniversary-message h2 {
+    color: #4682B4;
+    margin-bottom: 15px;
+}
+
+#anniversary-message p {
+    font-size: 16px;
     line-height: 1.5;
-    animation: pop-in 0.5s forwards;
 }
 
 #close-anniversary {
     margin-top: 20px;
     padding: 10px 20px;
-    background-color: #87CEEB;
-    color: white;
+    background: #87CEEB;
     border: none;
-    border-radius: 10px;
+    border-radius: 30px;
+    color: white;
     font-weight: bold;
-    font-size: 16px;
     cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#close-anniversary:hover {
+    background: #5CACEE;
+    transform: scale(1.05);
 }
 
 @keyframes pop-in {
     0% {
-        transform: scale(0);
+        transform: scale(0.5);
         opacity: 0;
     }
     80% {
         transform: scale(1.1);
-        opacity: 1;
     }
     100% {
         transform: scale(1);
@@ -225,44 +258,49 @@ body {
     }
 }
 
+/* Animaciones del Tamagotchi */
+.normal {
+    transform-origin: bottom center;
+}
+
 .eating {
-    animation: eat 1s ease;
+    transform-origin: center;
 }
 
 .playing {
-    animation: play 1s ease infinite;
+    transform-origin: bottom center;
 }
 
 .sleeping {
-    animation: sleep 2s ease infinite;
+    transform-origin: center;
 }
 
 .sad {
-    filter: grayscale(0.5) brightness(0.9);
-    transform: scale(0.95);
+    transform-origin: bottom center;
 }
 
-@keyframes eat {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-}
-
-@keyframes play {
-    0%, 100% { transform: rotate(-5deg); }
-    50% { transform: rotate(5deg); }
-}
-
-@keyframes sleep {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(0.98); }
-}
-<style>
-    #date-check {
-        display: none !important;
-        visibility: hidden !important;
-        opacity: 0 !important;
-        z-index: -999 !important;
-        position: absolute !important;
-        pointer-events: none !important;
+/* Responsive design */
+@media (max-height: 700px) {
+    #game-container {
+        height: 85vh;
     }
-</style>
+    
+    #pet-sprite {
+        width: 150px;
+        height: 150px;
+    }
+}
+
+@media (max-width: 400px) {
+    .status-label {
+        font-size: 12px;
+    }
+    
+    .btn-icon {
+        font-size: 20px;
+    }
+    
+    .btn-text {
+        font-size: 10px;
+    }
+}
