@@ -259,6 +259,12 @@ function playWithPet() {
         return;
     }
     
+    // 30% de probabilidad de iniciar el mini-juego
+    if (Math.random() < 0.3) {
+        playMiniGame();
+        return;
+    }
+    
     gameState.isPlaying = true;
     
     // Cambiar sprite y mostrar mensaje
