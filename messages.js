@@ -69,6 +69,24 @@ const specialMessages = [
     "Eres la mujer más EMPOWERGIRL del mundo",
     "¿HACEMOS UN HIJO?"
 ];
+// Resultados del mini-juego
+const gameResultMessages = {
+    win: [
+        "¡Como me ganes otra vez pido el divorcio",
+        "Tu sabes MUCHOOO, Para ya nooo?.",
+        "¡Eres una abusadora, reggaetonera hasta la tumba"
+    ],
+    lose: [
+        "NO te piqueees ehh",
+        "Que otra partida a ver si me ganas jejeje",
+        "Gané yo, ahora dame un besito"
+    ],
+    tie: [
+        "¡Empate! Somos UNO",
+        "Empate... Esto es el destino, HACEMOS UN HIJO?",
+        "Lesbian Connection Active"
+    ]
+};
 
 // Función para obtener un mensaje aleatorio de un array
 function getRandomMessage(messageArray) {
@@ -103,24 +121,4 @@ window.sleepMessages = sleepMessages;
 window.sadMessages = sadMessages;
 window.specialMessages = specialMessages;
 window.anniversaryMessages = anniversaryMessages;
-// Resultados del mini-juego
-const gameResultMessages = {
-    win: [
-        "¡Como me ganes otra vez pido el divorcio",
-        "Tu sabes MUCHOOO, Para ya nooo?.",
-        "¡Eres una abusadora, reggaetonera hasta la tumba"
-    ],
-    lose: [
-        "NO te piqueees ehh",
-        "Que otra partida a ver si me ganas jejeje",
-        "Gané yo, ahora dame un besito"
-    ],
-    tie: [
-        "¡Empate! Somos UNO",
-        "Empate... Esto es el destino, HACEMOS UN HIJO?",
-        "Lesbian Connection Active"
-    ]
-};
-
-// No olvides añadir esto al final
 window.gameResultMessages = gameResultMessages;
