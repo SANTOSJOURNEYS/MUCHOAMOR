@@ -94,6 +94,9 @@ function initGame() {
     
     // Mostrar un mensaje aleatorio al inicio
     showRandomMessage();
+    
+    // Asegurarse de que el modal de aniversario está cerrado
+    elements.dateCheck.classList.add('hidden');
 }
 
 // Función para iniciar los temporizadores
@@ -155,7 +158,7 @@ function checkStatus() {
             
             // Si está muy triste, mostrar un mensaje
             if (Math.random() < 0.3) { // 30% de probabilidad
-                showMessage(window.getRandomMessage(sadMessages));
+                showMessage(getRandomMessage(sadMessages));
             }
         }
     } else if (gameState.state === PET_STATES.SAD && !gameState.isEating && 
@@ -199,7 +202,7 @@ function feedPet() {
     
     // No permitir alimentar si está durmiendo
     if (gameState.isSleeping) {
-        showMessage("Zzz... Estoy durmiendo Gorda, después comer...");
+        showMessage("Zzz... Estoy durmiendo Gorda, después te como...");
         return;
     }
     
@@ -244,13 +247,13 @@ function playWithPet() {
     
     // No permitir jugar si está durmiendo
     if (gameState.isSleeping) {
-        showMessage("Zzz... No puedo jugar mientras duermo...");
+        showMessage("Zzz... Estoy soñando contigo, lúego hablamoos...");
         return;
     }
     
     // No permitir jugar si tiene poca energía
     if (gameState.energy <= CONFIG.criticalThreshold) {
-        showMessage("Estoy demasiado cansada para jugar...");
+        showMessage("ESTOY LOW BATTERY, ¿NOS VAMOS DE AVENTURA?...");
         return;
     }
     
@@ -312,7 +315,7 @@ function toggleSleep() {
         elements.sleepButton.querySelector('.btn-text').textContent = 'Dormir abrazaditos';
         elements.sleepButton.querySelector('.btn-icon').textContent = '💤';
         
-        showMessage("¡Buenos días! Lista para un nuevo día");
+        showMessage("¡Buenos diotaaas! Que no es lo mismo que Buenos Idiotaaas");
     } else {
         // Dormir
         gameState.isSleeping = true;
@@ -355,12 +358,15 @@ function showMessage(message, duration = 3000) {
 function showRandomMessage() {
     // Solo mostrar si no está ocupado en otra actividad
     if (!gameState.isEating && !gameState.isPlaying && !elements.messageBubble.textContent) {
-        showMessage(window.getRandomMessage(randomMessages));
+        showMessage(getRandomMessage(randomMessages));
     }
 }
 
 // Función para verificar si hay fechas especiales
 function checkForSpecialDates() {
+    // Desactivar temporalmente esta función para evitar el bloqueo
+    return;
+    
     const specialDate = checkSpecialDate();
     
     if (specialDate && isSpecialYear()) {
@@ -441,6 +447,10 @@ function simulateTimeElapsed(timeDiff) {
         gameState.happiness = Math.max(20, gameState.happiness - Math.min(maxDecreasePerStat, decrements * CONFIG.decreaseAmount / 2));
         gameState.energy = Math.max(20, gameState.energy - Math.min(maxDecreasePerStat, decrements * CONFIG.decreaseAmount / 2));
     }
+}
+
+// Iniciar el juego cuando el DOM esté cargado
+document.addEventListener('DOMContentLoaded', initGame);
 }
 
 // Iniciar el juego cuando el DOM esté cargado
