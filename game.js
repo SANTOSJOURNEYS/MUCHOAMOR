@@ -129,10 +129,12 @@ function setupEventListeners() {
     // Botón de mensaje especial
     elements.specialButton.addEventListener('click', showSpecialMessage);
     
-    // Botón de cerrar mensaje de aniversario
-    elements.closeAnniversary.addEventListener('click', () => {
-        elements.dateCheck.classList.add('hidden');
-    });
+    // Botón de cerrar mensaje de aniversario (solo si existe)
+    if (elements.closeAnniversary) {
+        elements.closeAnniversary.addEventListener('click', () => {
+            elements.dateCheck.classList.add('hidden');
+        });
+    }
 }
 
 // Función para actualizar las barras de estado
