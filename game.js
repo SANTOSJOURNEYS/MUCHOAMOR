@@ -18,7 +18,26 @@ const CONFIG = {
     // Guardado automático (en milisegundos)
     autoSaveInterval: 60000, // cada minuto
 };
-
+// Función de utilidad para garantizar que getRandomMessage funcione incluso si no está disponible globalmente
+function safeGetRandomMessage(messageArray) {
+    console.log("safeGetRandomMessage: Usando array:", messageArray ? messageArray.length : "no disponible");
+    
+    // Usar una función segura que verifique primero si está disponible
+    if (typeof window.getRandomMessage === 'function' && Array.isArray(messageArray) && messageArray.length > 0) {
+        console.log("safeGetRandomMessage: Usando window.getRandomMessage");
+        return window.getRandomMessage(messageArray);
+    } else if (typeof getRandomMessage === 'function' && Array.isArray(messageArray) && messageArray.length > 0) {
+        console.log("safeGetRandomMessage: Usando getRandomMessage del scope actual");
+        return getRandomMessage(messageArray);
+    } else if (Array.isArray(messageArray) && messageArray.length > 0) {
+        // Implementar la función localmente si no está disponible
+        console.log("safeGetRandomMessage: Usando implementación local");
+        const randomIndex = Math.floor(Math.random() * messageArray.length);
+        return messageArray[randomIndex];
+    }
+    console.log("safeGetRandomMessage: Usando mensaje predeterminado");
+    return "¡Hola Rachel!";
+}
 // Estado del juego
 let gameState = {
     name: "Rachel Bunny",
@@ -227,7 +246,9 @@ function checkStatus() {
             
             // Si está muy triste, mostrar un mensaje
             if (Math.random() < 0.3) { // 30% de probabilidad
-                showMessage(getRandomMessage(sadMessages));
+                // Usar safeGetRandomMessage en lugar de getRandomMessage
+                let message = safeGetRandomMessage(sadMessages);
+                showMessage(message);
             }
         }
     } else if (gameState.state === PET_STATES.SAD && !gameState.isEating && 
@@ -263,8 +284,11 @@ function decreaseValues() {
     // Guardar el estado
     saveGameState();
 }
+
 // Función para alimentar al conejo
 function feedPet() {
+    console.log("feedPet: Función llamada");
+    
     // No permitir alimentar si ya está comiendo
     if (gameState.isEating) return;
     
@@ -278,7 +302,10 @@ function feedPet() {
     
     // Cambiar sprite y mostrar mensaje
     changeSprite(PET_STATES.EATING);
-    showMessage(getRandomMessage(feedMessages));
+    
+    // Usar safeGetRandomMessage en lugar de getRandomMessage
+    let message = safeGetRandomMessage(feedMessages);
+    showMessage(message);
     
     // Aumentar hambre
     gameState.hunger = Math.min(100, gameState.hunger + 20);
@@ -310,6 +337,8 @@ function feedPet() {
 
 // Función para jugar con el conejo
 function playWithPet() {
+    console.log("playWithPet: Función llamada");
+    
     // No permitir jugar si ya está jugando
     if (gameState.isPlaying) return;
     
@@ -351,6 +380,8 @@ function playWithPet() {
 
 // Función para hacer dormir/despertar al conejo
 function toggleSleep() {
+    console.log("toggleSleep: Función llamada");
+    
     if (gameState.isSleeping) {
         // Despertar
         gameState.isSleeping = false;
@@ -367,8 +398,13 @@ function toggleSleep() {
         }
         
         // Cambiar texto del botón
-        elements.sleepButton.querySelector('.btn-text').textContent = 'Dormir abrazaditos';
-        elements.sleepButton.querySelector('.btn-icon').textContent = '💤';
+        if (elements.sleepButton && elements.sleepButton.querySelector('.btn-text')) {
+            elements.sleepButton.querySelector('.btn-text').textContent = 'Dormir abrazaditos';
+        }
+        
+        if (elements.sleepButton && elements.sleepButton.querySelector('.btn-icon')) {
+            elements.sleepButton.querySelector('.btn-icon').textContent = '💤';
+        }
         
         showMessage("¡Buenos diotaaas! Que no es lo mismo que Buenos Idiotaaas");
     } else {
@@ -380,10 +416,17 @@ function toggleSleep() {
         gameState.state = PET_STATES.SLEEPING;
         
         // Cambiar texto del botón
-        elements.sleepButton.querySelector('.btn-text').textContent = 'Despertar con besitos';
-        elements.sleepButton.querySelector('.btn-icon').textContent = '🌞';
+        if (elements.sleepButton && elements.sleepButton.querySelector('.btn-text')) {
+            elements.sleepButton.querySelector('.btn-text').textContent = 'Despertar con besitos';
+        }
         
-        showMessage(getRandomMessage(sleepMessages));
+        if (elements.sleepButton && elements.sleepButton.querySelector('.btn-icon')) {
+            elements.sleepButton.querySelector('.btn-icon').textContent = '🌞';
+        }
+        
+        // Usar safeGetRandomMessage en lugar de getRandomMessage
+        let message = safeGetRandomMessage(sleepMessages);
+        showMessage(message);
     }
     
     // Guardar el estado
@@ -413,7 +456,9 @@ function showMessage(message, duration = 3000) {
 function showRandomMessage() {
     // Solo mostrar si no está ocupado en otra actividad
     if (!gameState.isEating && !gameState.isPlaying && !elements.messageBubble.textContent) {
-        showMessage(getRandomMessage(randomMessages));
+        // Usar safeGetRandomMessage en lugar de getRandomMessage
+        let message = safeGetRandomMessage(randomMessages);
+        showMessage(message);
     }
 }
 
