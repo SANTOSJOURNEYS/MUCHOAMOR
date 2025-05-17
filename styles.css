@@ -256,3 +256,6 @@ body {
     0%, 100% { transform: scale(1); }
     50% { transform: scale(0.98); }
 }
+#date-check {
+    display: none !important; /* Forzar a que se oculte */
+}
