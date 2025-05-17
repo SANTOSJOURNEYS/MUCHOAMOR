@@ -1,7 +1,25 @@
 // tamagotchi-combined.js - Combinación de todos los archivos para evitar problemas de orden de carga
 console.log("Cargando tamagotchi-combined.js...");
 
-// =========== SPRITES.JS ===========
+// Configuración de parámetros del juego
+const CONFIG = {
+    // Velocidad de disminución de los valores (en milisegundos)
+    decreaseInterval: 15000, // 15 segundos
+    // Velocidad de disminución (de 0 a 100)
+    decreaseAmount: 5,
+    // Valores iniciales (de 0 a 100)
+    initialHunger: 80,
+    initialHappiness: 80,
+    initialEnergy: 80,
+    // Umbrales
+    sadThreshold: 30, // por debajo de este valor el conejo estará triste
+    criticalThreshold: 15, // por debajo de este valor es crítico
+    // Duración de las animaciones (en milisegundos)
+    animationDuration: 2000,
+    // Guardado automático (en milisegundos)
+    autoSaveInterval: 60000, // cada minuto
+};
+
 // Estados disponibles del conejo
 const PET_STATES = {
     NORMAL: 'normal',
@@ -11,133 +29,6 @@ const PET_STATES = {
     SAD: 'sad'
 };
 
-// Cambiar el sprite según el estado
-function changeSprite(state) {
-    console.log("changeSprite: Cambiando sprite a estado:", state);
-    
-    const petSprite = document.getElementById('pet-sprite');
-    if (!petSprite) {
-        console.error("changeSprite: Error - Elemento del sprite no encontrado");
-        return;
-    }
-    
-    // Quitar animaciones y clases actuales
-    petSprite.style.animation = 'none';
-    petSprite.classList.remove('normal', 'eating', 'playing', 'sleeping', 'sad');
-    
-    // Aplicar nueva animación y clase según estado
-    switch (state) {
-        case PET_STATES.NORMAL:
-            console.log("changeSprite: Aplicando animación de estado normal");
-            petSprite.style.animation = 'idle 2s infinite ease-in-out';
-            petSprite.classList.add('normal');
-            break;
-        case PET_STATES.EATING:
-            console.log("changeSprite: Aplicando animación de estado comiendo");
-            petSprite.style.animation = 'eating 0.5s infinite ease-in-out';
-            petSprite.classList.add('eating');
-            break;
-        case PET_STATES.PLAYING:
-            console.log("changeSprite: Aplicando animación de estado jugando");
-            petSprite.style.animation = 'playing 0.8s infinite ease-in-out';
-            petSprite.classList.add('playing');
-            break;
-        case PET_STATES.SLEEPING:
-            console.log("changeSprite: Aplicando animación de estado durmiendo");
-            petSprite.style.animation = 'sleeping 2s infinite ease-in-out';
-            petSprite.classList.add('sleeping');
-            petSprite.style.filter = 'brightness(0.8)';
-            break;
-        case PET_STATES.SAD:
-            console.log("changeSprite: Aplicando animación de estado triste");
-            petSprite.style.animation = 'sad 3s infinite ease-in-out';
-            petSprite.classList.add('sad');
-            petSprite.style.filter = 'grayscale(0.3)';
-            break;
-        default:
-            console.log("changeSprite: Estado desconocido, usando estado normal");
-            petSprite.style.animation = 'idle 2s infinite ease-in-out';
-            petSprite.classList.add('normal');
-    }
-    
-    // Restablecer filtros si no está durmiendo o triste
-    if (state !== PET_STATES.SLEEPING && state !== PET_STATES.SAD) {
-        petSprite.style.filter = 'none';
-    }
-    
-    console.log("changeSprite: Sprite actualizado correctamente");
-}
-
-// Inicializar los sprites según el estado
-function initSprites() {
-    console.log("initSprites: Inicializando sprites");
-    
-    // Asegurarse de que el elemento del sprite existe
-    const petSprite = document.getElementById('pet-sprite');
-    if (!petSprite) {
-        console.error("initSprites: Error - Elemento del sprite no encontrado");
-        return;
-    }
-    
-    console.log("initSprites: Configurando animaciones");
-    
-    // Configurar animación para el estado normal
-    const normalAnimation = `
-        @keyframes idle {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-    `;
-    
-    // Configurar animación para comer
-    const eatingAnimation = `
-        @keyframes eating {
-            0%, 100% { transform: scaleX(1); }
-            25% { transform: scaleX(1.1) scaleY(0.9); }
-            50% { transform: scaleX(1); }
-            75% { transform: scaleX(1.1) scaleY(0.9); }
-        }
-    `;
-// Configurar animación para jugar
-    const playingAnimation = `
-        @keyframes playing {
-            0%, 100% { transform: rotate(-5deg); }
-            25% { transform: rotate(5deg); }
-            50% { transform: rotate(-5deg); }
-            75% { transform: rotate(5deg); }
-        }
-    `;
-    
-    // Configurar animación para dormir
-    const sleepingAnimation = `
-        @keyframes sleeping {
-            0%, 100% { transform: scaleY(1); }
-            50% { transform: scaleY(0.95); }
-        }
-    `;
-    
-    // Configurar animación para triste
-    const sadAnimation = `
-        @keyframes sad {
-            0%, 100% { transform: rotate(0); }
-            25% { transform: rotate(-2deg); }
-            75% { transform: rotate(2deg); }
-        }
-    `;
-    
-    // Añadir todas las animaciones al CSS
-    const styleSheet = document.createElement('style');
-    styleSheet.textContent = normalAnimation + eatingAnimation + playingAnimation + sleepingAnimation + sadAnimation;
-    document.head.appendChild(styleSheet);
-    
-    console.log("initSprites: Animaciones configuradas correctamente");
-    
-    // Configurar estado inicial
-    console.log("initSprites: Configurando estado inicial a NORMAL");
-    changeSprite(PET_STATES.NORMAL);
-}
-
-// =========== MESSAGES.JS ===========
 // Mensajes aleatorios que mostrará el conejo
 const randomMessages = [
     "¡Qué te gustaaa ehh!!",
@@ -154,7 +45,6 @@ const randomMessages = [
     "¿Publicidad? ¡YO SOY DIRECTORA CREATIVA!",
     "Eres mi persona favorita 💙"
 ];
-
 // Mensajes cuando alimentas al conejo
 const feedMessages = [
     "¡Qué rica zanahoria, ojala pudieras tener la mia!",
@@ -184,6 +74,30 @@ const sadMessages = [
     "¿Dónde está mi princesa de Chichinabo?",
     "¡Necesito cariñitos y besitos!"
 ];
+
+// Mensajes para fechas especiales
+const anniversaryMessages = {
+    // 18 de julio - Cumpleaños
+    "7-18": {
+        title: "¡FELIZ CUMPLEAÑOS MI NIÑA!",
+        message: "¡Feliz cumple mi Love! Te quiero mucho, eres muy importante para mi, me haces muy feliz."
+    },
+    // 18 de noviembre - Aniversario de pareja
+    "11-18": {
+        title: "¡FELIZ ANIVERSARIO, MI WIFE!",
+        message: "Hoy es nuestro día especial, cada día a tu lado es un regalo. Te quiero más que ayer y menos que mañana. ¡Feliz aniversario mi amor!"
+    }
+};
+
+// Mensajes para botón especial
+const specialMessages = [
+    "TE QUIERO MUCHO ERES LA MEJOR GORDA",
+    "Cada día te quiero más, MI MUJER, MI ESPOSA MI WIFE",
+    "Tu creatividad me inspira siempre",
+    "Eres la mujer más EMPOWERGIRL del mundo",
+    "¿HACEMOS UN HIJO?"
+];
+
 // Estado del juego
 let gameState = {
     name: "Rachel Bunny",
@@ -207,7 +121,6 @@ let timers = {
     randomMessage: null,
     surprise: null
 };
-
 // Referencias a elementos del DOM
 const elements = {
     hungerBar: null,
@@ -229,45 +142,163 @@ const REWARDS_SYSTEM = {
     experience: 0,
     level: 1,
     unlockedImages: [],
-    // Imágenes que se pueden desbloquear (añade tus propias imágenes a la carpeta)
+    // Imágenes que se pueden desbloquear
     availableImages: [
         {
             id: "image1",
             name: "Primer recuerdo juntos",
             exp: 50,
-            url: "memory1.jpg" // Añade esta imagen a la carpeta
+            url: "memory1.jpg" 
         },
         {
             id: "image2",
             name: "Viaje romántico",
             exp: 100,
-            url: "memory2.jpg" // Añade esta imagen a la carpeta
+            url: "memory2.jpg"
         },
         {
             id: "image3",
             name: "Foto favorita de Rachel",
             exp: 200,
-            url: "memory3.jpg" // Añade esta imagen a la carpeta
+            url: "memory3.jpg"
         },
         {
             id: "image4",
             name: "Nuestro momento especial",
             exp: 300,
-            url: "memory4.jpg" // Añade esta imagen a la carpeta
+            url: "memory4.jpg"
         },
         {
             id: "image5",
             name: "¡Lo mejor está por venir!",
             exp: 500,
-            url: "memory5.jpg" // Añade esta imagen a la carpeta
+            url: "memory5.jpg"
         }
     ]
 };
 
+// Función para obtener un mensaje aleatorio de forma segura
+function safeGetRandomMessage(messageArray) {
+    if (!messageArray || !Array.isArray(messageArray) || messageArray.length === 0) {
+        console.error("safeGetRandomMessage: Array de mensajes no válido", messageArray);
+        return "¡Hola!";
+    }
+    const randomIndex = Math.floor(Math.random() * messageArray.length);
+    return messageArray[randomIndex];
+}
+
+// Verificar si hoy es una fecha especial
+function checkSpecialDate() {
+    const today = new Date();
+    const month = today.getMonth() + 1;
+    const day = today.getDate();
+    const dateKey = `${month}-${day}`;
+    
+    return anniversaryMessages[dateKey];
+}
+
+// Verificar si el año está en el rango designado (2025-2050)
+function isSpecialYear() {
+    const currentYear = new Date().getFullYear();
+    return currentYear >= 2025 && currentYear <= 2050;
+}
+
+// Cambiar el sprite según el estado
+function changeSprite(state) {
+    console.log("changeSprite: Cambiando sprite a estado:", state);
+    
+    const petSprite = document.getElementById('pet-sprite');
+    if (!petSprite) {
+        console.error("changeSprite: Error - Elemento del sprite no encontrado");
+        return;
+    }
+    
+    // Quitar animaciones y clases actuales
+    petSprite.style.animation = 'none';
+    petSprite.classList.remove('normal', 'eating', 'playing', 'sleeping', 'sad');
+    
+    // Aplicar nueva animación y clase según estado
+    switch (state) {
+        case PET_STATES.NORMAL:
+            petSprite.style.animation = 'idle 2s infinite ease-in-out';
+            petSprite.classList.add('normal');
+            break;
+        case PET_STATES.EATING:
+            petSprite.style.animation = 'eating 0.5s infinite ease-in-out';
+            petSprite.classList.add('eating');
+            break;
+        case PET_STATES.PLAYING:
+            petSprite.style.animation = 'playing 0.8s infinite ease-in-out';
+            petSprite.classList.add('playing');
+            break;
+        case PET_STATES.SLEEPING:
+            petSprite.style.animation = 'sleeping 2s infinite ease-in-out';
+            petSprite.classList.add('sleeping');
+            petSprite.style.filter = 'brightness(0.8)';
+            break;
+        case PET_STATES.SAD:
+            petSprite.style.animation = 'sad 3s infinite ease-in-out';
+            petSprite.classList.add('sad');
+            petSprite.style.filter = 'grayscale(0.3)';
+            break;
+        default:
+            petSprite.style.animation = 'idle 2s infinite ease-in-out';
+            petSprite.classList.add('normal');
+    }
+    
+    // Restablecer filtros si no está durmiendo o triste
+    if (state !== PET_STATES.SLEEPING && state !== PET_STATES.SAD) {
+        petSprite.style.filter = 'none';
+    }
+}
+// Inicializar los sprites
+function initSprites() {
+    console.log("initSprites: Inicializando sprites");
+    
+    // Asegurarse de que el elemento del sprite existe
+    const petSprite = document.getElementById('pet-sprite');
+    if (!petSprite) {
+        console.error("initSprites: Error - Elemento del sprite no encontrado");
+        return;
+    }
+    
+    // Configurar animaciones
+    const styleSheet = document.createElement('style');
+    styleSheet.textContent = `
+        @keyframes idle {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        @keyframes eating {
+            0%, 100% { transform: scaleX(1); }
+            25% { transform: scaleX(1.1) scaleY(0.9); }
+            50% { transform: scaleX(1); }
+            75% { transform: scaleX(1.1) scaleY(0.9); }
+        }
+        @keyframes playing {
+            0%, 100% { transform: rotate(-5deg); }
+            25% { transform: rotate(5deg); }
+            50% { transform: rotate(-5deg); }
+            75% { transform: rotate(5deg); }
+        }
+        @keyframes sleeping {
+            0%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(0.95); }
+        }
+        @keyframes sad {
+            0%, 100% { transform: rotate(0); }
+            25% { transform: rotate(-2deg); }
+            75% { transform: rotate(2deg); }
+        }
+    `;
+    document.head.appendChild(styleSheet);
+    
+    // Configurar estado inicial
+    changeSprite(PET_STATES.NORMAL);
+}
+
 // Función para mostrar un mensaje en la burbuja
 function showMessage(message, duration = 3000) {
-    console.log("showMessage: Mostrando mensaje:", message);
-    
     if (!elements.messageBubble) {
         console.error("showMessage: Error - Burbuja de mensaje no disponible");
         return;
@@ -281,7 +312,6 @@ function showMessage(message, duration = 3000) {
     
     // Configurar temporizador para ocultar el mensaje
     timers.message = setTimeout(() => {
-        console.log("showMessage: Ocultando mensaje después de", duration, "ms");
         elements.messageBubble.classList.add('hidden');
     }, duration);
 }
@@ -290,22 +320,39 @@ function showMessage(message, duration = 3000) {
 function showRandomMessage() {
     // Solo mostrar si no está ocupado en otra actividad
     if (!gameState.isEating && !gameState.isPlaying && !elements.messageBubble.textContent) {
-        // Usar safeGetRandomMessage en lugar de getRandomMessage
-        let message = safeGetRandomMessage(randomMessages);
-        showMessage(message);
+        showMessage(safeGetRandomMessage(randomMessages));
+    }
+}
+
+// Función para verificar el estado general del conejo
+function checkStatus() {
+    // Si cualquiera de los valores está por debajo del umbral de tristeza
+    if (gameState.hunger <= CONFIG.sadThreshold || 
+        gameState.happiness <= CONFIG.sadThreshold || 
+        gameState.energy <= CONFIG.sadThreshold) {
+        
+        // Si no estamos en medio de una acción, mostrar tristeza
+        if (!gameState.isEating && !gameState.isPlaying && !gameState.isSleeping) {
+            changeSprite(PET_STATES.SAD);
+            gameState.state = PET_STATES.SAD;
+            
+            // Si está muy triste, mostrar un mensaje
+            if (Math.random() < 0.3) { // 30% de probabilidad
+                showMessage(safeGetRandomMessage(sadMessages));
+            }
+        }
+    } else if (gameState.state === PET_STATES.SAD && !gameState.isEating && 
+              !gameState.isPlaying && !gameState.isSleeping) {
+        // Si ya no está triste, volver al estado normal
+        changeSprite(PET_STATES.NORMAL);
+        gameState.state = PET_STATES.NORMAL;
     }
 }
 
 // Función para actualizar las barras de estado
 function updateStatusBars() {
-    console.log("updateStatusBars: Actualizando barras - hambre:", gameState.hunger, "felicidad:", gameState.happiness, "energía:", gameState.energy);
-    
     if (!elements.hungerBar || !elements.happinessBar || !elements.energyBar) {
-        console.error("updateStatusBars: Error - Elementos de barra no disponibles", {
-            hungerBar: !!elements.hungerBar,
-            happinessBar: !!elements.happinessBar,
-            energyBar: !!elements.energyBar
-        });
+        console.error("updateStatusBars: Error - Elementos de barra no disponibles");
         return;
     }
     
@@ -313,146 +360,79 @@ function updateStatusBars() {
     elements.happinessBar.style.width = `${gameState.happiness}%`;
     elements.energyBar.style.width = `${gameState.energy}%`;
     
-    console.log("updateStatusBars: Barras actualizadas correctamente");
-    
-    // Verificar si debemos cambiar el estado del conejo basado en los niveles
     checkStatus();
 }
 
-// Función para verificar el estado general del conejo
-function checkStatus() {
-    console.log("checkStatus: Verificando estado general del conejo");
-    
-    // Si cualquiera de los valores está por debajo del umbral de tristeza
-    if (gameState.hunger <= CONFIG.sadThreshold || 
-        gameState.happiness <= CONFIG.sadThreshold || 
-        gameState.energy <= CONFIG.sadThreshold) {
-        
-        console.log("checkStatus: Al menos un valor está por debajo del umbral de tristeza");
-        
-        // Si no estamos en medio de una acción, mostrar tristeza
-        if (!gameState.isEating && !gameState.isPlaying && !gameState.isSleeping) {
-            console.log("checkStatus: El conejo no está ocupado, cambiando a estado SAD");
-            changeSprite(PET_STATES.SAD);
-            gameState.state = PET_STATES.SAD;
-            
-            // Si está muy triste, mostrar un mensaje
-            if (Math.random() < 0.3) { // 30% de probabilidad
-                console.log("checkStatus: Mostrando mensaje de tristeza");
-                // Usar safeGetRandomMessage en lugar de getRandomMessage
-                let message = safeGetRandomMessage(sadMessages);
-                showMessage(message);
-            }
-        }
-    } else if (gameState.state === PET_STATES.SAD && !gameState.isEating && 
-              !gameState.isPlaying && !gameState.isSleeping) {
-        console.log("checkStatus: El conejo estaba triste pero ya no, cambiando a estado NORMAL");
-        changeSprite(PET_STATES.NORMAL);
-        gameState.state = PET_STATES.NORMAL;
-    } else {
-        console.log("checkStatus: No hay cambios necesarios en el estado");
-    }
-}
 // Función para alimentar al conejo
 function feedPet() {
     console.log("feedPet: Función llamada");
     
     // No permitir alimentar si ya está comiendo
-    if (gameState.isEating) {
-        console.log("feedPet: El conejo ya está comiendo, ignorando clic");
-        return;
-    }
+    if (gameState.isEating) return;
     
     // No permitir alimentar si está durmiendo
     if (gameState.isSleeping) {
-        console.log("feedPet: El conejo está durmiendo, mostrando mensaje");
         showMessage("Zzz... Estoy durmiendo Gorda, después te como...");
         return;
     }
     
-    console.log("feedPet: Iniciando alimentación");
     gameState.isEating = true;
     
     // Cambiar sprite y mostrar mensaje
-    console.log("feedPet: Cambiando sprite a EATING");
     changeSprite(PET_STATES.EATING);
-    
-    // Usar safeGetRandomMessage en lugar de getRandomMessage
-    console.log("feedPet: Obteniendo mensaje aleatorio de alimentación");
-    let message = safeGetRandomMessage(feedMessages);
-    console.log("feedPet: Mensaje seleccionado:", message);
-    showMessage(message);
+    showMessage(safeGetRandomMessage(feedMessages));
     
     // Aumentar hambre
-    console.log("feedPet: Valores antes - hambre:", gameState.hunger, "felicidad:", gameState.happiness);
     gameState.hunger = Math.min(100, gameState.hunger + 20);
     
     // Aumentar felicidad un poco
     gameState.happiness = Math.min(100, gameState.happiness + 5);
-    console.log("feedPet: Valores después - hambre:", gameState.hunger, "felicidad:", gameState.happiness);
     
     // Actualizar barras
-    console.log("feedPet: Actualizando barras de estado");
     updateStatusBars();
     
     // Volver al estado normal después de la animación
-    console.log("feedPet: Configurando temporizador para volver al estado normal");
     clearTimeout(timers.action);
     timers.action = setTimeout(() => {
-        console.log("feedPet: Temporizador activado, volviendo al estado normal");
         gameState.isEating = false;
         if (gameState.hunger <= CONFIG.sadThreshold || 
             gameState.happiness <= CONFIG.sadThreshold || 
             gameState.energy <= CONFIG.sadThreshold) {
-            console.log("feedPet: Conejo sigue triste, cambiando a estado SAD");
             changeSprite(PET_STATES.SAD);
             gameState.state = PET_STATES.SAD;
         } else {
-            console.log("feedPet: Conejo feliz, cambiando a estado NORMAL");
             changeSprite(PET_STATES.NORMAL);
             gameState.state = PET_STATES.NORMAL;
         }
     }, CONFIG.animationDuration);
     
     // Guardar el estado
-    console.log("feedPet: Guardando estado del juego");
     saveGameState();
 }
-
 // Función para jugar con el conejo
 function playWithPet() {
     console.log("playWithPet: Función llamada");
     
     // No permitir jugar si ya está jugando
-    if (gameState.isPlaying) {
-        console.log("playWithPet: Ya está jugando, ignorando clic");
-        return;
-    }
+    if (gameState.isPlaying) return;
     
     // No permitir jugar si está durmiendo
     if (gameState.isSleeping) {
-        console.log("playWithPet: Está durmiendo, mostrando mensaje");
-        showMessage("Zzz... Estoy soñando contigo, lúego hablamoos...");
+        showMessage("Zzz... Estoy soñando contigo, luego hablamos...");
         return;
     }
     
     // No permitir jugar si tiene poca energía
     if (gameState.energy <= CONFIG.criticalThreshold) {
-        console.log("playWithPet: Poca energía, mostrando mensaje");
-        showMessage("ESTOY LOW BATTERY, ¿NOS ECHAMOS UNA SIESTA EN EL SOFA?...");
+        showMessage("ESTOY LOW BATTERY, ¿NOS VAMOS DE AVENTURA?...");
         return;
     }
     
-    console.log("playWithPet: Iniciando juego");
     gameState.isPlaying = true;
     
-    // Cambiar sprite a jugando mientras selecciona
-    console.log("playWithPet: Cambiando sprite a PLAYING");
+    // Cambiar sprite y mostrar mensaje
     changeSprite(PET_STATES.PLAYING);
-    
-    // Mostrar mensaje de juego
-    let message = safeGetRandomMessage(playMessages);
-    showMessage(message);
+    showMessage(safeGetRandomMessage(playMessages));
     
     // Aumentar felicidad
     gameState.happiness = Math.min(100, gameState.happiness + 20);
@@ -460,23 +440,22 @@ function playWithPet() {
     // Disminuir energía
     gameState.energy = Math.max(0, gameState.energy - 10);
     
+    // Disminuir hambre un poco (esfuerzo)
+    gameState.hunger = Math.max(0, gameState.hunger - 5);
+    
     // Actualizar barras
     updateStatusBars();
     
-    // Volver al estado normal después de un tiempo
-    console.log("playWithPet: Configurando temporizador para volver al estado normal");
+    // Volver al estado normal después de la animación
     clearTimeout(timers.action);
     timers.action = setTimeout(() => {
-        console.log("playWithPet: Temporizador activado, volviendo al estado normal");
         gameState.isPlaying = false;
         if (gameState.hunger <= CONFIG.sadThreshold || 
             gameState.happiness <= CONFIG.sadThreshold || 
             gameState.energy <= CONFIG.sadThreshold) {
-            console.log("playWithPet: Conejo sigue triste, cambiando a estado SAD");
             changeSprite(PET_STATES.SAD);
             gameState.state = PET_STATES.SAD;
         } else {
-            console.log("playWithPet: Conejo feliz, cambiando a estado NORMAL");
             changeSprite(PET_STATES.NORMAL);
             gameState.state = PET_STATES.NORMAL;
         }
@@ -490,7 +469,6 @@ function toggleSleep() {
     console.log("toggleSleep: Función llamada");
     
     if (gameState.isSleeping) {
-        console.log("toggleSleep: Despertando al conejo");
         // Despertar
         gameState.isSleeping = false;
         
@@ -498,11 +476,9 @@ function toggleSleep() {
         if (gameState.hunger <= CONFIG.sadThreshold || 
             gameState.happiness <= CONFIG.sadThreshold || 
             gameState.energy <= CONFIG.sadThreshold) {
-            console.log("toggleSleep: Conejo despierto pero triste, cambiando a estado SAD");
             changeSprite(PET_STATES.SAD);
             gameState.state = PET_STATES.SAD;
         } else {
-            console.log("toggleSleep: Conejo despierto y feliz, cambiando a estado NORMAL");
             changeSprite(PET_STATES.NORMAL);
             gameState.state = PET_STATES.NORMAL;
         }
@@ -516,15 +492,12 @@ function toggleSleep() {
             elements.sleepButton.querySelector('.btn-icon').textContent = '💤';
         }
         
-        console.log("toggleSleep: Mostrando mensaje de despertar");
         showMessage("¡Buenos diotaaas! Que no es lo mismo que Buenos Idiotaaas");
     } else {
-        console.log("toggleSleep: Poniendo a dormir al conejo");
         // Dormir
         gameState.isSleeping = true;
         
         // Cambiar sprite
-        console.log("toggleSleep: Cambiando sprite a SLEEPING");
         changeSprite(PET_STATES.SLEEPING);
         gameState.state = PET_STATES.SLEEPING;
         
@@ -537,54 +510,20 @@ function toggleSleep() {
             elements.sleepButton.querySelector('.btn-icon').textContent = '🌞';
         }
         
-        console.log("toggleSleep: Seleccionando mensaje aleatorio para dormir");
-        // Usar safeGetRandomMessage en lugar de getRandomMessage
-        let message = safeGetRandomMessage(sleepMessages);
-        showMessage(message);
+        showMessage(safeGetRandomMessage(sleepMessages));
     }
     
     // Guardar el estado
-    console.log("toggleSleep: Guardando estado del juego");
     saveGameState();
 }
 
 // Función para mostrar mensaje especial
 function showSpecialMessage() {
     console.log("showSpecialMessage: Función llamada");
-    
-    // Usar safeGetRandomMessage en lugar de getRandomMessage
     console.log("showSpecialMessage: Seleccionando mensaje especial aleatorio");
+    
     let message = safeGetRandomMessage(specialMessages);
-    console.log("showSpecialMessage: Mensaje seleccionado:", message);
     showMessage(message, 4000);
-}
-
-// Función para verificar si hay fechas especiales
-function checkForSpecialDates() {
-    const specialDate = checkSpecialDate();
-    
-    if (specialDate && isSpecialYear()) {
-        // Asegurarnos de que el elemento existe
-        if (elements.anniversaryMessage && elements.dateCheck) {
-            elements.anniversaryMessage.innerHTML = `
-                <h2>${specialDate.title}</h2>
-                <p>${specialDate.message}</p>
-            `;
-            elements.dateCheck.classList.remove('hidden');
-        } else {
-            // Si no existe el elemento modal, mostrar un mensaje normal
-            showMessage(`¡${specialDate.title}! ${specialDate.message}`, 5000);
-        }
-    }
-}
-// Función para guardar el estado del juego
-function saveGameState() {
-    const stateToSave = {
-        ...gameState,
-        lastUpdate: Date.now()
-    };
-    
-    localStorage.setItem('rachelTamagotchiState', JSON.stringify(stateToSave));
 }
 
 // Función para disminuir los valores con el tiempo
@@ -612,6 +551,24 @@ function decreaseValues() {
     // Guardar el estado
     saveGameState();
 }
+// Función para verificar si hay fechas especiales
+function checkForSpecialDates() {
+    const specialDate = checkSpecialDate();
+    
+    if (specialDate && isSpecialYear()) {
+        showMessage(`¡${specialDate.title}! ${specialDate.message}`, 5000);
+    }
+}
+
+// Función para guardar el estado del juego
+function saveGameState() {
+    const stateToSave = {
+        ...gameState,
+        lastUpdate: Date.now()
+    };
+    
+    localStorage.setItem('rachelTamagotchiState', JSON.stringify(stateToSave));
+}
 
 // Función para cargar el estado guardado
 function loadGameState() {
@@ -619,51 +576,63 @@ function loadGameState() {
     const savedState = localStorage.getItem('rachelTamagotchiState');
     
     if (savedState) {
-        const parsedState = JSON.parse(savedState);
-        
-        // Calcular tiempo transcurrido desde la última actualización
-        const currentTime = Date.now();
-        const timeDiff = currentTime - parsedState.lastUpdate;
-        
-        // Actualizar estado con valores guardados
-        gameState = {
-            ...parsedState,
-            lastUpdate: currentTime
-        };
-        
-        // Si pasó mucho tiempo (más de 8 horas), aplicar simulación del tiempo
-        if (timeDiff > 8 * 60 * 60 * 1000) {
-            simulateTimeElapsed(timeDiff);
-        }
-        
-        // Asegurarse de que el estado visual sea correcto
-        if (gameState.isSleeping) {
-            changeSprite(PET_STATES.SLEEPING);
-            gameState.state = PET_STATES.SLEEPING;
-            if (elements.sleepButton && elements.sleepButton.querySelector('.btn-text')) {
-                elements.sleepButton.querySelector('.btn-text').textContent = 'Despertar con besitos';
+        try {
+            const parsedState = JSON.parse(savedState);
+            
+            // Calcular tiempo transcurrido desde la última actualización
+            const currentTime = Date.now();
+            const timeDiff = currentTime - parsedState.lastUpdate;
+            
+            // Actualizar estado con valores guardados
+            gameState = {
+                ...parsedState,
+                lastUpdate: currentTime
+            };
+            
+            // Si pasó mucho tiempo (más de 8 horas), aplicar simulación del tiempo
+            if (timeDiff > 8 * 60 * 60 * 1000) {
+                simulateTimeElapsed(timeDiff);
             }
-            if (elements.sleepButton && elements.sleepButton.querySelector('.btn-icon')) {
-                elements.sleepButton.querySelector('.btn-icon').textContent = '🌞';
+            
+            // Asegurarse de que el estado visual sea correcto
+            if (gameState.isSleeping) {
+                changeSprite(PET_STATES.SLEEPING);
+                gameState.state = PET_STATES.SLEEPING;
+                if (elements.sleepButton && elements.sleepButton.querySelector('.btn-text')) {
+                    elements.sleepButton.querySelector('.btn-text').textContent = 'Despertar con besitos';
+                }
+                if (elements.sleepButton && elements.sleepButton.querySelector('.btn-icon')) {
+                    elements.sleepButton.querySelector('.btn-icon').textContent = '🌞';
+                }
+            } else if (gameState.hunger <= CONFIG.sadThreshold || 
+                      gameState.happiness <= CONFIG.sadThreshold || 
+                      gameState.energy <= CONFIG.sadThreshold) {
+                changeSprite(PET_STATES.SAD);
+                gameState.state = PET_STATES.SAD;
+            } else {
+                changeSprite(PET_STATES.NORMAL);
+                gameState.state = PET_STATES.NORMAL;
             }
-        } else if (gameState.hunger <= CONFIG.sadThreshold || 
-                   gameState.happiness <= CONFIG.sadThreshold || 
-                   gameState.energy <= CONFIG.sadThreshold) {
-            changeSprite(PET_STATES.SAD);
-            gameState.state = PET_STATES.SAD;
-        } else {
-            changeSprite(PET_STATES.NORMAL);
-            gameState.state = PET_STATES.NORMAL;
+        } catch (e) {
+            console.error("Error al cargar el estado guardado:", e);
+            // Usar valores por defecto si hay un error
+            gameState.hunger = CONFIG.initialHunger;
+            gameState.happiness = CONFIG.initialHappiness;
+            gameState.energy = CONFIG.initialEnergy;
         }
     }
     
     // Cargar estado de recompensas
     const savedRewards = localStorage.getItem('rachelTamagotchiRewards');
     if (savedRewards) {
-        const parsedRewards = JSON.parse(savedRewards);
-        REWARDS_SYSTEM.experience = parsedRewards.experience || 0;
-        REWARDS_SYSTEM.level = parsedRewards.level || 1;
-        REWARDS_SYSTEM.unlockedImages = parsedRewards.unlockedImages || [];
+        try {
+            const parsedRewards = JSON.parse(savedRewards);
+            REWARDS_SYSTEM.experience = parsedRewards.experience || 0;
+            REWARDS_SYSTEM.level = parsedRewards.level || 1;
+            REWARDS_SYSTEM.unlockedImages = parsedRewards.unlockedImages || [];
+        } catch (e) {
+            console.error("Error al cargar recompensas:", e);
+        }
     }
 }
 
@@ -688,46 +657,116 @@ function simulateTimeElapsed(timeDiff) {
     }
 }
 
+// Función para iniciar los temporizadores
+function startTimers() {
+    // Temporizador para disminuir valores
+    timers.decrease = setInterval(decreaseValues, CONFIG.decreaseInterval);
+    
+    // Temporizador para guardar automáticamente
+    timers.autoSave = setInterval(saveGameState, CONFIG.autoSaveInterval);
+    
+    // Temporizador para mensajes aleatorios
+    timers.randomMessage = setInterval(() => {
+        if (Math.random() < 0.3) { // 30% de probabilidad
+            showRandomMessage();
+        }
+    }, 45000); // Cada 45 segundos
+    
+    // Temporizador para eventos sorpresa
+    timers.surprise = setInterval(() => {
+        // 10% de probabilidad de evento sorpresa
+        if (Math.random() < 0.1 && !gameState.isEating && !gameState.isPlaying && !gameState.isSleeping) {
+            const surpriseEvents = [
+                "¡Acabo de ver un unicornio azul! ¿Lo has visto?",
+                "Creo que te estoy viendo dibujar... ¡Qué creatividad!",
+                "¿Sabes que eres la mejor persona del mundo mundial?",
+                "Si pudiera, te daría un besito en la nariz ahora mismo",
+                "Algún día haremos un viaje juntas a Marte, ¿vale?",
+                "Me gustas más tú que las zanahorias, y mira que me gustan",
+                "¿Y esa carita de chichihabo tan mona, gorda?"
+            ];
+            showMessage(surpriseEvents[Math.floor(Math.random() * surpriseEvents.length)], 5000);
+        }
+    }, 60000); // Cada minuto hay una pequeña posibilidad
+}
+// Configurar controladores de eventos
+function setupEventListeners() {
+    // Verificar que todos los elementos existen antes de agregar event listeners
+    if (elements.feedButton) {
+        elements.feedButton.addEventListener('click', feedPet);
+    }
+    
+    if (elements.playButton) {
+        elements.playButton.addEventListener('click', playWithPet);
+    }
+    
+    if (elements.sleepButton) {
+        elements.sleepButton.addEventListener('click', toggleSleep);
+    }
+    
+    if (elements.specialButton) {
+        elements.specialButton.addEventListener('click', showSpecialMessage);
+    }
+    
+    // Botón de cerrar mensaje de aniversario (solo si existe)
+    if (elements.closeAnniversary) {
+        elements.closeAnniversary.addEventListener('click', () => {
+            if (elements.dateCheck) {
+                elements.dateCheck.classList.add('hidden');
+            }
+        });
+    }
+}
+
+// Función para inicializar el juego
+function initGame() {
+    // Inicializar sprites
+    initSprites();
+    
+    // Obtener referencias a elementos del DOM
+    elements.hungerBar = document.getElementById('hunger-bar');
+    elements.happinessBar = document.getElementById('happiness-bar');
+    elements.energyBar = document.getElementById('energy-bar');
+    elements.petSprite = document.getElementById('pet-sprite');
+    elements.messageBubble = document.getElementById('message-bubble');
+    elements.feedButton = document.getElementById('feed-btn');
+    elements.playButton = document.getElementById('play-btn');
+    elements.sleepButton = document.getElementById('sleep-btn');
+    elements.specialButton = document.getElementById('special-btn');
+    elements.dateCheck = document.getElementById('date-check');
+    elements.anniversaryMessage = document.getElementById('anniversary-message');
+    elements.closeAnniversary = document.getElementById('close-anniversary');
+    
+    // Cargar el estado guardado si existe
+    loadGameState();
+    
+    // Iniciar temporizadores
+    startTimers();
+    
+    // Actualizar barras de estado
+    updateStatusBars();
+    
+    // Configurar eventos de clic en botones
+    setupEventListeners();
+    
+    // Verificar si hay fechas especiales
+    checkForSpecialDates();
+    
+    // Mostrar un mensaje aleatorio al inicio
+    showRandomMessage();
+    
+    // Asegurarse de que el modal de aniversario está cerrado
+    if (elements.dateCheck) {
+        elements.dateCheck.classList.add('hidden');
+    }
+}
+
 // Inicializar el juego cuando el DOM esté cargado
 document.addEventListener('DOMContentLoaded', function() {
     console.log("DOM cargado, inicializando Tamagotchi para Rachel...");
     
     // Inicializar el juego
     initGame();
-    
-    // Configurar controladores de eventos directamente en los botones como respaldo
-    const feedBtn = document.getElementById('feed-btn');
-    const playBtn = document.getElementById('play-btn');
-    const sleepBtn = document.getElementById('sleep-btn');
-    const specialBtn = document.getElementById('special-btn');
-    
-    if (feedBtn) {
-        feedBtn.onclick = function() { 
-            console.log("Botón alimentar clickeado (respaldo)");
-            feedPet();
-        };
-    }
-    
-    if (playBtn) {
-        playBtn.onclick = function() {
-            console.log("Botón jugar clickeado (respaldo)");
-            playWithPet();
-        };
-    }
-    
-    if (sleepBtn) {
-        sleepBtn.onclick = function() {
-            console.log("Botón dormir clickeado (respaldo)");
-            toggleSleep();
-        };
-    }
-    
-    if (specialBtn) {
-        specialBtn.onclick = function() {
-            console.log("Botón mensaje especial clickeado (respaldo)");
-            showSpecialMessage();
-        };
-    }
     
     console.log("Tamagotchi inicializado con éxito");
 });
@@ -737,5 +776,3 @@ window.feedPet = feedPet;
 window.playWithPet = playWithPet;
 window.toggleSleep = toggleSleep;
 window.showSpecialMessage = showSpecialMessage;
-window.getRandomMessage = getRandomMessage;
-window.safeGetRandomMessage = safeGetRandomMessage;
