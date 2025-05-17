@@ -6,11 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#87CEEB"> <!-- Color azul celeste para la barra de navegación -->
     <title>Tamagotchi Rachel</title>
     <link rel="apple-touch-icon" href="icon.png">
+    <link rel="icon" type="image/png" href="icon.png">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="styles.css">
     <style>
+        /* Estilos inline para asegurar que el modal de aniversario esté oculto */
         #date-check {
             display: none !important;
             visibility: hidden !important;
@@ -19,25 +22,47 @@
             position: absolute !important;
             pointer-events: none !important;
         }
+        
+        /* Animación de carga para mejorar la experiencia inicial */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        body {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        #pet-sprite {
+            transition: all 0.3s ease;
+        }
+        
+        .action-btn {
+            transition: transform 0.2s ease;
+        }
+        
+        .action-btn:active {
+            transform: scale(0.95);
+        }
     </style>
 </head>
 <body>
     <div id="game-container">
         <div id="status-bar">
             <div class="status-item">
-                <div class="status-label">Hambre</div>
+                <div class="status-label">🍽️ Hambre</div>
                 <div class="status-value">
                     <div class="status-fill" id="hunger-bar"></div>
                 </div>
             </div>
             <div class="status-item">
-                <div class="status-label">Felicidad</div>
+                <div class="status-label">😊 Felicidad</div>
                 <div class="status-value">
                     <div class="status-fill" id="happiness-bar"></div>
                 </div>
             </div>
             <div class="status-item">
-                <div class="status-label">Energía</div>
+                <div class="status-label">⚡ Energía</div>
                 <div class="status-value">
                     <div class="status-fill" id="energy-bar"></div>
                 </div>
@@ -51,22 +76,26 @@
         </div>
         
         <div id="action-buttons">
-            <button id="feed-btn" class="action-btn" onclick="feedPet()">
+            <button id="feed-btn" class="action-btn" onclick="window.feedPet()">
                 <span class="btn-icon">🥕</span>
                 <span class="btn-text">Alimentar</span>
             </button>
-            <button id="play-btn" class="action-btn" onclick="playWithPet()">
+            <button id="play-btn" class="action-btn" onclick="window.playWithPet()">
                 <span class="btn-icon">🎨</span>
                 <span class="btn-text">Jugar</span>
             </button>
-            <button id="sleep-btn" class="action-btn" onclick="toggleSleep()">
+            <button id="sleep-btn" class="action-btn" onclick="window.toggleSleep()">
                 <span class="btn-icon">💤</span>
                 <span class="btn-text">Dormir</span>
             </button>
-            <button id="special-btn" class="action-btn" onclick="showSpecialMessage()">
+            <button id="special-btn" class="action-btn" onclick="window.showSpecialMessage()">
                 <span class="btn-icon">💌</span>
                 <span class="btn-text">Mensaje</span>
             </button>
+        </div>
+        
+        <div id="level-display">
+            <span id="experience-text">Nivel: 1</span>
         </div>
     </div>
     
@@ -75,7 +104,29 @@
         <button id="close-anniversary">Cerrar</button>
     </div>
     
-    <!-- Cargamos un solo archivo JavaScript combinado -->
-    <script src="tamagotchi-combined.js"></script>
+    <!-- Mensaje de carga -->
+    <div id="loading-screen">
+        <div class="loading-spinner"></div>
+        <p>Cargando a Rachel Bunny...</p>
+    </div>
+    
+    <!-- Cargamos un solo archivo JavaScript combinado con defer para mejorar el rendimiento -->
+    <script src="tamagotchi-combined.js" defer></script>
+    
+    <!-- Script inline para gestionar la pantalla de carga -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ocultar pantalla de carga cuando todo esté listo
+            setTimeout(function() {
+                const loadingScreen = document.getElementById('loading-screen');
+                if (loadingScreen) {
+                    loadingScreen.style.opacity = '0';
+                    setTimeout(function() {
+                        loadingScreen.style.display = 'none';
+                    }, 500);
+                }
+            }, 800);
+        });
+    </script>
 </body>
 </html>
