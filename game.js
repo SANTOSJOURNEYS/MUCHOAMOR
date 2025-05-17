@@ -458,3 +458,53 @@ document.addEventListener('DOMContentLoaded', initGame);
 
 // Iniciar el juego cuando el DOM esté cargado
 document.addEventListener('DOMContentLoaded', initGame);
+// Mini-juego de Piedra, Papel o Tijeras
+function playMiniGame() {
+    // Opciones del juego
+    const options = ['Piedra', 'Papel', 'Tijeras'];
+    
+    // Mostrar opciones
+    const userChoice = prompt('¡Juguemos a Piedra, Papel o Tijeras!\nEscribe tu elección: Piedra, Papel o Tijeras');
+    
+    // Si el usuario cancela
+    if (!userChoice) {
+        showMessage("¿te has cagaoo?");
+        return;
+    }
+    
+    // Normalizar la elección del usuario
+    const normalizedUserChoice = userChoice.trim().toLowerCase();
+    
+    // Validar la elección
+    if (!['piedra', 'papel', 'tijeras'].includes(normalizedUserChoice)) {
+        showMessage("Petarda escribe bien. ¡Escribe Piedra, Papel o Tijeras!");
+        return;
+    }
+    
+    // Elección aleatoria del conejo
+    const computerChoice = options[Math.floor(Math.random() * options.length)];
+    
+    // Mostrar elecciones
+    showMessage(`Yo elijo: ${computerChoice}. Tú elegiste: ${userChoice}`, 2000);
+    
+    // Determinar ganador
+    setTimeout(() => {
+        if (normalizedUserChoice === computerChoice.toLowerCase()) {
+            // Empate
+            showMessage(getRandomMessage(gameResultMessages.tie), 3000);
+        } else if (
+            (normalizedUserChoice === 'piedra' && computerChoice.toLowerCase() === 'tijeras') ||
+            (normalizedUserChoice === 'papel' && computerChoice.toLowerCase() === 'piedra') ||
+            (normalizedUserChoice === 'tijeras' && computerChoice.toLowerCase() === 'papel')
+        ) {
+            // Usuario gana
+            showMessage(getRandomMessage(gameResultMessages.win), 3000);
+            // Aumentar felicidad extra por ganar
+            gameState.happiness = Math.min(100, gameState.happiness + 10);
+            updateStatusBars();
+        } else {
+            // Conejo gana
+            showMessage(getRandomMessage(gameResultMessages.lose), 3000);
+        }
+    }, 2500);
+}
