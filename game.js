@@ -1463,3 +1463,39 @@ function playFlappyRabbit() {
         }
     }
 }
+// Código para depurar eventos de botones
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM cargado');
+    
+    if (elements.feedButton) {
+        console.log('Botón de alimentar encontrado');
+        elements.feedButton.addEventListener('click', function() {
+            console.log('Clic en alimentar');
+            feedPet();
+        });
+    } else {
+        console.log('Botón de alimentar NO encontrado');
+    }
+    
+    if (elements.playButton) {
+        console.log('Botón de jugar encontrado');
+        elements.playButton.addEventListener('click', function() {
+            console.log('Clic en jugar');
+            playWithPet();
+        });
+    } else {
+        console.log('Botón de jugar NO encontrado');
+    }
+    
+    if (elements.sleepButton) {
+        console.log('Botón de dormir encontrado');
+    } else {
+        console.log('Botón de dormir NO encontrado');
+    }
+    
+    if (elements.specialButton) {
+        console.log('Botón de mensaje especial encontrado');
+    } else {
+        console.log('Botón de mensaje especial NO encontrado');
+    }
+});
