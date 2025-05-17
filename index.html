@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Tamagotchi Rachel</title>
+    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="game-container">
+        <div id="status-bar">
+            <div class="status-item">
+                <div class="status-label">Hambre</div>
+                <div class="status-value">
+                    <div class="status-fill" id="hunger-bar"></div>
+                </div>
+            </div>
+            <div class="status-item">
+                <div class="status-label">Felicidad</div>
+                <div class="status-value">
+                    <div class="status-fill" id="happiness-bar"></div>
+                </div>
+            </div>
+            <div class="status-item">
+                <div class="status-label">Energía</div>
+                <div class="status-value">
+                    <div class="status-fill" id="energy-bar"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="pet-container">
+            <div id="pet-name">Rachel Bunny</div>
+            <div id="pet-sprite"></div>
+            <div id="message-bubble" class="hidden"></div>
+        </div>
+
+        <div id="action-buttons">
+            <button id="feed-btn" class="action-btn">
+                <span class="btn-icon">🥕</span>
+                <span class="btn-text">Alimentar</span>
+            </button>
+            <button id="play-btn" class="action-btn">
+                <span class="btn-icon">🎨</span>
+                <span class="btn-text">Jugar</span>
+            </button>
+            <button id="sleep-btn" class="action-btn">
+                <span class="btn-icon">💤</span>
+                <span class="btn-text">Dormir</span>
+            </button>
+            <button id="special-btn" class="action-btn">
+                <span class="btn-icon">💌</span>
+                <span class="btn-text">Mensaje</span>
+            </button>
+        </div>
+    </div>
+
+    <div id="date-check" class="hidden">
+        <div id="anniversary-message"></div>
+        <button id="close-anniversary">Cerrar</button>
+    </div>
+
+    <script src="sprites.js"></script>
+    <script src="messages.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
