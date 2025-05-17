@@ -1562,9 +1562,12 @@ function safeGetRandomMessage(array) {
     return "Mensaje predeterminado";
 }
 
-// Exponer las funciones cruciales globalmente al inicio
+// Asegurar que todas las funciones estén disponibles globalmente
 window.feedPet = feedPet;
 window.playWithPet = playWithPet;
 window.toggleSleep = toggleSleep;
 window.showSpecialMessage = showSpecialMessage;
 window.showMessage = showMessage;
+window.safeGetRandomMessage = safeGetRandomMessage;
+
+console.log("Game.js: Funciones exportadas globalmente");
