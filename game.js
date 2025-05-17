@@ -428,6 +428,8 @@ function loadGameState() {
     }
 }
 
+// ...todo el código anterior se mantiene igual...
+
 // Función para simular tiempo transcurrido mientras estaba ausente
 function simulateTimeElapsed(timeDiff) {
     // Número de decrementos que habrían ocurrido
@@ -451,7 +453,6 @@ function simulateTimeElapsed(timeDiff) {
 
 // Iniciar el juego cuando el DOM esté cargado
 document.addEventListener('DOMContentLoaded', initGame);
-}
 
 // Iniciar el juego cuando el DOM esté cargado
 document.addEventListener('DOMContentLoaded', initGame);
