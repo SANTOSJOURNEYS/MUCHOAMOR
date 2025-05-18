@@ -1,23 +1,17 @@
-// tamagotchi-combined.js - Combinación de todos los archivos para evitar problemas de orden de carga
+// tamagotchi-combined.js - Versión simplificada y arreglada
 console.log("Cargando tamagotchi-combined.js...");
 
 // Configuración de parámetros del juego
 const CONFIG = {
-    // Velocidad de disminución de los valores (en milisegundos)
     decreaseInterval: 15000, // 15 segundos
-    // Velocidad de disminución (de 0 a 100)
     decreaseAmount: 5,
-    // Valores iniciales (de 0 a 100)
     initialHunger: 80,
     initialHappiness: 80,
     initialEnergy: 80,
-    // Umbrales
-    sadThreshold: 30, // por debajo de este valor el conejo estará triste
-    criticalThreshold: 15, // por debajo de este valor es crítico
-    // Duración de las animaciones (en milisegundos)
+    sadThreshold: 30,
+    criticalThreshold: 15,
     animationDuration: 2000,
-    // Guardado automático (en milisegundos)
-    autoSaveInterval: 60000, // cada minuto
+    autoSaveInterval: 60000
 };
 
 // Estados disponibles del conejo
@@ -29,76 +23,7 @@ const PET_STATES = {
     SAD: 'sad'
 };
 
-// Mensajes aleatorios que mostrará el conejo
-const randomMessages = [
-    "¡Qué te gustaaa ehh!!",
-    "Mi mujer, mi esposa, MI WIFE",
-    "¡Que lokita nooo??",
-    "¿Nos hacemos un té lésbico?",
-    "¡Mi Queen!",
-    "¡Putada mano!",
-    "El otro día fui a Intro, que locura, ¡el mejor día de mi vida!",
-    "¿Nos hacemos un tattoo?, soy adicta a la tinta",
-    "¿No te apetece querer rebobinar el ahora?",
-    "¡No me molestes! Estoy en un master con el director de arte de DELLAFUENTE",
-    "¡Lo que te quiero yo GORDAAAA!",
-    "¿Publicidad? ¡YO SOY DIRECTORA CREATIVA!",
-    "Eres mi persona favorita 💙"
-];
-// Mensajes cuando alimentas al conejo
-const feedMessages = [
-    "¡Qué rica zanahoria, ojala pudieras tener la mia!",
-    "¿Lo has cocinado tu? Porque está INCREIBLE",
-    "¡Gracias por alimentarme, MI MUJER, ESPOSA, MI WIFE!",
-    "¡Chin Chan Chun, que ricooo!"
-];
-
-// Mensajes cuando juegas con el conejo
-const playMessages = [
-    "¿Nos echamos un Mario kart?",
-    "¡VINITO, CARTAS Y TÚ!",
-    "¡La próxima vez jugamos al Kamasutra!"
-];
-
-// Mensajes cuando el conejo duerme
-const sleepMessages = [
-    "Zzz... soñando con mi DRAGÓN ROJO...",
-    "Zzz... dormimos juntitos, abrazaditos...",
-    "Zzz... en mi propia casa JUAN PABLO LORENZO..."
-];
-
-// Mensajes cuando el conejo está triste
-const sadMessages = [
-    "ya no me quieres petarda...",
-    "Quiero mimitoos...",
-    "¿Dónde está mi princesa de Chichinabo?",
-    "¡Necesito cariñitos y besitos!"
-];
-
-// Mensajes para fechas especiales
-const anniversaryMessages = {
-    // 18 de julio - Cumpleaños
-    "7-18": {
-        title: "¡FELIZ CUMPLEAÑOS MI NIÑA!",
-        message: "¡Feliz cumple mi Love! Te quiero mucho, eres muy importante para mi, me haces muy feliz."
-    },
-    // 18 de noviembre - Aniversario de pareja
-    "11-18": {
-        title: "¡FELIZ ANIVERSARIO, MI WIFE!",
-        message: "Hoy es nuestro día especial, cada día a tu lado es un regalo. Te quiero más que ayer y menos que mañana. ¡Feliz aniversario mi amor!"
-    }
-};
-
-// Mensajes para botón especial
-const specialMessages = [
-    "TE QUIERO MUCHO ERES LA MEJOR GORDA",
-    "Cada día te quiero más, MI MUJER, MI ESPOSA MI WIFE",
-    "Tu creatividad me inspira siempre",
-    "Eres la mujer más EMPOWERGIRL del mundo",
-    "¿HACEMOS UN HIJO?"
-];
-
-// Estado del juego
+// Estado del juego - Debe estar definido ANTES de las funciones
 let gameState = {
     name: "Rachel Bunny",
     hunger: CONFIG.initialHunger,
@@ -106,10 +31,9 @@ let gameState = {
     energy: CONFIG.initialEnergy,
     lastUpdate: Date.now(),
     state: PET_STATES.NORMAL,
-    // Indicadores de estado
     isSleeping: false,
     isPlaying: false,
-    isEating: false,
+    isEating: false
 };
 
 // Temporizadores activos
@@ -121,6 +45,7 @@ let timers = {
     randomMessage: null,
     surprise: null
 };
+
 // Referencias a elementos del DOM
 const elements = {
     hungerBar: null,
@@ -135,6 +60,7 @@ const elements = {
     dateCheck: null,
     anniversaryMessage: null,
     closeAnniversary: null,
+    experienceText: null
 };
 
 // Sistema de experiencia y recompensas
@@ -142,74 +68,92 @@ const REWARDS_SYSTEM = {
     experience: 0,
     level: 1,
     unlockedImages: [],
-    // Imágenes que se pueden desbloquear
     availableImages: [
-        {
-            id: "image1",
-            name: "Primer recuerdo juntos",
-            exp: 50,
-            url: "memory1.jpg" 
-        },
-        {
-            id: "image2",
-            name: "Viaje romántico",
-            exp: 100,
-            url: "memory2.jpg"
-        },
-        {
-            id: "image3",
-            name: "Foto favorita de Rachel",
-            exp: 200,
-            url: "memory3.jpg"
-        },
-        {
-            id: "image4",
-            name: "Nuestro momento especial",
-            exp: 300,
-            url: "memory4.jpg"
-        },
-        {
-            id: "image5",
-            name: "¡Lo mejor está por venir!",
-            exp: 500,
-            url: "memory5.jpg"
-        }
+        {id: "image1", name: "Primer recuerdo", exp: 50, url: "memory1.jpg"},
+        {id: "image2", name: "Viaje romántico", exp: 100, url: "memory2.jpg"},
+        {id: "image3", name: "Foto favorita", exp: 200, url: "memory3.jpg"},
+        {id: "image4", name: "Momento especial", exp: 300, url: "memory4.jpg"},
+        {id: "image5", name: "Lo mejor", exp: 500, url: "memory5.jpg"}
     ]
 };
 
+// Mensajes del juego
+const randomMessages = [
+    "¡Qué te gustaaa ehh!!",
+    "Mi mujer, mi esposa, MI WIFE",
+    "¡Que lokita nooo??",
+    "¿Nos hacemos un té lésbico?",
+    "¡Mi Queen!",
+    "¡Putada mano!",
+    "¿Nos hacemos un tattoo?, soy adicta a la tinta",
+    "¿No te apetece querer rebobinar el ahora?",
+    "¡Lo que te quiero yo GORDAAAA!",
+    "¿Publicidad? ¡YO SOY DIRECTORA CREATIVA!",
+    "Eres mi persona favorita 💙"
+];
+
+const feedMessages = [
+    "¡Qué rica zanahoria, ojala pudieras tener la mia!",
+    "¿Lo has cocinado tu? Porque está INCREIBLE",
+    "¡Gracias por alimentarme, MI MUJER, ESPOSA, MI WIFE!",
+    "¡Chin Chan Chun, que ricooo!"
+];
+
+const playMessages = [
+    "¿Nos echamos un Mario kart?",
+    "¡VINITO, CARTAS Y TÚ!",
+    "¡La próxima vez jugamos al Kamasutra!"
+];
+
+const sleepMessages = [
+    "Zzz... soñando con mi DRAGÓN ROJO...",
+    "Zzz... dormimos juntitos, abrazaditos...",
+    "Zzz... en mi propia casa JUAN PABLO LORENZO..."
+];
+
+const sadMessages = [
+    "ya no me quieres petarda...",
+    "Quiero mimitoos...",
+    "¿Dónde está mi princesa de Chichinabo?",
+    "¡Necesito cariñitos y besitos!"
+];
+
+const specialMessages = [
+    "TE QUIERO MUCHO ERES LA MEJOR GORDA",
+    "Cada día te quiero más, MI MUJER, MI ESPOSA MI WIFE",
+    "Tu creatividad me inspira siempre",
+    "Eres la mujer más EMPOWERGIRL del mundo",
+    "¿HACEMOS UN HIJO?"
+];
+
+const anniversaryMessages = {
+    "7-18": {
+        title: "¡FELIZ CUMPLEAÑOS MI NIÑA!",
+        message: "¡Feliz cumple mi Love! Te quiero mucho, eres muy importante para mi, me haces muy feliz."
+    },
+    "11-18": {
+        title: "¡FELIZ ANIVERSARIO, MI WIFE!",
+        message: "Hoy es nuestro día especial, cada día a tu lado es un regalo. Te quiero más que ayer y menos que mañana. ¡Feliz aniversario mi amor!"
+    }
+};
+
 // Función para obtener un mensaje aleatorio de forma segura
-function safeGetRandomMessage(messageArray) {
+function getRandomMessage(messageArray) {
     if (!messageArray || !Array.isArray(messageArray) || messageArray.length === 0) {
-        console.error("safeGetRandomMessage: Array de mensajes no válido", messageArray);
+        console.error("getRandomMessage: Array no válido");
         return "¡Hola!";
     }
     const randomIndex = Math.floor(Math.random() * messageArray.length);
     return messageArray[randomIndex];
 }
 
-// Verificar si hoy es una fecha especial
-function checkSpecialDate() {
-    const today = new Date();
-    const month = today.getMonth() + 1;
-    const day = today.getDate();
-    const dateKey = `${month}-${day}`;
-    
-    return anniversaryMessages[dateKey];
-}
-
-// Verificar si el año está en el rango designado (2025-2050)
-function isSpecialYear() {
-    const currentYear = new Date().getFullYear();
-    return currentYear >= 2025 && currentYear <= 2050;
-}
-
 // Cambiar el sprite según el estado
 function changeSprite(state) {
-    console.log("changeSprite: Cambiando sprite a estado:", state);
+    console.log("changeSprite: Cambiando a", state);
     
     const petSprite = document.getElementById('pet-sprite');
     if (!petSprite) {
-        console.error("changeSprite: Error - Elemento del sprite no encontrado");
+        console.error("No se encontró el sprite");
         return;
     }
     
@@ -217,7 +161,7 @@ function changeSprite(state) {
     petSprite.style.animation = 'none';
     petSprite.classList.remove('normal', 'eating', 'playing', 'sleeping', 'sad');
     
-    // Aplicar nueva animación y clase según estado
+    // Aplicar nueva animación según estado
     switch (state) {
         case PET_STATES.NORMAL:
             petSprite.style.animation = 'idle 2s infinite ease-in-out';
@@ -251,16 +195,10 @@ function changeSprite(state) {
         petSprite.style.filter = 'none';
     }
 }
-// Inicializar los sprites
+
+// Inicializar las animaciones
 function initSprites() {
-    console.log("initSprites: Inicializando sprites");
-    
-    // Asegurarse de que el elemento del sprite existe
-    const petSprite = document.getElementById('pet-sprite');
-    if (!petSprite) {
-        console.error("initSprites: Error - Elemento del sprite no encontrado");
-        return;
-    }
+    console.log("Inicializando sprites");
     
     // Configurar animaciones
     const styleSheet = document.createElement('style');
@@ -293,38 +231,51 @@ function initSprites() {
     `;
     document.head.appendChild(styleSheet);
     
-    // Configurar estado inicial
+    // Aplicar estado inicial
     changeSprite(PET_STATES.NORMAL);
 }
 
-// Función para mostrar un mensaje en la burbuja
+// Función para mostrar un mensaje
 function showMessage(message, duration = 3000) {
     if (!elements.messageBubble) {
-        console.error("showMessage: Error - Burbuja de mensaje no disponible");
+        console.error("Burbuja de mensaje no disponible");
         return;
     }
     
     elements.messageBubble.textContent = message;
     elements.messageBubble.classList.remove('hidden');
     
-    // Limpiar temporizador anterior si existe
+    // Limpiar temporizador anterior
     clearTimeout(timers.message);
     
-    // Configurar temporizador para ocultar el mensaje
+    // Configurar temporizador para ocultar
     timers.message = setTimeout(() => {
         elements.messageBubble.classList.add('hidden');
     }, duration);
 }
 
-// Función para mostrar un mensaje aleatorio
-function showRandomMessage() {
-    // Solo mostrar si no está ocupado en otra actividad
-    if (!gameState.isEating && !gameState.isPlaying && !elements.messageBubble.textContent) {
-        showMessage(safeGetRandomMessage(randomMessages));
+// Actualizar barras de estado
+function updateStatusBars() {
+    console.log("Actualizando barras - hambre:", gameState.hunger, "felicidad:", gameState.happiness, "energía:", gameState.energy);
+    
+    if (!elements.hungerBar || !elements.happinessBar || !elements.energyBar) {
+        console.error("Elementos de barra no disponibles");
+        return;
     }
+    
+    elements.hungerBar.style.width = `${gameState.hunger}%`;
+    elements.happinessBar.style.width = `${gameState.happiness}%`;
+    elements.energyBar.style.width = `${gameState.energy}%`;
+    
+    // Actualizar display de experiencia
+    if (elements.experienceText) {
+        elements.experienceText.textContent = `Nivel: ${REWARDS_SYSTEM.level}`;
+    }
+    
+    checkStatus();
 }
 
-// Función para verificar el estado general del conejo
+// Verificar estado general
 function checkStatus() {
     // Si cualquiera de los valores está por debajo del umbral de tristeza
     if (gameState.hunger <= CONFIG.sadThreshold || 
@@ -338,7 +289,7 @@ function checkStatus() {
             
             // Si está muy triste, mostrar un mensaje
             if (Math.random() < 0.3) { // 30% de probabilidad
-                showMessage(safeGetRandomMessage(sadMessages));
+                showMessage(getRandomMessage(sadMessages));
             }
         }
     } else if (gameState.state === PET_STATES.SAD && !gameState.isEating && 
@@ -349,23 +300,9 @@ function checkStatus() {
     }
 }
 
-// Función para actualizar las barras de estado
-function updateStatusBars() {
-    if (!elements.hungerBar || !elements.happinessBar || !elements.energyBar) {
-        console.error("updateStatusBars: Error - Elementos de barra no disponibles");
-        return;
-    }
-    
-    elements.hungerBar.style.width = `${gameState.hunger}%`;
-    elements.happinessBar.style.width = `${gameState.happiness}%`;
-    elements.energyBar.style.width = `${gameState.energy}%`;
-    
-    checkStatus();
-}
-
-// Función para alimentar al conejo
+// Alimentar al conejo
 function feedPet() {
-    console.log("feedPet: Función llamada");
+    console.log("Alimentando al conejo");
     
     // No permitir alimentar si ya está comiendo
     if (gameState.isEating) return;
@@ -380,7 +317,7 @@ function feedPet() {
     
     // Cambiar sprite y mostrar mensaje
     changeSprite(PET_STATES.EATING);
-    showMessage(safeGetRandomMessage(feedMessages));
+    showMessage(getRandomMessage(feedMessages));
     
     // Aumentar hambre
     gameState.hunger = Math.min(100, gameState.hunger + 20);
@@ -409,9 +346,10 @@ function feedPet() {
     // Guardar el estado
     saveGameState();
 }
-// Función para jugar con el conejo
+
+// Jugar con el conejo
 function playWithPet() {
-    console.log("playWithPet: Función llamada");
+    console.log("Jugando con el conejo");
     
     // No permitir jugar si ya está jugando
     if (gameState.isPlaying) return;
@@ -432,7 +370,7 @@ function playWithPet() {
     
     // Cambiar sprite y mostrar mensaje
     changeSprite(PET_STATES.PLAYING);
-    showMessage(safeGetRandomMessage(playMessages));
+    showMessage(getRandomMessage(playMessages));
     
     // Aumentar felicidad
     gameState.happiness = Math.min(100, gameState.happiness + 20);
@@ -461,12 +399,16 @@ function playWithPet() {
         }
     }, CONFIG.animationDuration);
     
+    // Añadir algo de experiencia
+    addExperience(5);
+    
     // Guardar el estado
     saveGameState();
 }
-// Función para hacer dormir/despertar al conejo
+
+// Hacer dormir/despertar al conejo
 function toggleSleep() {
-    console.log("toggleSleep: Función llamada");
+    console.log("Durmiendo/despertando conejo");
     
     if (gameState.isSleeping) {
         // Despertar
@@ -510,23 +452,24 @@ function toggleSleep() {
             elements.sleepButton.querySelector('.btn-icon').textContent = '🌞';
         }
         
-        showMessage(safeGetRandomMessage(sleepMessages));
+        showMessage(getRandomMessage(sleepMessages));
+        
+        // Aumentar energía al dormir
+        gameState.energy = Math.min(100, gameState.energy + 20);
+        updateStatusBars();
     }
     
     // Guardar el estado
     saveGameState();
 }
 
-// Función para mostrar mensaje especial
+// Mostrar mensaje especial
 function showSpecialMessage() {
-    console.log("showSpecialMessage: Función llamada");
-    console.log("showSpecialMessage: Seleccionando mensaje especial aleatorio");
-    
-    let message = safeGetRandomMessage(specialMessages);
-    showMessage(message, 4000);
+    console.log("Mostrando mensaje especial");
+    showMessage(getRandomMessage(specialMessages), 4000);
 }
 
-// Función para disminuir los valores con el tiempo
+// Disminuir valores con el tiempo
 function decreaseValues() {
     // Disminuir hambre
     gameState.hunger = Math.max(0, gameState.hunger - CONFIG.decreaseAmount);
@@ -551,7 +494,24 @@ function decreaseValues() {
     // Guardar el estado
     saveGameState();
 }
-// Función para verificar si hay fechas especiales
+
+// Verificar si hay fechas especiales
+function checkSpecialDate() {
+    const today = new Date();
+    const month = today.getMonth() + 1;
+    const day = today.getDate();
+    const dateKey = `${month}-${day}`;
+    
+    return anniversaryMessages[dateKey];
+}
+
+// Verificar si el año está en el rango designado
+function isSpecialYear() {
+    const currentYear = new Date().getFullYear();
+    return currentYear >= 2023 && currentYear <= 2050;
+}
+
+// Verificar si hay fechas especiales
 function checkForSpecialDates() {
     const specialDate = checkSpecialDate();
     
@@ -560,7 +520,29 @@ function checkForSpecialDates() {
     }
 }
 
-// Función para guardar el estado del juego
+// Añadir experiencia y verificar desbloqueos
+function addExperience(amount) {
+    REWARDS_SYSTEM.experience += amount;
+    
+    // Calcular nivel basado en experiencia
+    const newLevel = Math.floor(REWARDS_SYSTEM.experience / 100) + 1;
+    
+    // Si subió de nivel
+    if (newLevel > REWARDS_SYSTEM.level) {
+        REWARDS_SYSTEM.level = newLevel;
+        showMessage(`¡Has subido a nivel ${newLevel}! ¡Sigue así!`, 4000);
+    }
+    
+    // Actualizar display de experiencia
+    if (elements.experienceText) {
+        elements.experienceText.textContent = `Nivel: ${REWARDS_SYSTEM.level}`;
+    }
+    
+    // Guardar el estado de experiencia y desbloqueos
+    localStorage.setItem('rachelTamagotchiRewards', JSON.stringify(REWARDS_SYSTEM));
+}
+
+// Guardar el estado del juego
 function saveGameState() {
     const stateToSave = {
         ...gameState,
@@ -570,7 +552,7 @@ function saveGameState() {
     localStorage.setItem('rachelTamagotchiState', JSON.stringify(stateToSave));
 }
 
-// Función para cargar el estado guardado
+// Cargar el estado guardado
 function loadGameState() {
     // Cargar estado normal del juego
     const savedState = localStorage.getItem('rachelTamagotchiState');
@@ -579,46 +561,31 @@ function loadGameState() {
         try {
             const parsedState = JSON.parse(savedState);
             
-            // Calcular tiempo transcurrido desde la última actualización
-            const currentTime = Date.now();
-            const timeDiff = currentTime - parsedState.lastUpdate;
-            
             // Actualizar estado con valores guardados
             gameState = {
                 ...parsedState,
-                lastUpdate: currentTime
+                lastUpdate: Date.now()
             };
-            
-            // Si pasó mucho tiempo (más de 8 horas), aplicar simulación del tiempo
-            if (timeDiff > 8 * 60 * 60 * 1000) {
-                simulateTimeElapsed(timeDiff);
-            }
             
             // Asegurarse de que el estado visual sea correcto
             if (gameState.isSleeping) {
                 changeSprite(PET_STATES.SLEEPING);
-                gameState.state = PET_STATES.SLEEPING;
-                if (elements.sleepButton && elements.sleepButton.querySelector('.btn-text')) {
-                    elements.sleepButton.querySelector('.btn-text').textContent = 'Despertar con besitos';
-                }
-                if (elements.sleepButton && elements.sleepButton.querySelector('.btn-icon')) {
-                    elements.sleepButton.querySelector('.btn-icon').textContent = '🌞';
+                if (elements.sleepButton) {
+                    const textSpan = elements.sleepButton.querySelector('.btn-text');
+                    if (textSpan) textSpan.textContent = 'Despertar con besitos';
+                    
+                    const iconSpan = elements.sleepButton.querySelector('.btn-icon');
+                    if (iconSpan) iconSpan.textContent = '🌞';
                 }
             } else if (gameState.hunger <= CONFIG.sadThreshold || 
-                      gameState.happiness <= CONFIG.sadThreshold || 
-                      gameState.energy <= CONFIG.sadThreshold) {
+                    gameState.happiness <= CONFIG.sadThreshold || 
+                    gameState.energy <= CONFIG.sadThreshold) {
                 changeSprite(PET_STATES.SAD);
-                gameState.state = PET_STATES.SAD;
             } else {
                 changeSprite(PET_STATES.NORMAL);
-                gameState.state = PET_STATES.NORMAL;
             }
         } catch (e) {
-            console.error("Error al cargar el estado guardado:", e);
-            // Usar valores por defecto si hay un error
-            gameState.hunger = CONFIG.initialHunger;
-            gameState.happiness = CONFIG.initialHappiness;
-            gameState.energy = CONFIG.initialEnergy;
+            console.error("Error al cargar estado:", e);
         }
     }
     
@@ -636,28 +603,7 @@ function loadGameState() {
     }
 }
 
-// Función para simular tiempo transcurrido mientras estaba ausente
-function simulateTimeElapsed(timeDiff) {
-    // Número de decrementos que habrían ocurrido
-    const decrements = Math.floor(timeDiff / CONFIG.decreaseInterval);
-    
-    // Aplicar decrementos, pero con un límite para que no sea demasiado cruel
-    const maxDecreasePerStat = 50; // Máximo 50% de reducción mientras está ausente
-    
-    if (gameState.isSleeping) {
-        // Si estaba durmiendo, disminuye la felicidad ligeramente y aumenta la energía
-        gameState.happiness = Math.max(30, gameState.happiness - Math.min(maxDecreasePerStat, decrements * (CONFIG.decreaseAmount / 4)));
-        gameState.energy = 100; // Recupera toda la energía
-        gameState.hunger = Math.max(20, gameState.hunger - Math.min(maxDecreasePerStat, decrements * (CONFIG.decreaseAmount / 2)));
-    } else {
-        // Si no estaba durmiendo, disminuye todos los valores
-        gameState.hunger = Math.max(20, gameState.hunger - Math.min(maxDecreasePerStat, decrements * CONFIG.decreaseAmount / 2));
-        gameState.happiness = Math.max(20, gameState.happiness - Math.min(maxDecreasePerStat, decrements * CONFIG.decreaseAmount / 2));
-        gameState.energy = Math.max(20, gameState.energy - Math.min(maxDecreasePerStat, decrements * CONFIG.decreaseAmount / 2));
-    }
-}
-
-// Función para iniciar los temporizadores
+// Iniciar temporizadores
 function startTimers() {
     // Temporizador para disminuir valores
     timers.decrease = setInterval(decreaseValues, CONFIG.decreaseInterval);
@@ -671,55 +617,21 @@ function startTimers() {
             showRandomMessage();
         }
     }, 45000); // Cada 45 segundos
-    
-    // Temporizador para eventos sorpresa
-    timers.surprise = setInterval(() => {
-        // 10% de probabilidad de evento sorpresa
-        if (Math.random() < 0.1 && !gameState.isEating && !gameState.isPlaying && !gameState.isSleeping) {
-            const surpriseEvents = [
-                "¡Acabo de ver un unicornio azul! ¿Lo has visto?",
-                "Creo que te estoy viendo dibujar... ¡Qué creatividad!",
-                "¿Sabes que eres la mejor persona del mundo mundial?",
-                "Si pudiera, te daría un besito en la nariz ahora mismo",
-                "Algún día haremos un viaje juntas a Marte, ¿vale?",
-                "Me gustas más tú que las zanahorias, y mira que me gustan",
-                "¿Y esa carita de chichihabo tan mona, gorda?"
-            ];
-            showMessage(surpriseEvents[Math.floor(Math.random() * surpriseEvents.length)], 5000);
-        }
-    }, 60000); // Cada minuto hay una pequeña posibilidad
 }
-// Configurar controladores de eventos
-function setupEventListeners() {
-    // Verificar que todos los elementos existen antes de agregar event listeners
-    if (elements.feedButton) {
-        elements.feedButton.addEventListener('click', feedPet);
-    }
-    
-    if (elements.playButton) {
-        elements.playButton.addEventListener('click', playWithPet);
-    }
-    
-    if (elements.sleepButton) {
-        elements.sleepButton.addEventListener('click', toggleSleep);
-    }
-    
-    if (elements.specialButton) {
-        elements.specialButton.addEventListener('click', showSpecialMessage);
-    }
-    
-    // Botón de cerrar mensaje de aniversario (solo si existe)
-    if (elements.closeAnniversary) {
-        elements.closeAnniversary.addEventListener('click', () => {
-            if (elements.dateCheck) {
-                elements.dateCheck.classList.add('hidden');
-            }
-        });
+
+// Mostrar un mensaje aleatorio
+function showRandomMessage() {
+    // Solo mostrar si no está ocupado en otra actividad
+    if (!gameState.isEating && !gameState.isPlaying && !elements.messageBubble.textContent) {
+        let message = getRandomMessage(randomMessages);
+        showMessage(message);
     }
 }
 
-// Función para inicializar el juego
+// Inicializar el juego
 function initGame() {
+    console.log("Inicializando el juego");
+    
     // Inicializar sprites
     initSprites();
     
@@ -733,9 +645,9 @@ function initGame() {
     elements.playButton = document.getElementById('play-btn');
     elements.sleepButton = document.getElementById('sleep-btn');
     elements.specialButton = document.getElementById('special-btn');
-    elements.dateCheck = document.getElementById('date-check');
-    elements.anniversaryMessage = document.getElementById('anniversary-message');
-    elements.closeAnniversary = document.getElementById('close-anniversary');
+    elements.experienceText = document.getElementById('experience-text');
+    
+    console.log("Elementos cargados:", elements);
     
     // Cargar el estado guardado si existe
     loadGameState();
@@ -746,32 +658,26 @@ function initGame() {
     // Actualizar barras de estado
     updateStatusBars();
     
-    // Configurar eventos de clic en botones
-    setupEventListeners();
-    
     // Verificar si hay fechas especiales
     checkForSpecialDates();
     
     // Mostrar un mensaje aleatorio al inicio
-    showRandomMessage();
+    setTimeout(() => {
+        showRandomMessage();
+    }, 2000);
     
-    // Asegurarse de que el modal de aniversario está cerrado
-    if (elements.dateCheck) {
-        elements.dateCheck.classList.add('hidden');
-    }
+    console.log("Juego inicializado!");
 }
 
 // Inicializar el juego cuando el DOM esté cargado
 document.addEventListener('DOMContentLoaded', function() {
-    console.log("DOM cargado, inicializando Tamagotchi para Rachel...");
+    console.log("DOM cargado, inicializando...");
     
-    // Inicializar el juego
-    initGame();
-    
-    console.log("Tamagotchi inicializado con éxito");
+    // Esperar un poco para asegurarse de que todo se ha cargado
+    setTimeout(initGame, 500);
 });
 
-// Exponer las funciones principales globalmente para que puedan usarse desde HTML
+// Exponer funciones públicas para que sean accesibles desde HTML
 window.feedPet = feedPet;
 window.playWithPet = playWithPet;
 window.toggleSleep = toggleSleep;
