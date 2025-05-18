@@ -1,4 +1,4 @@
-// tamagotchi-combined.js - Versión super simplificada y concentrada en solucionar los problemas
+// tamagotchi-combined.js - Versión mejorada con reinicio de valores
 console.log("Cargando tamagotchi-combined.js...");
 
 // Configuración de parámetros del juego
@@ -72,7 +72,7 @@ const specialMessages = [
     "¿HACEMOS UN HIJO?"
 ];
 
-// Estado del juego
+// Estado del juego - REINICIADO con valores iniciales
 let gameState = {
     name: "Rachel Bunny",
     hunger: CONFIG.initialHunger,
@@ -129,6 +129,19 @@ function updateStatusBars() {
     if (!hungerBar || !happinessBar || !energyBar) {
         console.error("Error: barras no encontradas");
         return;
+    }
+    
+    // Asegurar que los valores nunca sean negativos
+    gameState.hunger = Math.max(0, gameState.hunger);
+    gameState.happiness = Math.max(0, gameState.happiness);
+    gameState.energy = Math.max(0, gameState.energy);
+    
+    // Si todos los valores están en 0, reiniciarlos a valores iniciales
+    if (gameState.hunger === 0 && gameState.happiness === 0 && gameState.energy === 0) {
+        console.log("Valores críticos detectados, reiniciando a valores iniciales");
+        gameState.hunger = CONFIG.initialHunger;
+        gameState.happiness = CONFIG.initialHappiness;
+        gameState.energy = CONFIG.initialEnergy;
     }
     
     // Actualizar ancho de las barras según valores actuales
@@ -358,10 +371,16 @@ function loadGameState() {
             // Cargar estado desde localStorage
             const parsedState = JSON.parse(savedState);
             
-            // Usar valores guardados si existen, o los iniciales si no
-            gameState.hunger = parsedState.hunger !== undefined ? parsedState.hunger : CONFIG.initialHunger;
-            gameState.happiness = parsedState.happiness !== undefined ? parsedState.happiness : CONFIG.initialHappiness;
-            gameState.energy = parsedState.energy !== undefined ? parsedState.energy : CONFIG.initialEnergy;
+            // Usar valores guardados si existen Y son válidos
+            gameState.hunger = (parsedState.hunger !== undefined && parsedState.hunger > 0) ? 
+                               parsedState.hunger : CONFIG.initialHunger;
+            
+            gameState.happiness = (parsedState.happiness !== undefined && parsedState.happiness > 0) ? 
+                                 parsedState.happiness : CONFIG.initialHappiness;
+            
+            gameState.energy = (parsedState.energy !== undefined && parsedState.energy > 0) ? 
+                               parsedState.energy : CONFIG.initialEnergy;
+            
             gameState.isSleeping = parsedState.isSleeping !== undefined ? parsedState.isSleeping : false;
             gameState.state = parsedState.state || PET_STATES.NORMAL;
             
@@ -395,15 +414,32 @@ function loadGameState() {
         } catch (e) {
             console.error("Error cargando estado:", e);
             
-            // En caso de error, usar valores iniciales
-            gameState.hunger = CONFIG.initialHunger;
-            gameState.happiness = CONFIG.initialHappiness;
-            gameState.energy = CONFIG.initialEnergy;
-            
-            // Mostrar estado normal
-            changeSprite(PET_STATES.NORMAL);
+            // En caso de error, reiniciar todo
+            resetGameState();
         }
+    } else {
+        // Si no hay estado guardado, usar valores iniciales
+        resetGameState();
     }
+}
+
+// Función para reiniciar el estado del juego
+function resetGameState() {
+    console.log("Reiniciando estado del juego a valores iniciales");
+    
+    gameState.hunger = CONFIG.initialHunger;
+    gameState.happiness = CONFIG.initialHappiness;
+    gameState.energy = CONFIG.initialEnergy;
+    gameState.isSleeping = false;
+    
+    // Mostrar estado normal
+    changeSprite(PET_STATES.NORMAL);
+    
+    // Actualizar barras
+    updateStatusBars();
+    
+    // Mostrar mensaje de bienvenida
+    showMessage("¡Hola! Soy Rachel Bunny, tu conejo virtual. ¡Cuídame bien!", 4000);
 }
 
 // Inicializar el juego
@@ -457,10 +493,10 @@ function initGame() {
     // Actualizar barras de estado
     updateStatusBars();
     
-    // Iniciar temporizador para disminuir valores
+    // Iniciar temporizador para disminuir valores (cada 15 segundos)
     setInterval(decreaseValues, CONFIG.decreaseInterval);
     
-    // Iniciar temporizador para mensajes aleatorios
+    // Iniciar temporizador para mensajes aleatorios (cada 45 segundos)
     setInterval(() => {
         if (Math.random() < 0.3 && 
             !gameState.isEating && 
@@ -469,6 +505,13 @@ function initGame() {
             showMessage(getRandomMessage(randomMessages));
         }
     }, 45000);
+    
+    // Botón para reiniciar (para debugging)
+    window.resetGame = function() {
+        resetGameState();
+        localStorage.removeItem('rachelTamagotchiState');
+        alert('¡Juego reiniciado!');
+    };
     
     console.log("Tamagotchi inicializado correctamente");
 }
