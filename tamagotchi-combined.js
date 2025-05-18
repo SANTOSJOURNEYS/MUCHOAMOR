@@ -1650,11 +1650,41 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(initGame, 500);
 });
 
-// Exponer funciones para que sean accesibles desde HTML
-window.feedPet = feedPet;
-window.playWithPet = playWithPet;
-window.toggleSleep = toggleSleep;
-window.showSpecialMessage = showSpecialMessage;
+// Exponer funciones para que sean accesibles globalmente
+window.feedPet = function() {
+    console.log("Función feedPet llamada");
+    feedPet();
+};
+
+window.playWithPet = function() {
+    console.log("Función playWithPet llamada");
+    playWithPet();
+};
+
+window.toggleSleep = function() {
+    console.log("Función toggleSleep llamada");
+    toggleSleep();
+};
+
+window.showSpecialMessage = function() {
+    console.log("Función showSpecialMessage llamada");
+    showSpecialMessage();
+};
+
+// Inicializar el juego cuando el DOM esté cargado
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("DOM cargado, inicializando el juego...");
+    
+    // Inicializar juego
+    setTimeout(initGame, 500);
+    
+    // Verificar que los botones existan
+    console.log("Feed button:", document.getElementById('feed-btn') ? "Existe" : "No existe");
+    console.log("Play button:", document.getElementById('play-btn') ? "Existe" : "No existe");
+    console.log("Sleep button:", document.getElementById('sleep-btn') ? "Existe" : "No existe");
+    console.log("Special button:", document.getElementById('special-btn') ? "Existe" : "No existe");
+});
+
 window.resetAllData = function() {
     if (confirm('¿Estás seguro/a de querer reiniciar todo el progreso? Esta acción no se puede deshacer.')) {
         localStorage.removeItem('rachelTamagotchiState');
