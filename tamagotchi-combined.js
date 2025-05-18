@@ -106,6 +106,20 @@ const gameResultMessages = {
     ]
 };
 
+// Mensajes para fechas especiales
+const anniversaryMessages = {
+    // 18 de julio - Cumpleaños
+    "7-18": {
+        title: "¡FELIZ CUMPLEAÑOS MI NIÑA!",
+        message: "¡Feliz cumple mi Love! Te quiero mucho, eres muy importante para mi, me haces muy feliz."
+    },
+    // 18 de noviembre - Aniversario
+    "11-18": {
+        title: "¡FELIZ ANIVERSARIO, MI WIFE!",
+        message: "Hoy es nuestro día especial, cada día a tu lado es un regalo. Te quiero más que ayer y menos que mañana. ¡Feliz aniversario mi amor!"
+    }
+};
+
 // Estado del juego
 let gameState = {
     name: "Rachel Bunny",
@@ -140,7 +154,13 @@ function getRandomMessage(messageArray) {
 
 // Función para mostrar un mensaje
 function showMessage(message, duration = 3000) {
-    if (!messageBubble) return;
+    if (!messageBubble) {
+        messageBubble = document.getElementById('message-bubble');
+        if (!messageBubble) {
+            console.error("Error: message-bubble no encontrado");
+            return;
+        }
+    }
     
     console.log("Mostrando mensaje:", message);
     
@@ -152,8 +172,32 @@ function showMessage(message, duration = 3000) {
     
     // Configurar temporizador para ocultar
     timers.message = setTimeout(() => {
-        messageBubble.classList.add('hidden');
+        if (messageBubble) {
+            messageBubble.classList.add('hidden');
+        }
     }, duration);
+}
+
+// Función para cambiar el sprite según el estado
+function changeSprite(state) {
+    console.log("Cambiando sprite a:", state);
+    
+    if (!petSprite) {
+        petSprite = document.getElementById('pet-sprite');
+        if (!petSprite) {
+            console.error("Error: sprite no encontrado");
+            return;
+        }
+    }
+    
+    // Quitar todos los estados actuales
+    petSprite.classList.remove('normal', 'eating', 'playing', 'sleeping', 'sad');
+    
+    // Aplicar el nuevo estado
+    petSprite.classList.add(state);
+    
+    // Guardar el estado
+    gameState.state = state;
 }
 
 // Actualizar barras de estado
@@ -161,8 +205,14 @@ function updateStatusBars() {
     console.log("Actualizando barras - hambre:", gameState.hunger, "felicidad:", gameState.happiness, "energía:", gameState.energy);
     
     if (!hungerBar || !happinessBar || !energyBar) {
-        console.error("Error: barras no encontradas");
-        return;
+        hungerBar = document.getElementById('hunger-bar');
+        happinessBar = document.getElementById('happiness-bar');
+        energyBar = document.getElementById('energy-bar');
+        
+        if (!hungerBar || !happinessBar || !energyBar) {
+            console.error("Error: barras no encontradas");
+            return;
+        }
     }
     
     // Asegurar que los valores nunca sean negativos
@@ -186,6 +236,10 @@ function updateStatusBars() {
     energyBar.style.width = `${gameState.energy}%`;
     
     // Actualizar display de nivel si existe
+    if (!levelDisplay) {
+        levelDisplay = document.getElementById('experience-text');
+    }
+    
     if (levelDisplay) {
         levelDisplay.textContent = `Nivel: ${REWARDS_SYSTEM.level}`;
     }
@@ -202,26 +256,6 @@ function updateStatusBars() {
         changeSprite(PET_STATES.NORMAL);
     }
 }
-
-// Cambiar el sprite según el estado
-function changeSprite(state) {
-    console.log("Cambiando sprite a:", state);
-    
-    if (!petSprite) {
-        console.error("Error: sprite no encontrado");
-        return;
-    }
-    
-    // Quitar todos los estados actuales
-    petSprite.classList.remove('normal', 'eating', 'playing', 'sleeping', 'sad');
-    
-    // Aplicar el nuevo estado
-    petSprite.classList.add(state);
-    
-    // Guardar el estado
-    gameState.state = state;
-}
-
 // Alimentar al conejo
 function feedPet() {
     console.log("Alimentando al conejo");
@@ -318,10 +352,10 @@ function showGameMenu() {
     
     // Opciones de juegos
     const games = [
-        {id: 'memory', name: 'Memoria', icon: '🧠', color: '#87CEEB'},
         {id: 'rps', name: 'Piedra, Papel, Tijeras', icon: '✂️', color: '#FF9966'},
-        {id: 'quiz', name: 'Quiz de Amor', icon: '❤️', color: '#FF6B6B'},
-        {id: 'album', name: 'Ver Álbum', icon: '📷', color: '#4CAF50'}
+        {id: 'flappy', name: 'Flappy Rabbit', icon: '🐰', color: '#87CEEB'},
+        {id: 'snake', name: 'Snake', icon: '🐍', color: '#4CAF50'},
+        {id: 'album', name: 'Ver Álbum', icon: '📷', color: '#FF6B6B'}
     ];
     
     // Añadir cada juego al menú
@@ -368,19 +402,19 @@ function showGameMenu() {
     changeSprite(PET_STATES.PLAYING);
     
     // Añadir event listeners
-    document.getElementById('game-memory').addEventListener('click', () => {
-        document.body.removeChild(menuContainer);
-        playMemoryGame();
-    });
-    
     document.getElementById('game-rps').addEventListener('click', () => {
         document.body.removeChild(menuContainer);
         playRockPaperScissors();
     });
     
-    document.getElementById('game-quiz').addEventListener('click', () => {
+    document.getElementById('game-flappy').addEventListener('click', () => {
         document.body.removeChild(menuContainer);
-        playLoveQuiz();
+        playFlappyRabbit();
+    });
+    
+    document.getElementById('game-snake').addEventListener('click', () => {
+        document.body.removeChild(menuContainer);
+        playSnakeGame();
     });
     
     document.getElementById('game-album').addEventListener('click', () => {
@@ -401,6 +435,7 @@ function showGameMenu() {
         }
     }, 30000);
 }
+
 // Finalizar juego
 function finishPlaying(withReward = true) {
     // Si se da recompensa
@@ -480,6 +515,7 @@ function toggleSleep() {
     // Guardar el estado
     saveGameState();
 }
+
 // Mostrar mensaje especial
 function showSpecialMessage() {
     console.log("Mostrando mensaje especial");
@@ -508,7 +544,6 @@ function decreaseValues() {
     // Guardar estado
     saveGameState();
 }
-
 // Añadir experiencia y verificar desbloqueos
 function addExperience(amount) {
     REWARDS_SYSTEM.experience += amount;
@@ -599,6 +634,7 @@ function showUnlockNotification(image) {
         showPhotoAlbum();
     });
 }
+
 // Mostrar álbum de fotos
 function showPhotoAlbum() {
     console.log("Mostrando álbum de fotos");
@@ -701,7 +737,6 @@ function showPhotoAlbum() {
         finishPlaying();
     });
 }
-
 // Juego de Piedra, Papel o Tijeras
 function playRockPaperScissors() {
     console.log("Iniciando Piedra, Papel o Tijeras");
@@ -780,7 +815,8 @@ function playRockPaperScissors() {
             cursor: pointer;
         ">Terminar Juego</button>
     `;
-// Establecer HTML y añadir al documento
+    
+    // Establecer HTML y añadir al documento
     gameContainer.innerHTML = gameHTML;
     document.body.appendChild(gameContainer);
     
@@ -879,7 +915,7 @@ function playRockPaperScissors() {
         finishPlaying(true);
     });
 }
-// Juego de Flappy Bird con conejo
+// Juego estilo Flappy Bird con conejo
 function playFlappyRabbit() {
     console.log("Iniciando Flappy Rabbit");
     
@@ -1174,6 +1210,57 @@ function playSnakeGame() {
             margin: 0 auto 20px;
         "></div>
         <div id="snake-score" style="margin-bottom: 15px;">Puntuación: 0</div>
+        <div id="snake-controls" style="
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        ">
+            <button id="snake-up" style="
+                width: 60px;
+                height: 60px;
+                background: #87CEEB;
+                border: none;
+                border-radius: 10px;
+                color: white;
+                font-size: 24px;
+                margin: 5px;
+            ">↑</button>
+        </div>
+        <div style="
+            display: flex;
+            justify-content: center;
+        ">
+            <button id="snake-left" style="
+                width: 60px;
+                height: 60px;
+                background: #87CEEB;
+                border: none;
+                border-radius: 10px;
+                color: white;
+                font-size: 24px;
+                margin: 5px;
+            ">←</button>
+            <button id="snake-down" style="
+                width: 60px;
+                height: 60px;
+                background: #87CEEB;
+                border: none;
+                border-radius: 10px;
+                color: white;
+                font-size: 24px;
+                margin: 5px;
+            ">↓</button>
+            <button id="snake-right" style="
+                width: 60px;
+                height: 60px;
+                background: #87CEEB;
+                border: none;
+                border-radius: 10px;
+                color: white;
+                font-size: 24px;
+                margin: 5px;
+            ">→</button>
+        </div>
         <button id="close-snake" style="
             padding: 10px 20px;
             background-color: #f44336;
@@ -1181,6 +1268,7 @@ function playSnakeGame() {
             border-radius: 20px;
             color: white;
             cursor: pointer;
+            margin-top: 15px;
         ">Terminar Juego</button>
     `;
     
@@ -1212,7 +1300,24 @@ function playSnakeGame() {
         finishPlaying(true);
     });
     
-    // Event listener para controlar la serpiente
+    // Event listeners para controles táctiles
+    document.getElementById('snake-up').addEventListener('click', () => {
+        if (direction !== 'down') direction = 'up';
+    });
+    
+    document.getElementById('snake-down').addEventListener('click', () => {
+        if (direction !== 'up') direction = 'down';
+    });
+    
+    document.getElementById('snake-left').addEventListener('click', () => {
+        if (direction !== 'right') direction = 'left';
+    });
+    
+    document.getElementById('snake-right').addEventListener('click', () => {
+        if (direction !== 'left') direction = 'right';
+    });
+    
+    // Event listener para controlar la serpiente con teclado
     document.addEventListener('keydown', function(e) {
         switch(e.key) {
             case 'ArrowUp':
@@ -1357,7 +1462,6 @@ function playSnakeGame() {
     draw();
     gameInterval = setInterval(update, 200);
 }
-
 // Guardar el estado del juego
 function saveGameState() {
     const stateToSave = {
@@ -1366,6 +1470,20 @@ function saveGameState() {
     };
     
     localStorage.setItem('rachelTamagotchiState', JSON.stringify(stateToSave));
+}
+
+// Verificar fechas especiales
+function checkSpecialDates() {
+    const today = new Date();
+    const month = today.getMonth() + 1; // Los meses en JS van de 0-11
+    const day = today.getDate();
+    
+    const dateKey = `${month}-${day}`;
+    
+    if (anniversaryMessages[dateKey]) {
+        // Mostrar mensaje de fecha especial
+        showMessage(`¡${anniversaryMessages[dateKey].title}! ${anniversaryMessages[dateKey].message}`, 6000);
+    }
 }
 
 // Función para cargar el estado guardado
@@ -1395,21 +1513,27 @@ function loadGameState() {
             // Asegurarse de que el estado visual sea correcto
             if (gameState.isSleeping) {
                 changeSprite(PET_STATES.SLEEPING);
-                gameState.state = PET_STATES.SLEEPING;
-                if (elements.sleepButton && elements.sleepButton.querySelector('.btn-text')) {
-                    elements.sleepButton.querySelector('.btn-text').textContent = 'Despertar con besitos';
-                }
-                if (elements.sleepButton && elements.sleepButton.querySelector('.btn-icon')) {
-                    elements.sleepButton.querySelector('.btn-icon').textContent = '🌞';
-                }
             } else if (gameState.hunger <= CONFIG.sadThreshold || 
                       gameState.happiness <= CONFIG.sadThreshold || 
                       gameState.energy <= CONFIG.sadThreshold) {
                 changeSprite(PET_STATES.SAD);
-                gameState.state = PET_STATES.SAD;
             } else {
                 changeSprite(PET_STATES.NORMAL);
-                gameState.state = PET_STATES.NORMAL;
+            }
+            
+            // Actualizar texto del botón de dormir
+            const sleepButton = document.getElementById('sleep-btn');
+            if (sleepButton) {
+                const btnText = sleepButton.querySelector('.btn-text');
+                const btnIcon = sleepButton.querySelector('.btn-icon');
+                
+                if (gameState.isSleeping) {
+                    if (btnText) btnText.textContent = 'Despertar con besitos';
+                    if (btnIcon) btnIcon.textContent = '🌞';
+                } else {
+                    if (btnText) btnText.textContent = 'Dormir abrazaditos';
+                    if (btnIcon) btnIcon.textContent = '💤';
+                }
             }
         } catch (e) {
             console.error("Error al cargar el estado guardado:", e);
@@ -1434,6 +1558,7 @@ function loadGameState() {
         }
     }
 }
+
 // Función para reiniciar el estado del juego
 function resetGameState() {
     console.log("Reiniciando estado del juego a valores iniciales");
@@ -1478,9 +1603,6 @@ function simulateTimeElapsed(timeDiff) {
 function initGame() {
     console.log("Inicializando el juego");
     
-    // Inicializar sprites
-    initSprites();
-    
     // Obtener referencias a elementos del DOM
     hungerBar = document.getElementById('hunger-bar');
     happinessBar = document.getElementById('happiness-bar');
@@ -1489,61 +1611,6 @@ function initGame() {
     messageBubble = document.getElementById('message-bubble');
     levelDisplay = document.getElementById('experience-text');
     
-    if (!hungerBar || !happinessBar || !energyBar || !petSprite || !messageBubble) {
-        console.error("No se pudieron encontrar todos los elementos necesarios");
-        return;
-    }
-    
-    console.log("Elementos encontrados correctamente");
-    
-    // Configurar animaciones básicas
-    const styleSheet = document.createElement('style');
-    styleSheet.textContent = `
-        @keyframes idle {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-        @keyframes eating {
-            0%, 100% { transform: scaleX(1); }
-            25% { transform: scaleX(1.1) scaleY(0.9); }
-            50% { transform: scaleX(1); }
-            75% { transform: scaleX(1.1) scaleY(0.9); }
-        }
-        @keyframes playing {
-            0%, 100% { transform: rotate(-5deg); }
-            25% { transform: rotate(5deg); }
-            50% { transform: rotate(-5deg); }
-            75% { transform: rotate(5deg); }
-        }
-        @keyframes sleeping {
-            0%, 100% { transform: scaleY(1); }
-            50% { transform: scaleY(0.95); }
-        }
-        @keyframes sad {
-            0%, 100% { transform: rotate(0); }
-            25% { transform: rotate(-2deg); }
-            75% { transform: rotate(2deg); }
-        }
-        .normal {
-            animation: idle 2s infinite ease-in-out;
-        }
-        .eating {
-            animation: eating 0.5s infinite ease-in-out;
-        }
-        .playing {
-            animation: playing 0.8s infinite ease-in-out;
-        }
-        .sleeping {
-            animation: sleeping 2s infinite ease-in-out;
-            filter: brightness(0.8);
-        }
-        .sad {
-            animation: sad 3s infinite ease-in-out;
-            filter: grayscale(0.3);
-        }
-    `;
-    document.head.appendChild(styleSheet);
-    
     // Cargar estado guardado
     loadGameState();
     
@@ -1551,10 +1618,10 @@ function initGame() {
     updateStatusBars();
     
     // Iniciar temporizador para disminuir valores
-    setInterval(decreaseValues, CONFIG.decreaseInterval);
+    timers.decrease = setInterval(decreaseValues, CONFIG.decreaseInterval);
     
     // Iniciar temporizador para mensajes aleatorios
-    setInterval(() => {
+    timers.randomMessage = setInterval(() => {
         if (Math.random() < 0.3 && 
             !gameState.isEating && 
             !gameState.isPlaying && 
@@ -1564,27 +1631,8 @@ function initGame() {
         }
     }, 45000);
     
-    // Botón para reiniciar (para debugging)
-    window.resetGame = function() {
-        resetGameState();
-        localStorage.removeItem('rachelTamagotchiState');
-        localStorage.removeItem('rachelTamagotchiRewards');
-        alert('¡Juego reiniciado!');
-    };
-    
     // Verificar si hay fechas especiales
-    try {
-        const today = new Date();
-        const month = today.getMonth() + 1;
-        const day = today.getDate();
-        const dateKey = `${month}-${day}`;
-        
-        if (anniversaryMessages[dateKey]) {
-            showMessage(`¡${anniversaryMessages[dateKey].title}! ${anniversaryMessages[dateKey].message}`, 6000);
-        }
-    } catch (e) {
-        console.error("Error al verificar fechas especiales:", e);
-    }
+    checkSpecialDates();
     
     // Mostrar mensaje de bienvenida después de un momento
     setTimeout(() => {
@@ -1607,3 +1655,11 @@ window.feedPet = feedPet;
 window.playWithPet = playWithPet;
 window.toggleSleep = toggleSleep;
 window.showSpecialMessage = showSpecialMessage;
+window.resetAllData = function() {
+    if (confirm('¿Estás seguro/a de querer reiniciar todo el progreso? Esta acción no se puede deshacer.')) {
+        localStorage.removeItem('rachelTamagotchiState');
+        localStorage.removeItem('rachelTamagotchiRewards');
+        alert('¡Datos reiniciados! Recarga la página para ver los cambios.');
+        location.reload();
+    }
+};
