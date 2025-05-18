@@ -180,5 +180,36 @@
             }
         }
     </script>
+<script>
+    // Asegurar que los botones funcionen correctamente
+    document.addEventListener('DOMContentLoaded', function() {
+        // Obtener referencias a los botones
+        const feedBtn = document.getElementById('feed-btn');
+        const playBtn = document.getElementById('play-btn');
+        const sleepBtn = document.getElementById('sleep-btn');
+        const specialBtn = document.getElementById('special-btn');
+        
+        // Añadir event listeners
+        if (feedBtn) feedBtn.addEventListener('click', function() {
+            console.log("Botón de alimentar presionado");
+            feedPet();
+        });
+        
+        if (playBtn) playBtn.addEventListener('click', function() {
+            console.log("Botón de jugar presionado");
+            playWithPet();
+        });
+        
+        if (sleepBtn) sleepBtn.addEventListener('click', function() {
+            console.log("Botón de dormir presionado");
+            toggleSleep();
+        });
+        
+        if (specialBtn) specialBtn.addEventListener('click', function() {
+            console.log("Botón de mensaje especial presionado");
+            showSpecialMessage();
+        });
+    });
+</script>
 </body>
 </html>
