@@ -1651,25 +1651,10 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Exponer funciones para que sean accesibles globalmente
-window.feedPet = function() {
-    console.log("Función feedPet llamada");
-    feedPet();
-};
-
-window.playWithPet = function() {
-    console.log("Función playWithPet llamada");
-    playWithPet();
-};
-
-window.toggleSleep = function() {
-    console.log("Función toggleSleep llamada");
-    toggleSleep();
-};
-
-window.showSpecialMessage = function() {
-    console.log("Función showSpecialMessage llamada");
-    showSpecialMessage();
-};
+window.feedPet = feedPet;
+window.playWithPet = playWithPet;
+window.toggleSleep = toggleSleep;
+window.showSpecialMessage = showSpecialMessage;
 
 // Inicializar el juego cuando el DOM esté cargado
 document.addEventListener('DOMContentLoaded', function() {
