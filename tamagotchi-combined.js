@@ -1,205 +1,3 @@
-// tamagotchi-combined.js - Versión con minijuegos y sistema de fotos
-console.log("Cargando tamagotchi-combined.js...");
-
-// Configuración de parámetros del juego
-const CONFIG = {
-    decreaseInterval: 15000, // 15 segundos
-    decreaseAmount: 5,
-    initialHunger: 80,
-    initialHappiness: 80,
-    initialEnergy: 80,
-    sadThreshold: 30,
-    criticalThreshold: 15,
-    animationDuration: 2000,
-    autoSaveInterval: 60000
-};
-
-// Estados disponibles del conejo
-const PET_STATES = {
-    NORMAL: 'normal',
-    EATING: 'eating',
-    PLAYING: 'playing',
-    SLEEPING: 'sleeping',
-    SAD: 'sad'
-};
-
-// Sistema de experiencia y recompensas
-const REWARDS_SYSTEM = {
-    experience: 0,
-    level: 1,
-    unlockedImages: [],
-    // Imágenes que se pueden desbloquear
-    availableImages: [
-        {id: "image1", name: "Primer recuerdo juntos", exp: 50, url: "memory1.jpg"},
-        {id: "image2", name: "Viaje romántico", exp: 100, url: "memory2.jpg"},
-        {id: "image3", name: "Foto favorita de Rachel", exp: 200, url: "memory3.jpg"},
-        {id: "image4", name: "Momento especial", exp: 300, url: "memory4.jpg"},
-        {id: "image5", name: "Lo mejor está por venir", exp: 500, url: "memory5.jpg"}
-    ]
-};
-
-// Mensajes del juego
-const randomMessages = [
-    "¡Qué te gustaaa ehh!!",
-    "Mi mujer, mi esposa, MI WIFE",
-    "¡Que lokita nooo??",
-    "¿Nos hacemos un té lésbico?",
-    "¡Mi Queen!",
-    "¡Putada mano!",
-    "¿Nos hacemos un tattoo?, soy adicta a la tinta",
-    "¿No te apetece querer rebobinar el ahora?",
-    "¡Lo que te quiero yo GORDAAAA!",
-    "¿Publicidad? ¡YO SOY DIRECTORA CREATIVA!",
-    "Eres mi persona favorita 💙"
-];
-
-const feedMessages = [
-    "¡Qué rica zanahoria, ojala pudieras tener la mia!",
-    "¿Lo has cocinado tu? Porque está INCREIBLE",
-    "¡Gracias por alimentarme, MI MUJER, ESPOSA, MI WIFE!",
-    "¡Chin Chan Chun, que ricooo!"
-];
-
-const playMessages = [
-    "¿Nos echamos un Mario kart?",
-    "¡VINITO, CARTAS Y TÚ!",
-    "¡La próxima vez jugamos al Kamasutra!"
-];
-
-const sleepMessages = [
-    "Zzz... soñando con mi DRAGÓN ROJO...",
-    "Zzz... dormimos juntitos, abrazaditos...",
-    "Zzz... en mi propia casa JUAN PABLO LORENZO..."
-];
-
-const sadMessages = [
-    "ya no me quieres petarda...",
-    "Quiero mimitoos...",
-    "¿Dónde está mi princesa de Chichinabo?",
-    "¡Necesito cariñitos y besitos!"
-];
-
-const specialMessages = [
-    "TE QUIERO MUCHO ERES LA MEJOR GORDA",
-    "Cada día te quiero más, MI MUJER, MI ESPOSA MI WIFE",
-    "Tu creatividad me inspira siempre",
-    "Eres la mujer más EMPOWERGIRL del mundo",
-    "¿HACEMOS UN HIJO?"
-];
-
-// Resultados del mini-juego
-const gameResultMessages = {
-    win: [
-        "¡Ganaste! Eres mi campeona",
-        "Wow, me has vencido, eres la mejor.",
-        "¡Increíble! ¿Cómo lo has hecho?"
-    ],
-    lose: [
-        "¡Ja! Te gané, pero te dejo revancha",
-        "¡Perdiste! Aunque sigues siendo mi WIFE",
-        "Gané yo, ahora dame un besito"
-    ],
-    tie: [
-        "¡Empate! Nuestras mentes están conectadas",
-        "Empate... Esto es el destino, somos una",
-        "¡Nos leemos la mente! Empate"
-    ]
-};
-
-// Mensajes para fechas especiales
-const anniversaryMessages = {
-    // 18 de julio - Cumpleaños
-    "7-18": {
-        title: "¡FELIZ CUMPLEAÑOS MI NIÑA!",
-        message: "¡Feliz cumple mi Love! Te quiero mucho, eres muy importante para mi, me haces muy feliz."
-    },
-    // 18 de noviembre - Aniversario
-    "11-18": {
-        title: "¡FELIZ ANIVERSARIO, MI WIFE!",
-        message: "Hoy es nuestro día especial, cada día a tu lado es un regalo. Te quiero más que ayer y menos que mañana. ¡Feliz aniversario mi amor!"
-    }
-};
-
-// Estado del juego
-let gameState = {
-    name: "Rachel Bunny",
-    hunger: CONFIG.initialHunger,
-    happiness: CONFIG.initialHappiness,
-    energy: CONFIG.initialEnergy,
-    lastUpdate: Date.now(),
-    state: PET_STATES.NORMAL,
-    isSleeping: false,
-    isPlaying: false,
-    isEating: false
-};
-
-// Temporizadores
-let timers = {};
-
-// Referencias a elementos del DOM
-let hungerBar = null;
-let happinessBar = null;
-let energyBar = null;
-let petSprite = null;
-let messageBubble = null;
-let levelDisplay = null;
-// Función para obtener un mensaje aleatorio
-function getRandomMessage(messageArray) {
-    if (!messageArray || messageArray.length === 0) {
-        return "¡Hola!";
-    }
-    const randomIndex = Math.floor(Math.random() * messageArray.length);
-    return messageArray[randomIndex];
-}
-
-// Función para mostrar un mensaje
-function showMessage(message, duration = 3000) {
-    if (!messageBubble) {
-        messageBubble = document.getElementById('message-bubble');
-        if (!messageBubble) {
-            console.error("Error: message-bubble no encontrado");
-            return;
-        }
-    }
-    
-    console.log("Mostrando mensaje:", message);
-    
-    messageBubble.textContent = message;
-    messageBubble.classList.remove('hidden');
-    
-    // Limpiar temporizador anterior
-    clearTimeout(timers.message);
-    
-    // Configurar temporizador para ocultar
-    timers.message = setTimeout(() => {
-        if (messageBubble) {
-            messageBubble.classList.add('hidden');
-        }
-    }, duration);
-}
-
-// Función para cambiar el sprite según el estado
-function changeSprite(state) {
-    console.log("Cambiando sprite a:", state);
-    
-    if (!petSprite) {
-        petSprite = document.getElementById('pet-sprite');
-        if (!petSprite) {
-            console.error("Error: sprite no encontrado");
-            return;
-        }
-    }
-    
-    // Quitar todos los estados actuales
-    petSprite.classList.remove('normal', 'eating', 'playing', 'sleeping', 'sad');
-    
-    // Aplicar el nuevo estado
-    petSprite.classList.add(state);
-    
-    // Guardar el estado
-    gameState.state = state;
-}
-
 // Actualizar barras de estado
 function updateStatusBars() {
     console.log("Actualizando barras - hambre:", gameState.hunger, "felicidad:", gameState.happiness, "energía:", gameState.energy);
@@ -256,6 +54,7 @@ function updateStatusBars() {
         changeSprite(PET_STATES.NORMAL);
     }
 }
+
 // Alimentar al conejo
 function feedPet() {
     console.log("Alimentando al conejo");
@@ -544,199 +343,210 @@ function decreaseValues() {
     // Guardar estado
     saveGameState();
 }
-// Añadir experiencia y verificar desbloqueos
-function addExperience(amount) {
-    REWARDS_SYSTEM.experience += amount;
+
+// Guardar el estado del juego
+function saveGameState() {
+    const stateToSave = {
+        ...gameState,
+        lastUpdate: Date.now()
+    };
     
-    // Calcular nivel basado en experiencia
-    const newLevel = Math.floor(REWARDS_SYSTEM.experience / 100) + 1;
-    
-    // Si subió de nivel
-    if (newLevel > REWARDS_SYSTEM.level) {
-        REWARDS_SYSTEM.level = newLevel;
-        showMessage(`¡Has subido a nivel ${newLevel}! ¡Sigue así!`, 4000);
-    }
-    
-    // Verificar si se desbloquean imágenes
-    const unlockedNewImages = REWARDS_SYSTEM.availableImages.filter(img => 
-        REWARDS_SYSTEM.experience >= img.exp && 
-        !REWARDS_SYSTEM.unlockedImages.includes(img.id)
-    );
-    
-    if (unlockedNewImages.length > 0) {
-        // Añadir a la lista de desbloqueados
-        unlockedNewImages.forEach(img => {
-            REWARDS_SYSTEM.unlockedImages.push(img.id);
-        });
-        
-        // Mostrar notificación de desbloqueo
-        showUnlockNotification(unlockedNewImages[0]);
-    }
-    
-    // Guardar el estado de experiencia y desbloqueos
-    localStorage.setItem('rachelTamagotchiRewards', JSON.stringify(REWARDS_SYSTEM));
+    localStorage.setItem('rachelTamagotchiState', JSON.stringify(stateToSave));
 }
 
-// Mostrar notificación de desbloqueo de imagen
-function showUnlockNotification(image) {
-    // Crear elemento para la notificación
-    const notification = document.createElement('div');
-    notification.className = 'unlock-notification';
-    notification.style.position = 'fixed';
-    notification.style.top = '50%';
-    notification.style.left = '50%';
-    notification.style.transform = 'translate(-50%, -50%)';
-    notification.style.background = 'white';
-    notification.style.padding = '20px';
-    notification.style.borderRadius = '15px';
-    notification.style.boxShadow = '0 4px 15px rgba(0,0,0,0.2)';
-    notification.style.zIndex = '100';
-    notification.style.maxWidth = '80vw';
-    notification.style.textAlign = 'center';
+// Verificar fechas especiales
+function checkSpecialDates() {
+    const today = new Date();
+    const month = today.getMonth() + 1; // Los meses en JS van de 0-11
+    const day = today.getDate();
     
-    // Contenido de la notificación
-    notification.innerHTML = `
-        <h2 style="color: #4682B4; margin-bottom: 10px;">¡Recuerdo Desbloqueado!</h2>
-        <p style="margin-bottom: 15px;">${image.name}</p>
-        <div style="margin-bottom: 15px;">
-            <img src="${image.url}" alt="${image.name}" style="max-width: 100%; max-height: 200px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-        </div>
-        <div>
-            <button id="view-album" style="
-                background-color: #4CAF50;
-                border: none;
-                padding: 8px 15px;
-                border-radius: 20px;
-                color: white;
-                margin-right: 10px;
-                cursor: pointer;
-            ">Ver Álbum</button>
-            <button id="close-notification" style="
-                background-color: #f44336;
-                border: none;
-                padding: 8px 15px;
-                border-radius: 20px;
-                color: white;
-                cursor: pointer;
-            ">Cerrar</button>
-        </div>
-    `;
+    const dateKey = `${month}-${day}`;
     
-    document.body.appendChild(notification);
-    
-    // Manejar eventos de botones
-    document.getElementById('close-notification').addEventListener('click', () => {
-        document.body.removeChild(notification);
-    });
-    
-    document.getElementById('view-album').addEventListener('click', () => {
-        document.body.removeChild(notification);
-        showPhotoAlbum();
-    });
+    if (anniversaryMessages[dateKey]) {
+        // Mostrar mensaje de fecha especial
+        showMessage(`¡${anniversaryMessages[dateKey].title}! ${anniversaryMessages[dateKey].message}`, 6000);
+    }
 }
 
-// Mostrar álbum de fotos
-function showPhotoAlbum() {
-    console.log("Mostrando álbum de fotos");
+// Función para cargar el estado guardado
+function loadGameState() {
+    // Cargar estado normal del juego
+    const savedState = localStorage.getItem('rachelTamagotchiState');
     
-    // Crear álbum
-    const album = document.createElement('div');
-    album.className = 'photo-album';
-    album.style.position = 'fixed';
-    album.style.top = '50%';
-    album.style.left = '50%';
-    album.style.transform = 'translate(-50%, -50%)';
-    album.style.background = 'white';
-    album.style.padding = '20px';
-    album.style.borderRadius = '15px';
-    album.style.boxShadow = '0 4px 15px rgba(0,0,0,0.2)';
-    album.style.zIndex = '100';
-    album.style.width = '90vw';
-    album.style.maxWidth = '500px';
-    album.style.maxHeight = '80vh';
-    album.style.overflow = 'auto';
-    album.style.textAlign = 'center';
-    
-    // Contador de desbloqueos
-    const unlockedCount = REWARDS_SYSTEM.unlockedImages.length;
-    const totalCount = REWARDS_SYSTEM.availableImages.length;
-    
-    // Crear HTML del álbum
-    let albumHTML = `
-        <h2 style="color: #4682B4; margin-bottom: 10px;">Nuestro Álbum de Recuerdos</h2>
-        <p style="margin-bottom: 15px;">Has desbloqueado ${unlockedCount} de ${totalCount} recuerdos</p>
-        <div style="
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
-        ">
-    `;
-    
-    // Mostrar imágenes
-    REWARDS_SYSTEM.availableImages.forEach(img => {
-        const isUnlocked = REWARDS_SYSTEM.unlockedImages.includes(img.id);
-        
-        albumHTML += `
-            <div style="
-                border-radius: 10px;
-                padding: 10px;
-                background-color: ${isUnlocked ? '#e6f7ff' : '#f0f0f0'};
-            ">
-        `;
-        
-        if (isUnlocked) {
-            albumHTML += `
-                <img src="${img.url}" alt="${img.name}" style="
-                    width: 100%;
-                    height: auto;
-                    border-radius: 8px;
-                    margin-bottom: 5px;
-                ">
-                <p style="font-weight: bold;">${img.name}</p>
-            `;
-        } else {
-            albumHTML += `
-                <div style="
-                    height: 100px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 40px;
-                    background-color: #ddd;
-                    border-radius: 8px;
-                    margin-bottom: 5px;
-                ">🔒</div>
-                <p>Desbloquea con ${img.exp} exp</p>
-            `;
+    if (savedState) {
+        try {
+            const parsedState = JSON.parse(savedState);
+            
+            // Calcular tiempo transcurrido desde la última actualización
+            const currentTime = Date.now();
+            const timeDiff = currentTime - parsedState.lastUpdate;
+            
+            // Actualizar estado con valores guardados
+            gameState = {
+                ...parsedState,
+                lastUpdate: currentTime
+            };
+            
+            // Si pasó mucho tiempo (más de 8 horas), aplicar simulación del tiempo
+            if (timeDiff > 8 * 60 * 60 * 1000) {
+                simulateTimeElapsed(timeDiff);
+            }
+            
+            // Asegurarse de que el estado visual sea correcto
+            if (gameState.isSleeping) {
+                changeSprite(PET_STATES.SLEEPING);
+            } else if (gameState.hunger <= CONFIG.sadThreshold || 
+                      gameState.happiness <= CONFIG.sadThreshold || 
+                      gameState.energy <= CONFIG.sadThreshold) {
+                changeSprite(PET_STATES.SAD);
+            } else {
+                changeSprite(PET_STATES.NORMAL);
+            }
+            
+            // Actualizar texto del botón de dormir
+            const sleepButton = document.getElementById('sleep-btn');
+            if (sleepButton) {
+                const btnText = sleepButton.querySelector('.btn-text');
+                const btnIcon = sleepButton.querySelector('.btn-icon');
+                
+                if (gameState.isSleeping) {
+                    if (btnText) btnText.textContent = 'Despertar con besitos';
+                    if (btnIcon) btnIcon.textContent = '🌞';
+                } else {
+                    if (btnText) btnText.textContent = 'Dormir abrazaditos';
+                    if (btnIcon) btnIcon.textContent = '💤';
+                }
+            }
+        } catch (e) {
+            console.error("Error al cargar el estado guardado:", e);
+            // Usar valores por defecto si hay un error
+            resetGameState();
         }
-        
-        albumHTML += `</div>`;
-    });
+    } else {
+        // Si no hay estado guardado, usar valores iniciales
+        resetGameState();
+    }
     
-    // Cerrar grid y añadir botón
-    albumHTML += `
-        </div>
-        <button id="close-album" style="
-            background-color: #87CEEB;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 30px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-        ">Cerrar Álbum</button>
-    `;
-    
-    album.innerHTML = albumHTML;
-    document.body.appendChild(album);
-    
-    // Evento para cerrar
-    document.getElementById('close-album').addEventListener('click', () => {
-        document.body.removeChild(album);
-        finishPlaying();
-    });
+    // Cargar estado de recompensas
+    const savedRewards = localStorage.getItem('rachelTamagotchiRewards');
+    if (savedRewards) {
+        try {
+            const parsedRewards = JSON.parse(savedRewards);
+            REWARDS_SYSTEM.experience = parsedRewards.experience || 0;
+            REWARDS_SYSTEM.level = parsedRewards.level || 1;
+            REWARDS_SYSTEM.unlockedImages = parsedRewards.unlockedImages || [];
+        } catch (e) {
+            console.error("Error al cargar recompensas:", e);
+        }
+    }
 }
+
+// Función para reiniciar el estado del juego
+function resetGameState() {
+    console.log("Reiniciando estado del juego a valores iniciales");
+    
+    gameState.hunger = CONFIG.initialHunger;
+    gameState.happiness = CONFIG.initialHappiness;
+    gameState.energy = CONFIG.initialEnergy;
+    gameState.isSleeping = false;
+    
+    // Mostrar estado normal
+    changeSprite(PET_STATES.NORMAL);
+    
+    // Actualizar barras
+    updateStatusBars();
+    
+    // Mostrar mensaje de bienvenida
+    showMessage("¡Hola! Soy Rachel Bunny, tu conejo virtual. ¡Cuídame bien!", 4000);
+}
+
+// Función para simular tiempo transcurrido mientras estaba ausente
+function simulateTimeElapsed(timeDiff) {
+    // Número de decrementos que habrían ocurrido
+    const decrements = Math.floor(timeDiff / CONFIG.decreaseInterval);
+    
+    // Aplicar decrementos, pero con un límite para que no sea demasiado cruel
+    const maxDecreasePerStat = 50; // Máximo 50% de reducción mientras está ausente
+    
+    if (gameState.isSleeping) {
+        // Si estaba durmiendo, disminuye la felicidad ligeramente y aumenta la energía
+        gameState.happiness = Math.max(30, gameState.happiness - Math.min(maxDecreasePerStat, decrements * (CONFIG.decreaseAmount / 4)));
+        gameState.energy = 100; // Recupera toda la energía
+        gameState.hunger = Math.max(20, gameState.hunger - Math.min(maxDecreasePerStat, decrements * (CONFIG.decreaseAmount / 2)));
+    } else {
+        // Si no estaba durmiendo, disminuye todos los valores
+        gameState.hunger = Math.max(20, gameState.hunger - Math.min(maxDecreasePerStat, decrements * CONFIG.decreaseAmount / 2));
+        gameState.happiness = Math.max(20, gameState.happiness - Math.min(maxDecreasePerStat, decrements * CONFIG.decreaseAmount / 2));
+        gameState.energy = Math.max(20, gameState.energy - Math.min(maxDecreasePerStat, decrements * CONFIG.decreaseAmount / 2));
+    }
+}
+
+// Inicializar el juego
+function initGame() {
+    console.log("Inicializando el juego");
+    
+    // Obtener referencias a elementos del DOM
+    hungerBar = document.getElementById('hunger-bar');
+    happinessBar = document.getElementById('happiness-bar');
+    energyBar = document.getElementById('energy-bar');
+    petSprite = document.getElementById('pet-sprite');
+    messageBubble = document.getElementById('message-bubble');
+    levelDisplay = document.getElementById('experience-text');
+    
+    // Cargar estado guardado
+    loadGameState();
+    
+    // Actualizar barras de estado
+    updateStatusBars();
+    
+    // Iniciar temporizador para disminuir valores
+    timers.decrease = setInterval(decreaseValues, CONFIG.decreaseInterval);
+    
+    // Iniciar temporizador para mensajes aleatorios
+    timers.randomMessage = setInterval(() => {
+        if (Math.random() < 0.3 && 
+            !gameState.isEating && 
+            !gameState.isPlaying && 
+            !gameState.isSleeping &&
+            !messageBubble.textContent) {
+            showMessage(getRandomMessage(randomMessages));
+        }
+    }, 45000);
+    
+    // Verificar si hay fechas especiales
+    checkSpecialDates();
+    
+    // Mostrar mensaje de bienvenida después de un momento
+    setTimeout(() => {
+        showMessage("¡Hola! Estoy muy feliz de verte de nuevo. ¡Juguemos juntas!", 4000);
+    }, 1000);
+    
+    console.log("Tamagotchi inicializado correctamente");
+    
+    // Configurar event listeners
+    setupEventListeners();
+}
+
+// Configurar los event listeners para los botones
+function setupEventListeners() {
+    const feedBtn = document.getElementById('feed-btn');
+    const playBtn = document.getElementById('play-btn');
+    const sleepBtn = document.getElementById('sleep-btn');
+    const specialBtn = document.getElementById('special-btn');
+    
+    if (feedBtn) feedBtn.addEventListener('click', feedPet);
+    if (playBtn) playBtn.addEventListener('click', playWithPet);
+    if (sleepBtn) sleepBtn.addEventListener('click', toggleSleep);
+    if (specialBtn) specialBtn.addEventListener('click', showSpecialMessage);
+}
+
+// Inicializar el juego cuando el DOM esté cargado
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("DOM cargado, inicializando el juego...");
+    
+    // Esperar un poco para asegurarse de que todo se ha cargado
+    setTimeout(initGame, 500);
+});
 // Juego de Piedra, Papel o Tijeras
 function playRockPaperScissors() {
     console.log("Iniciando Piedra, Papel o Tijeras");
@@ -1462,219 +1272,163 @@ function playSnakeGame() {
     draw();
     gameInterval = setInterval(update, 200);
 }
-// Guardar el estado del juego
-function saveGameState() {
-    const stateToSave = {
-        ...gameState,
-        lastUpdate: Date.now()
-    };
-    
-    localStorage.setItem('rachelTamagotchiState', JSON.stringify(stateToSave));
-}
 
-// Verificar fechas especiales
-function checkSpecialDates() {
-    const today = new Date();
-    const month = today.getMonth() + 1; // Los meses en JS van de 0-11
-    const day = today.getDate();
+// Mostrar álbum de fotos
+function showPhotoAlbum() {
+    console.log("Mostrando álbum de fotos");
     
-    const dateKey = `${month}-${day}`;
+    // Crear álbum
+    const album = document.createElement('div');
+    album.className = 'photo-album';
+    album.style.position = 'fixed';
+    album.style.top = '50%';
+    album.style.left = '50%';
+    album.style.transform = 'translate(-50%, -50%)';
+    album.style.background = 'white';
+    album.style.padding = '20px';
+    album.style.borderRadius = '15px';
+    album.style.boxShadow = '0 4px 15px rgba(0,0,0,0.2)';
+    album.style.zIndex = '100';
+    album.style.width = '90vw';
+    album.style.maxWidth = '500px';
+    album.style.maxHeight = '80vh';
+    album.style.overflow = 'auto';
+    album.style.textAlign = 'center';
     
-    if (anniversaryMessages[dateKey]) {
-        // Mostrar mensaje de fecha especial
-        showMessage(`¡${anniversaryMessages[dateKey].title}! ${anniversaryMessages[dateKey].message}`, 6000);
-    }
-}
-
-// Función para cargar el estado guardado
-function loadGameState() {
-    // Cargar estado normal del juego
-    const savedState = localStorage.getItem('rachelTamagotchiState');
+    // Contador de desbloqueos
+    const unlockedCount = REWARDS_SYSTEM.unlockedImages.length;
+    const totalCount = REWARDS_SYSTEM.availableImages.length;
     
-    if (savedState) {
-        try {
-            const parsedState = JSON.parse(savedState);
-            
-            // Calcular tiempo transcurrido desde la última actualización
-            const currentTime = Date.now();
-            const timeDiff = currentTime - parsedState.lastUpdate;
-            
-            // Actualizar estado con valores guardados
-            gameState = {
-                ...parsedState,
-                lastUpdate: currentTime
-            };
-            
-            // Si pasó mucho tiempo (más de 8 horas), aplicar simulación del tiempo
-            if (timeDiff > 8 * 60 * 60 * 1000) {
-                simulateTimeElapsed(timeDiff);
-            }
-            
-            // Asegurarse de que el estado visual sea correcto
-            if (gameState.isSleeping) {
-                changeSprite(PET_STATES.SLEEPING);
-            } else if (gameState.hunger <= CONFIG.sadThreshold || 
-                      gameState.happiness <= CONFIG.sadThreshold || 
-                      gameState.energy <= CONFIG.sadThreshold) {
-                changeSprite(PET_STATES.SAD);
-            } else {
-                changeSprite(PET_STATES.NORMAL);
-            }
-            
-            // Actualizar texto del botón de dormir
-            const sleepButton = document.getElementById('sleep-btn');
-            if (sleepButton) {
-                const btnText = sleepButton.querySelector('.btn-text');
-                const btnIcon = sleepButton.querySelector('.btn-icon');
-                
-                if (gameState.isSleeping) {
-                    if (btnText) btnText.textContent = 'Despertar con besitos';
-                    if (btnIcon) btnIcon.textContent = '🌞';
-                } else {
-                    if (btnText) btnText.textContent = 'Dormir abrazaditos';
-                    if (btnIcon) btnIcon.textContent = '💤';
-                }
-            }
-        } catch (e) {
-            console.error("Error al cargar el estado guardado:", e);
-            // Usar valores por defecto si hay un error
-            resetGameState();
+    // Crear HTML del álbum
+    let albumHTML = `
+        <h2 style="color: #4682B4; margin-bottom: 10px;">Nuestro Álbum de Recuerdos</h2>
+        <p style="margin-bottom: 15px;">Has desbloqueado ${unlockedCount} de ${totalCount} recuerdos</p>
+        <div style="
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        ">
+    `;
+    
+    // Mostrar imágenes
+    REWARDS_SYSTEM.availableImages.forEach(img => {
+        const isUnlocked = REWARDS_SYSTEM.unlockedImages.includes(img.id);
+        
+        albumHTML += `
+            <div style="
+                border-radius: 10px;
+                padding: 10px;
+                background-color: ${isUnlocked ? '#e6f7ff' : '#f0f0f0'};
+            ">
+        `;
+        
+        if (isUnlocked) {
+            albumHTML += `
+                <img src="${img.url}" alt="${img.name}" style="
+                    width: 100%;
+                    height: auto;
+                    border-radius: 8px;
+                    margin-bottom: 5px;
+                ">
+                <p style="font-weight: bold;">${img.name}</p>
+            `;
+        } else {
+            albumHTML += `
+                <div style="
+                    height: 100px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 40px;
+                    background-color: #ddd;
+                    border-radius: 8px;
+                ">🔒</div>
+                <p>Desbloquea con ${img.exp} exp</p>
+            `;
         }
-    } else {
-        // Si no hay estado guardado, usar valores iniciales
-        resetGameState();
-    }
+        
+        albumHTML += `</div>`;
+    });
     
-    // Cargar estado de recompensas
-    const savedRewards = localStorage.getItem('rachelTamagotchiRewards');
-    if (savedRewards) {
-        try {
-            const parsedRewards = JSON.parse(savedRewards);
-            REWARDS_SYSTEM.experience = parsedRewards.experience || 0;
-            REWARDS_SYSTEM.level = parsedRewards.level || 1;
-            REWARDS_SYSTEM.unlockedImages = parsedRewards.unlockedImages || [];
-        } catch (e) {
-            console.error("Error al cargar recompensas:", e);
-        }
-    }
+    // Cerrar grid y añadir botón
+    albumHTML += `
+        </div>
+        <button id="close-album" style="
+            background-color: #87CEEB;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        ">Cerrar Álbum</button>
+    `;
+    
+    album.innerHTML = albumHTML;
+    document.body.appendChild(album);
+    
+    // Evento para cerrar
+    document.getElementById('close-album').addEventListener('click', () => {
+        document.body.removeChild(album);
+        finishPlaying(true);
+    });
 }
 
-// Función para reiniciar el estado del juego
-function resetGameState() {
-    console.log("Reiniciando estado del juego a valores iniciales");
+// Mostrar notificación de desbloqueo de imagen
+function showUnlockNotification(image) {
+    // Crear elemento para la notificación
+    const notification = document.createElement('div');
+    notification.className = 'unlock-notification';
+    notification.style.position = 'fixed';
+    notification.style.top = '50%';
+    notification.style.left = '50%';
+    notification.style.transform = 'translate(-50%, -50%)';
+    notification.style.background = 'white';
+    notification.style.padding = '20px';
+    notification.style.borderRadius = '15px';
+    notification.style.boxShadow = '0 4px 15px rgba(0,0,0,0.2)';
+    notification.style.zIndex = '100';
+    notification.style.maxWidth = '80vw';
+    notification.style.textAlign = 'center';
     
-    gameState.hunger = CONFIG.initialHunger;
-    gameState.happiness = CONFIG.initialHappiness;
-    gameState.energy = CONFIG.initialEnergy;
-    gameState.isSleeping = false;
+    // Contenido de la notificación
+    notification.innerHTML = `
+        <h2 style="color: #4682B4; margin-bottom: 10px;">¡Recuerdo Desbloqueado!</h2>
+        <p style="margin-bottom: 15px;">${image.name}</p>
+        <div style="margin-bottom: 15px;">
+            <img src="${image.url}" alt="${image.name}" style="max-width: 100%; max-height: 200px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        </div>
+        <div>
+            <button id="view-album" style="
+                background-color: #4CAF50;
+                border: none;
+                padding: 8px 15px;
+                border-radius: 20px;
+                color: white;
+                margin-right: 10px;
+                cursor: pointer;
+            ">Ver Álbum</button>
+            <button id="close-notification" style="
+                background-color: #f44336;
+                border: none;
+                padding: 8px 15px;
+                border-radius: 20px;
+                color: white;
+                cursor: pointer;
+            ">Cerrar</button>
+        </div>
+    `;
     
-    // Mostrar estado normal
-    changeSprite(PET_STATES.NORMAL);
+    document.body.appendChild(notification);
     
-    // Actualizar barras
-    updateStatusBars();
+    // Manejar eventos de botones
+    document.getElementById('close-notification').addEventListener('click', () => {
+        document.body.removeChild(notification);
+    });
     
-    // Mostrar mensaje de bienvenida
-    showMessage("¡Hola! Soy Rachel Bunny, tu conejo virtual. ¡Cuídame bien!", 4000);
+    document.getElementById('view-album').addEventListener('click', () => {
+        document.body.removeChild(notification);
+        showPhotoAlbum();
+    });
 }
-
-// Función para simular tiempo transcurrido mientras estaba ausente
-function simulateTimeElapsed(timeDiff) {
-    // Número de decrementos que habrían ocurrido
-    const decrements = Math.floor(timeDiff / CONFIG.decreaseInterval);
-    
-    // Aplicar decrementos, pero con un límite para que no sea demasiado cruel
-    const maxDecreasePerStat = 50; // Máximo 50% de reducción mientras está ausente
-    
-    if (gameState.isSleeping) {
-        // Si estaba durmiendo, disminuye la felicidad ligeramente y aumenta la energía
-        gameState.happiness = Math.max(30, gameState.happiness - Math.min(maxDecreasePerStat, decrements * (CONFIG.decreaseAmount / 4)));
-        gameState.energy = 100; // Recupera toda la energía
-        gameState.hunger = Math.max(20, gameState.hunger - Math.min(maxDecreasePerStat, decrements * (CONFIG.decreaseAmount / 2)));
-    } else {
-        // Si no estaba durmiendo, disminuye todos los valores
-        gameState.hunger = Math.max(20, gameState.hunger - Math.min(maxDecreasePerStat, decrements * CONFIG.decreaseAmount / 2));
-        gameState.happiness = Math.max(20, gameState.happiness - Math.min(maxDecreasePerStat, decrements * CONFIG.decreaseAmount / 2));
-        gameState.energy = Math.max(20, gameState.energy - Math.min(maxDecreasePerStat, decrements * CONFIG.decreaseAmount / 2));
-    }
-}
-
-// Inicializar el juego
-function initGame() {
-    console.log("Inicializando el juego");
-    
-    // Obtener referencias a elementos del DOM
-    hungerBar = document.getElementById('hunger-bar');
-    happinessBar = document.getElementById('happiness-bar');
-    energyBar = document.getElementById('energy-bar');
-    petSprite = document.getElementById('pet-sprite');
-    messageBubble = document.getElementById('message-bubble');
-    levelDisplay = document.getElementById('experience-text');
-    
-    // Cargar estado guardado
-    loadGameState();
-    
-    // Actualizar barras de estado
-    updateStatusBars();
-    
-    // Iniciar temporizador para disminuir valores
-    timers.decrease = setInterval(decreaseValues, CONFIG.decreaseInterval);
-    
-    // Iniciar temporizador para mensajes aleatorios
-    timers.randomMessage = setInterval(() => {
-        if (Math.random() < 0.3 && 
-            !gameState.isEating && 
-            !gameState.isPlaying && 
-            !gameState.isSleeping &&
-            !messageBubble.textContent) {
-            showMessage(getRandomMessage(randomMessages));
-        }
-    }, 45000);
-    
-    // Verificar si hay fechas especiales
-    checkSpecialDates();
-    
-    // Mostrar mensaje de bienvenida después de un momento
-    setTimeout(() => {
-        showMessage("¡Hola! Estoy muy feliz de verte de nuevo. ¡Juguemos juntas!", 4000);
-    }, 1000);
-    
-    console.log("Tamagotchi inicializado correctamente");
-}
-
-// Inicializar el juego cuando el DOM esté cargado
-document.addEventListener('DOMContentLoaded', function() {
-    console.log("DOM cargado, inicializando el juego...");
-    
-    // Esperar un poco para asegurarse de que todo se ha cargado
-    setTimeout(initGame, 500);
-});
-
-// Exponer funciones para que sean accesibles globalmente
-window.feedPet = feedPet;
-window.playWithPet = playWithPet;
-window.toggleSleep = toggleSleep;
-window.showSpecialMessage = showSpecialMessage;
-
-// Inicializar el juego cuando el DOM esté cargado
-document.addEventListener('DOMContentLoaded', function() {
-    console.log("DOM cargado, inicializando el juego...");
-    
-    // Inicializar juego
-    setTimeout(initGame, 500);
-    
-    // Verificar que los botones existan
-    console.log("Feed button:", document.getElementById('feed-btn') ? "Existe" : "No existe");
-    console.log("Play button:", document.getElementById('play-btn') ? "Existe" : "No existe");
-    console.log("Sleep button:", document.getElementById('sleep-btn') ? "Existe" : "No existe");
-    console.log("Special button:", document.getElementById('special-btn') ? "Existe" : "No existe");
-});
-
-window.resetAllData = function() {
-    if (confirm('¿Estás seguro/a de querer reiniciar todo el progreso? Esta acción no se puede deshacer.')) {
-        localStorage.removeItem('rachelTamagotchiState');
-        localStorage.removeItem('rachelTamagotchiRewards');
-        alert('¡Datos reiniciados! Recarga la página para ver los cambios.');
-        location.reload();
-    }
-};
