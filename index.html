@@ -112,23 +112,23 @@
         </div>
         
         <div id="action-buttons">
-            <button id="feed-btn" class="action-btn" onclick="window.feedPet()">
-                <span class="btn-icon">🥕</span>
-                <span class="btn-text">Alimentar</span>
-            </button>
-            <button id="play-btn" class="action-btn" onclick="window.playWithPet()">
-                <span class="btn-icon">🎮</span>
-                <span class="btn-text">Jugar</span>
-            </button>
-            <button id="sleep-btn" class="action-btn" onclick="window.toggleSleep()">
-                <span class="btn-icon">💤</span>
-                <span class="btn-text">Dormir</span>
-            </button>
-            <button id="special-btn" class="action-btn" onclick="window.showSpecialMessage()">
-                <span class="btn-icon">💌</span>
-                <span class="btn-text">Mensaje</span>
-            </button>
-        </div>
+    <button id="feed-btn" class="action-btn">
+        <span class="btn-icon">🥕</span>
+        <span class="btn-text">Alimentar</span>
+    </button>
+    <button id="play-btn" class="action-btn">
+        <span class="btn-icon">🎮</span>
+        <span class="btn-text">Jugar</span>
+    </button>
+    <button id="sleep-btn" class="action-btn">
+        <span class="btn-icon">💤</span>
+        <span class="btn-text">Dormir</span>
+    </button>
+    <button id="special-btn" class="action-btn">
+        <span class="btn-icon">💌</span>
+        <span class="btn-text">Mensaje</span>
+    </button>
+</div>
         
         <div id="level-display">
             <span id="experience-text">Nivel: 1</span>
@@ -150,66 +150,34 @@
     
     <!-- Script inline para gestionar la pantalla de carga -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Ocultar pantalla de carga cuando todo esté listo
+      // Script de inicialización simplificado
+document.addEventListener('DOMContentLoaded', function() {
+    // Ocultar pantalla de carga cuando todo esté listo
+    setTimeout(function() {
+        const loadingScreen = document.getElementById('loading-screen');
+        if (loadingScreen) {
+            loadingScreen.style.opacity = '0';
             setTimeout(function() {
-                const loadingScreen = document.getElementById('loading-screen');
-                if (loadingScreen) {
-                    loadingScreen.style.opacity = '0';
-                    setTimeout(function() {
-                        loadingScreen.style.display = 'none';
-                    }, 500);
-                }
-            }, 1000);
-        });
-        
-        // Prevenir comportamientos no deseados en dispositivos táctiles
-        document.addEventListener('touchmove', function(e) {
-            if(e.target.id !== 'snake-game-board' && e.target.id !== 'flappy-game-container') {
-                e.preventDefault();
-            }
-        }, { passive: false });
-        
-        // Función para reiniciar (solo para desarrollo)
-        function resetAllData() {
-            if (confirm('¿Estás seguro/a de querer reiniciar todo el progreso? Esta acción no se puede deshacer.')) {
-                localStorage.removeItem('rachelTamagotchiState');
-                localStorage.removeItem('rachelTamagotchiRewards');
-                alert('¡Datos reiniciados! Recarga la página para ver los cambios.');
-                location.reload();
-            }
+                loadingScreen.style.display = 'none';
+            }, 500);
         }
-    </script>
-<script>
-    // Asegurar que los botones funcionen correctamente
-    document.addEventListener('DOMContentLoaded', function() {
-        // Obtener referencias a los botones
-        const feedBtn = document.getElementById('feed-btn');
-        const playBtn = document.getElementById('play-btn');
-        const sleepBtn = document.getElementById('sleep-btn');
-        const specialBtn = document.getElementById('special-btn');
-        
-        // Añadir event listeners
-        if (feedBtn) feedBtn.addEventListener('click', function() {
-            console.log("Botón de alimentar presionado");
-            feedPet();
-        });
-        
-        if (playBtn) playBtn.addEventListener('click', function() {
-            console.log("Botón de jugar presionado");
-            playWithPet();
-        });
-        
-        if (sleepBtn) sleepBtn.addEventListener('click', function() {
-            console.log("Botón de dormir presionado");
-            toggleSleep();
-        });
-        
-        if (specialBtn) specialBtn.addEventListener('click', function() {
-            console.log("Botón de mensaje especial presionado");
-            showSpecialMessage();
-        });
-    });
+    }, 1000);
+    
+    // Prevenir comportamientos no deseados en dispositivos táctiles
+    document.addEventListener('touchmove', function(e) {
+        if(e.target.id !== 'snake-game-board' && e.target.id !== 'flappy-game-container') {
+            e.preventDefault();
+        }
+    }, { passive: false });
+});
+
+// Función para reiniciar (solo para desarrollo)
+function resetAllData() {
+    if (confirm('¿Estás seguro/a de querer reiniciar todo el progreso? Esta acción no se puede deshacer.')) {
+        localStorage.removeItem('rachelTamagotchiState');
+        localStorage.removeItem('rachelTamagotchiRewards');
+        alert('¡Datos reiniciados! Recarga la página para ver los cambios.');
+        location.reload();
+    }
+}
 </script>
-</body>
-</html>
