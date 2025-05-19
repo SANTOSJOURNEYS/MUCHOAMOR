@@ -112,29 +112,30 @@
         </div>
         
         <div id="action-buttons">
-    <button id="feed-btn" class="action-btn">
-        <span class="btn-icon">🥕</span>
-        <span class="btn-text">Alimentar</span>
-    </button>
-    <button id="play-btn" class="action-btn">
-        <span class="btn-icon">🎮</span>
-        <span class="btn-text">Jugar</span>
-    </button>
-    <button id="sleep-btn" class="action-btn">
-        <span class="btn-icon">💤</span>
-        <span class="btn-text">Dormir</span>
-    </button>
-    <button id="special-btn" class="action-btn">
-        <span class="btn-icon">💌</span>
-        <span class="btn-text">Mensaje</span>
-    </button>
-</div>
+            <button id="feed-btn" class="action-btn">
+                <span class="btn-icon">🥕</span>
+                <span class="btn-text">Alimentar</span>
+            </button>
+            <button id="play-btn" class="action-btn">
+                <span class="btn-icon">🎮</span>
+                <span class="btn-text">Jugar</span>
+            </button>
+            <button id="sleep-btn" class="action-btn">
+                <span class="btn-icon">💤</span>
+                <span class="btn-text">Dormir</span>
+            </button>
+            <button id="special-btn" class="action-btn">
+                <span class="btn-icon">💌</span>
+                <span class="btn-text">Mensaje</span>
+            </button>
+        </div>
         
         <div id="level-display">
             <span id="experience-text">Nivel: 1</span>
         </div>
     </div>
-<div id="date-check" class="hidden">
+    
+    <div id="date-check" class="hidden">
         <div id="anniversary-message"></div>
         <button id="close-anniversary">Cerrar</button>
     </div>
@@ -145,39 +146,40 @@
         <p>Cargando a Rachel Bunny...</p>
     </div>
     
-    <!-- Cargamos un solo archivo JavaScript combinado con defer para mejorar el rendimiento -->
-    <script src="tamagotchi-combined.js" defer></script>
+    <!-- Cargamos el archivo JavaScript con defer para mejorar el rendimiento -->
+    <script src="tamagotchi-fixed.js" defer></script>
     
     <!-- Script inline para gestionar la pantalla de carga -->
     <script>
-      // Script de inicialización simplificado
-document.addEventListener('DOMContentLoaded', function() {
-    // Ocultar pantalla de carga cuando todo esté listo
-    setTimeout(function() {
-        const loadingScreen = document.getElementById('loading-screen');
-        if (loadingScreen) {
-            loadingScreen.style.opacity = '0';
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ocultar pantalla de carga cuando todo esté listo
             setTimeout(function() {
-                loadingScreen.style.display = 'none';
-            }, 500);
+                const loadingScreen = document.getElementById('loading-screen');
+                if (loadingScreen) {
+                    loadingScreen.style.opacity = '0';
+                    setTimeout(function() {
+                        loadingScreen.style.display = 'none';
+                    }, 500);
+                }
+            }, 1000);
+            
+            // Prevenir comportamientos no deseados en dispositivos táctiles
+            document.addEventListener('touchmove', function(e) {
+                if(e.target.id !== 'snake-game-board' && e.target.id !== 'flappy-game-container') {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+        });
+        
+        // Función para reiniciar (solo para desarrollo)
+        function resetAllData() {
+            if (confirm('¿Estás seguro/a de querer reiniciar todo el progreso? Esta acción no se puede deshacer.')) {
+                localStorage.removeItem('rachelTamagotchiState');
+                localStorage.removeItem('rachelTamagotchiRewards');
+                alert('¡Datos reiniciados! Recarga la página para ver los cambios.');
+                location.reload();
+            }
         }
-    }, 1000);
-    
-    // Prevenir comportamientos no deseados en dispositivos táctiles
-    document.addEventListener('touchmove', function(e) {
-        if(e.target.id !== 'snake-game-board' && e.target.id !== 'flappy-game-container') {
-            e.preventDefault();
-        }
-    }, { passive: false });
-});
-
-// Función para reiniciar (solo para desarrollo)
-function resetAllData() {
-    if (confirm('¿Estás seguro/a de querer reiniciar todo el progreso? Esta acción no se puede deshacer.')) {
-        localStorage.removeItem('rachelTamagotchiState');
-        localStorage.removeItem('rachelTamagotchiRewards');
-        alert('¡Datos reiniciados! Recarga la página para ver los cambios.');
-        location.reload();
-    }
-}
-</script>
+    </script>
+</body>
+</html>
