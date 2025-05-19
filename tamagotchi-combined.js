@@ -1,3 +1,205 @@
+// tamagotchi-fixed.js - Versión corregida con minijuegos y sistema de fotos
+console.log("Cargando tamagotchi-fixed.js...");
+
+// Configuración de parámetros del juego
+const CONFIG = {
+    decreaseInterval: 15000, // 15 segundos
+    decreaseAmount: 5,
+    initialHunger: 80,
+    initialHappiness: 80,
+    initialEnergy: 80,
+    sadThreshold: 30,
+    criticalThreshold: 15,
+    animationDuration: 2000,
+    autoSaveInterval: 60000
+};
+
+// Estados disponibles del conejo
+const PET_STATES = {
+    NORMAL: 'normal',
+    EATING: 'eating',
+    PLAYING: 'playing',
+    SLEEPING: 'sleeping',
+    SAD: 'sad'
+};
+
+// Sistema de experiencia y recompensas
+const REWARDS_SYSTEM = {
+    experience: 0,
+    level: 1,
+    unlockedImages: [],
+    // Imágenes que se pueden desbloquear
+    availableImages: [
+        {id: "image1", name: "Primer recuerdo juntos", exp: 50, url: "memory1.jpg"},
+        {id: "image2", name: "Viaje romántico", exp: 100, url: "memory2.jpg"},
+        {id: "image3", name: "Foto favorita de Rachel", exp: 200, url: "memory3.jpg"},
+        {id: "image4", name: "Momento especial", exp: 300, url: "memory4.jpg"},
+        {id: "image5", name: "Lo mejor está por venir", exp: 500, url: "memory5.jpg"}
+    ]
+};
+
+// Mensajes del juego
+const randomMessages = [
+    "¡Qué te gustaaa ehh!!",
+    "Mi mujer, mi esposa, MI WIFE",
+    "¡Que lokita nooo??",
+    "¿Nos hacemos un té lésbico?",
+    "¡Mi Queen!",
+    "¡Putada mano!",
+    "¿Nos hacemos un tattoo?, soy adicta a la tinta",
+    "¿No te apetece querer rebobinar el ahora?",
+    "¡Lo que te quiero yo GORDAAAA!",
+    "¿Publicidad? ¡YO SOY DIRECTORA CREATIVA!",
+    "Eres mi persona favorita 💙"
+];
+
+const feedMessages = [
+    "¡Qué rica zanahoria, ojala pudieras tener la mia!",
+    "¿Lo has cocinado tu? Porque está INCREIBLE",
+    "¡Gracias por alimentarme, MI MUJER, ESPOSA, MI WIFE!",
+    "¡Chin Chan Chun, que ricooo!"
+];
+
+const playMessages = [
+    "¿Nos echamos un Mario kart?",
+    "¡VINITO, CARTAS Y TÚ!",
+    "¡La próxima vez jugamos al Kamasutra!"
+];
+
+const sleepMessages = [
+    "Zzz... soñando con mi DRAGÓN ROJO...",
+    "Zzz... dormimos juntitos, abrazaditos...",
+    "Zzz... en mi propia casa JUAN PABLO LORENZO..."
+];
+
+const sadMessages = [
+    "ya no me quieres petarda...",
+    "Quiero mimitoos...",
+    "¿Dónde está mi princesa de Chichinabo?",
+    "¡Necesito cariñitos y besitos!"
+];
+
+const specialMessages = [
+    "TE QUIERO MUCHO ERES LA MEJOR GORDA",
+    "Cada día te quiero más, MI MUJER, MI ESPOSA MI WIFE",
+    "Tu creatividad me inspira siempre",
+    "Eres la mujer más EMPOWERGIRL del mundo",
+    "¿HACEMOS UN HIJO?"
+];
+
+// Resultados del mini-juego
+const gameResultMessages = {
+    win: [
+        "¡Ganaste! Eres mi campeona",
+        "Wow, me has vencido, eres la mejor.",
+        "¡Increíble! ¿Cómo lo has hecho?"
+    ],
+    lose: [
+        "¡Ja! Te gané, pero te dejo revancha",
+        "¡Perdiste! Aunque sigues siendo mi WIFE",
+        "Gané yo, ahora dame un besito"
+    ],
+    tie: [
+        "¡Empate! Nuestras mentes están conectadas",
+        "Empate... Esto es el destino, somos una",
+        "¡Nos leemos la mente! Empate"
+    ]
+};
+
+// Mensajes para fechas especiales
+const anniversaryMessages = {
+    // 18 de julio - Cumpleaños
+    "7-18": {
+        title: "¡FELIZ CUMPLEAÑOS MI NIÑA!",
+        message: "¡Feliz cumple mi Love! Te quiero mucho, eres muy importante para mi, me haces muy feliz."
+    },
+    // 18 de noviembre - Aniversario
+    "11-18": {
+        title: "¡FELIZ ANIVERSARIO, MI WIFE!",
+        message: "Hoy es nuestro día especial, cada día a tu lado es un regalo. Te quiero más que ayer y menos que mañana. ¡Feliz aniversario mi amor!"
+    }
+};
+
+// Estado del juego
+let gameState = {
+    name: "Rachel Bunny",
+    hunger: CONFIG.initialHunger,
+    happiness: CONFIG.initialHappiness,
+    energy: CONFIG.initialEnergy,
+    lastUpdate: Date.now(),
+    state: PET_STATES.NORMAL,
+    isSleeping: false,
+    isPlaying: false,
+    isEating: false
+};
+
+// Temporizadores
+let timers = {};
+
+// Referencias a elementos del DOM
+let hungerBar = null;
+let happinessBar = null;
+let energyBar = null;
+let petSprite = null;
+let messageBubble = null;
+let levelDisplay = null;
+
+// Función para obtener un mensaje aleatorio
+function getRandomMessage(messageArray) {
+    if (!messageArray || messageArray.length === 0) {
+        return "¡Hola!";
+    }
+    const randomIndex = Math.floor(Math.random() * messageArray.length);
+    return messageArray[randomIndex];
+}
+
+// Función para mostrar un mensaje
+function showMessage(message, duration = 3000) {
+    if (!messageBubble) {
+        messageBubble = document.getElementById('message-bubble');
+        if (!messageBubble) {
+            console.error("Error: message-bubble no encontrado");
+            return;
+        }
+    }
+    
+    console.log("Mostrando mensaje:", message);
+    
+    messageBubble.textContent = message;
+    messageBubble.classList.remove('hidden');
+    
+    // Limpiar temporizador anterior
+    clearTimeout(timers.message);
+    
+    // Configurar temporizador para ocultar
+    timers.message = setTimeout(() => {
+        if (messageBubble) {
+            messageBubble.classList.add('hidden');
+        }
+    }, duration);
+}
+
+// Función para cambiar el sprite según el estado
+function changeSprite(state) {
+    console.log("Cambiando sprite a:", state);
+    
+    if (!petSprite) {
+        petSprite = document.getElementById('pet-sprite');
+        if (!petSprite) {
+            console.error("Error: sprite no encontrado");
+            return;
+        }
+    }
+    
+    // Quitar todos los estados actuales
+    petSprite.classList.remove('normal', 'eating', 'playing', 'sleeping', 'sad');
+    
+    // Aplicar el nuevo estado
+    petSprite.classList.add(state);
+    
+    // Guardar el estado
+    gameState.state = state;
+}
 // Actualizar barras de estado
 function updateStatusBars() {
     console.log("Actualizando barras - hambre:", gameState.hunger, "felicidad:", gameState.happiness, "energía:", gameState.energy);
