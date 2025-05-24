@@ -351,7 +351,6 @@ function feedPet() {
   clearTimeout(timers.eating);
   timers.eating = setTimeout(() => {
     gameState.isEating = false;
-    // Cambiar sprite según el estado actual
     if (gameState.hunger <= CONFIG.sadThreshold || 
         gameState.happiness <= CONFIG.sadThreshold || 
         gameState.energy <= CONFIG.sadThreshold) {
@@ -376,11 +375,12 @@ function playWithPet() {
   }
   if (gameState.energy <= CONFIG.criticalThreshold) {
     showMessage("ESTOY LOW BATTERY, ¿NOS VAMOS DE AVENTURA?...");
-    // Puedes permitir seguir jugando, solo muestra el mensaje
+    // Si quieres permitir jugar igual, NO uses return aquí.
   }
+  // Marcar como jugando
+  gameState.isPlaying = true;
   showGameMenu();
 }
-
 
 // FUNCIÓN CORREGIDA: Mostrar menú de juegos
 function showGameMenu() {
@@ -391,6 +391,10 @@ function showGameMenu() {
     if (existingMenu) {
         document.body.removeChild(existingMenu);
         console.log("Menú anterior eliminado");
+        document.getElementById('cancel-game').addEventListener('click', () => {
+        document.body.removeChild(menuContainer);
+        finishPlaying(false); // No dar recompensa si cancela
+    });
     }
     
     // Crear el contenedor del menú
@@ -562,38 +566,22 @@ function showGameMenu() {
 
 // FUNCIÓN CORREGIDA: Finalizar juego
 function finishPlaying(withReward = true) {
-    console.log("Finalizando juego, con recompensa:", withReward);
-    
-    // Limpiar temporizador del menú si existe
-    if (timers.gameMenu) {
-        clearTimeout(timers.gameMenu);
-    }
-    
-    // Si se da recompensa
-    if (withReward) {
-        // Aumentar felicidad
-        gameState.happiness = Math.min(100, gameState.happiness + 15);
-        
-        // Disminuir energía
-        gameState.energy = Math.max(0, gameState.energy - 8);
-        
-        // Dar experiencia
-        addExperience(5);
-        
-        // Mostrar mensaje de juego terminado
-        showMessage(getRandomMessage(playMessages));
-    }
-    
-    // Ya no está jugando
-    gameState.isPlaying = false;
-    
-    // Actualizar barras (esto ya maneja el cambio de sprite)
+  console.log("Finalizando juego, con recompensa:", withReward);
+  if (withReward) {
+    gameState.happiness = Math.min(100, gameState.happiness + 10);
+    gameState.energy = Math.max(0, gameState.energy - 5);
     updateStatusBars();
-    
-    // Guardar estado
-    saveGameState();
-    
-    console.log("Juego finalizado exitosamente");
+  }
+  gameState.isPlaying = false;
+  if (gameState.hunger <= CONFIG.sadThreshold || 
+      gameState.happiness <= CONFIG.sadThreshold || 
+      gameState.energy <= CONFIG.sadThreshold) {
+    changeSprite(PET_STATES.SAD);
+  } else {
+    changeSprite(PET_STATES.NORMAL);
+  }
+  saveGameState();
+  console.log("Juego finalizado exitosamente");
 }
 
 // FUNCIÓN CORREGIDA: Hacer dormir/despertar al conejo
@@ -895,6 +883,10 @@ function playRockPaperScissors() {
         
         document.body.removeChild(gameContainer);
         finishPlaying(true);
+        document.getElementById('cancel-game').addEventListener('click', () => {
+        document.body.removeChild(menuContainer);
+        finishPlaying(false); // No dar recompensa si cancela
+
     });
 }
 // tamagotchi-fixed.js - PARTE 5: Juego Flappy Rabbit
@@ -1201,7 +1193,9 @@ function playFlappyRabbit() {
         console.log("Cerrando Flappy Rabbit");
         cancelAnimationFrame(animationFrame);
         document.body.removeChild(gameContainer);
-        
+        finishPlaying(true);
+        }
+
         // Dar recompensas por jugar
         gameState.happiness = Math.min(100, gameState.happiness + 12);
         gameState.energy = Math.max(0, gameState.energy - 6);
@@ -1209,6 +1203,20 @@ function playFlappyRabbit() {
         
         // Terminar estado de juego
         finishPlaying(true);
+ // Botón para cerrar
+    document.getElementById('close-rps').addEventListener('click', () => {
+        // Dar experiencia si no se han jugado 5 rondas
+        if (rounds > 0 && rounds < 5) {
+            addExperience(score);
+        }
+        
+        document.body.removeChild(gameContainer);
+        finishPlaying(true);
+        document.getElementById('cancel-game').addEventListener('click', () => {
+        document.body.removeChild(menuContainer);
+        finishPlaying(false); // No dar recompensa si cancela
+
+    });
     }
 }
 // tamagotchi-fixed.js - PARTE 6: Juego Snake
