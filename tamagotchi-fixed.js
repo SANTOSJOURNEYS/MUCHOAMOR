@@ -319,14 +319,20 @@ console.log("Cargando PARTE 3 - Acciones del Tamagotchi...");
 // FUNCIÓN CORREGIDA: Alimentar al conejo
 function feedPet() {
     console.log("Función feedPet ejecutada");
+
+    // Si está dormido, no puede comer
     if (gameState.isSleeping) {
         showMessage("Zzz... No puedo comer mientras duermo... 💤");
         return;
     }
+
+    // Si está comiendo, ignorar acción
     if (gameState.isEating) {
-        console.log("Ya está comiendo, ignorando acción");
+        showMessage("¡Espera, sigo comiendo!");
         return;
     }
+
+    // Marca que está comiendo
     gameState.isEating = true;
     changeSprite(PET_STATES.EATING);
     showMessage(getRandomMessage(feedMessages));
@@ -334,9 +340,16 @@ function feedPet() {
     gameState.happiness = Math.min(100, gameState.happiness + 5);
     updateStatusBars();
 
+    // Deshabilita el botón de alimentar opcionalmente
+    const feedBtn = document.getElementById('feed-btn');
+    if (feedBtn) feedBtn.disabled = true;
+
+    // Timeout para finalizar el estado de comer
     if (timers.eating) clearTimeout(timers.eating);
     timers.eating = setTimeout(() => {
         gameState.isEating = false;
+        // Reactiva el botón de alimentar
+        if (feedBtn) feedBtn.disabled = false;
         updateStatusBars();
     }, CONFIG.animationDuration);
 
@@ -345,6 +358,7 @@ function feedPet() {
 // FUNCIÓN CORREGIDA: Jugar con el conejo - AHORA MUESTRA EL MENÚ
 function playWithPet() {
     console.log("Función playWithPet ejecutada");
+
     if (gameState.isSleeping) {
         showMessage("Zzz... Estoy soñando contigo, luego jugamos...");
         return;
@@ -354,7 +368,7 @@ function playWithPet() {
         return;
     }
     if (gameState.isPlaying) {
-        console.log("Ya está jugando, ignorando acción");
+        showMessage("¡Ya estamos jugando!");
         return;
     }
     if (gameState.energy <= CONFIG.criticalThreshold) {
@@ -1961,13 +1975,14 @@ function resetGameState() {
 // FUNCIÓN CORREGIDA: Configurar los event listeners para los botones
 function setupEventListeners() {
     console.log("Configurando event listeners de los botones");
-    
+
     try {
-        const feedBtn = document.getElementById('feed-btn');
-        const playBtn = document.getElementById('play-btn');
-        const sleepBtn = document.getElementById('sleep-btn');
-        const specialBtn = document.getElementById('special-btn');
-        
+        // Referencias a los botones
+        let feedBtn = document.getElementById('feed-btn');
+        let playBtn = document.getElementById('play-btn');
+        let sleepBtn = document.getElementById('sleep-btn');
+        let specialBtn = document.getElementById('special-btn');
+
         // Verificar que todos los botones existen
         if (!feedBtn || !playBtn || !sleepBtn || !specialBtn) {
             console.error("Error: No se encontraron todos los botones necesarios");
@@ -1979,39 +1994,31 @@ function setupEventListeners() {
             });
             return;
         }
-        
-        // Configurar event listeners con manejo de errores
-        feedBtn.addEventListener('click', function(e) {
-            console.log("Botón alimentar clickeado");
-            e.preventDefault();
-            feedPet();
-        });
-        
-        playBtn.addEventListener('click', function(e) {
-            console.log("Botón jugar clickeado");
-            e.preventDefault();
-            playWithPet();
-        });
-        
-        sleepBtn.addEventListener('click', function(e) {
-            console.log("Botón dormir clickeado");
-            e.preventDefault();
-            toggleSleep();
-        });
-        
-        specialBtn.addEventListener('click', function(e) {
-            console.log("Botón mensaje especial clickeado");
-            e.preventDefault();
-            showSpecialMessage();
-        });
-        
+
+        // --- ELIMINAR LISTENERS ANTERIORES mediante clonado y volver a asignar referencias ---
+        feedBtn.replaceWith(feedBtn.cloneNode(true));
+        playBtn.replaceWith(playBtn.cloneNode(true));
+        sleepBtn.replaceWith(sleepBtn.cloneNode(true));
+        specialBtn.replaceWith(specialBtn.cloneNode(true));
+
+        // Volver a obtener las referencias a los nuevos botones
+        feedBtn = document.getElementById('feed-btn');
+        playBtn = document.getElementById('play-btn');
+        sleepBtn = document.getElementById('sleep-btn');
+        specialBtn = document.getElementById('special-btn');
+
+        // Asignar event listeners SIN duplicados
+        feedBtn.addEventListener('click', feedPet);
+        playBtn.addEventListener('click', playWithPet);
+        sleepBtn.addEventListener('click', toggleSleep);
+        specialBtn.addEventListener('click', showSpecialMessage);
+
         console.log("Event listeners configurados exitosamente");
-        
+
     } catch (error) {
         console.error("Error al configurar event listeners:", error);
     }
 }
-
 // FUNCIÓN CORREGIDA: Inicializar el juego
 function initGame() {
     console.log("=== INICIANDO TAMAGOTCHI RACHEL ===");
