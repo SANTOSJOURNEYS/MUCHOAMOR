@@ -1179,7 +1179,7 @@ function playFlappyRabbit() {
     }
     
     // Cerrar juego
-    function closeGame() {
+function closeGame() {
     console.log("Cerrando Flappy Rabbit");
     cancelAnimationFrame(animationFrame);
     document.body.removeChild(gameContainer);
