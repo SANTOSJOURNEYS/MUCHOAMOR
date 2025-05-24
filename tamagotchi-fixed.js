@@ -1185,7 +1185,7 @@ function closeGame() {
     document.body.removeChild(gameContainer);
     finishPlaying(true);
 }
-
+}
 // tamagotchi-fixed.js - PARTE 6: Juego Snake
 console.log("Cargando PARTE 6 - Juego Snake...");
 
