@@ -1596,7 +1596,12 @@ function showPhotoAlbum() {
         justify-content: center;
         align-items: center;
     `;
-     // Contenido scrolleable
+
+    // Contador de desbloqueos
+    const unlockedCount = REWARDS_SYSTEM.unlockedImages.length;
+    const totalCount = REWARDS_SYSTEM.availableImages.length;
+    
+    // Construir el HTML del álbum (SOLO UNA VEZ)
     let albumHTML = `
       <div id="album-content" style="
           width: 90%;
@@ -1609,39 +1614,18 @@ function showPhotoAlbum() {
           position: relative;
       ">
         <button id="close-album" style="position:absolute;top:15px;right:20px;font-size:22px;background:none;border:none;cursor:pointer;">✖</button>
-        <h2>Nuestro Álbum de Recuerdos</h2>
-        <!-- Aquí va tu contenido de imágenes y recuerdos -->
-        <!-- Ejemplo de imagen desbloqueada -->
-        ${
-          REWARDS_SYSTEM.availableImages.map(img => 
-            REWARDS_SYSTEM.unlockedImages.includes(img.id)
-              ? `<div style="margin-bottom:12px;"><img src="${img.url}" alt="${img.name}" style="width:100%;border-radius:12px;"><div>${img.name}</div></div>`
-              : `<div style="margin-bottom:12px;opacity:0.5;"><div style="width:100%;height:120px;background:#eee;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:2em;">🔒</div><div>${img.name}</div></div>`
-          ).join('')
-        }
-      </div>
-    `;
-
-    // Contador de desbloqueos
-    const unlockedCount = REWARDS_SYSTEM.unlockedImages.length;
-    const totalCount = REWARDS_SYSTEM.availableImages.length;
-    
-    // Crear HTML del álbum
-    let albumHTML = `
-        <h2 style="color: white; margin-bottom: 15px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">Nuestro Álbum de Recuerdos</h2>
-        <p style="margin-bottom: 20px; color: white; font-weight: bold;">
-            Has desbloqueado ${unlockedCount} de ${totalCount} recuerdos
+        <h2 style="color: #E53E3E; margin-bottom: 8px;">Nuestro Álbum de Recuerdos</h2>
+        <p style="color: #333; font-weight: bold;">
+          Has desbloqueado ${unlockedCount} de ${totalCount} recuerdos
         </p>
         <div style="
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 25px;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
         ">
     `;
-    
-    // Mostrar imágenes
-    REWARDS_SYSTEM.availableImages.forEach((img, index) => {
+     REWARDS_SYSTEM.availableImages.forEach((img) => {
         const isUnlocked = REWARDS_SYSTEM.unlockedImages.includes(img.id);
         
         albumHTML += `
@@ -1657,22 +1641,9 @@ function showPhotoAlbum() {
         
         if (isUnlocked) {
             albumHTML += `
-                <div style="
-                    width: 100%;
-                    height: 120px;
-                    background: linear-gradient(45deg, #87CEEB, #98E4FF);
-                    border-radius: 10px;
-                    margin-bottom: 10px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 40px;
-                    color: white;
-                    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-                    border: 2px solid #5CACEE;
-                ">📷</div>
-                <p style="font-weight: bold; color: #2E7D32; margin-bottom: 5px;">${img.name}</p>
-                <p style="font-size: 12px; color: #666;">✓ Desbloqueado</p>
+                <img src="${img.url}" alt="${img.name}" style="width:100%;max-height:100px;object-fit:cover;border-radius:10px;margin-bottom:7px;">
+                <div style="font-weight:bold;color:#2E7D32;margin-bottom:3px;">${img.name}</div>
+                <div style="font-size:12px;color:#666;">✓ Desbloqueado</div>
             `;
         } else {
             albumHTML += `
@@ -1716,21 +1687,21 @@ function showPhotoAlbum() {
     albumHTML += `
         </div>
         <div style="
-            background: rgba(255,255,255,0.9);
-            padding: 15px;
+            background: rgba(255,255,255,0.93);
+            padding: 12px;
             border-radius: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 5px;
             border: 2px solid #87CEEB;
         ">
-            <p style="color: #333; font-weight: bold; margin-bottom: 5px;">
+            <span style="color: #333; font-weight: bold;">
                 Experiencia actual: ${REWARDS_SYSTEM.experience} puntos
-            </p>
-            <p style="color: #666; font-size: 14px;">
+            </span>
+            <br>
+            <span style="color: #666; font-size: 13px;">
                 ¡Sigue jugando para desbloquear más recuerdos especiales!
-            </p>
+            </span>
         </div>
-        <button id="close-album" style="position:absolute;top:15px;right:20px;font-size:22px;background:none;border:none;cursor:pointer;">✖</button>
-         
+      </div>
     `;
     
       album.innerHTML = albumHTML;
