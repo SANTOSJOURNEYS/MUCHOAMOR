@@ -341,7 +341,6 @@ function feedPet() {
   }
   gameState.isEating = true;
 
-  // Permitir alimentar incluso si hunger es 0
   changeSprite(PET_STATES.EATING);
   showMessage(getRandomMessage(feedMessages));
   gameState.hunger = Math.min(100, gameState.hunger + 20);
@@ -375,15 +374,13 @@ function playWithPet() {
     showMessage("Zzz... Estoy soñando contigo, luego hablamos...");
     return;
   }
-  // Permitir jugar aunque la energía sea baja, solo muestra aviso pero no bloquea por siempre
   if (gameState.energy <= CONFIG.criticalThreshold) {
     showMessage("ESTOY LOW BATTERY, ¿NOS VAMOS DE AVENTURA?...");
-    // Si quieres bloquear, puedes usar return aquí, pero si quieres permitir, solo avisa
-    // return;
+    // Puedes permitir seguir jugando, solo muestra el mensaje
   }
-  // Mostrar el menú de juegos
   showGameMenu();
 }
+
 
 // FUNCIÓN CORREGIDA: Mostrar menú de juegos
 function showGameMenu() {
@@ -677,7 +674,7 @@ function showSpecialMessage() {
     addExperience(1);
     
     // Actualizar barras
-    Bars();
+    //Bars();
     
     // Guardar estado
     saveGameState();
@@ -1208,7 +1205,7 @@ function playFlappyRabbit() {
         // Dar recompensas por jugar
         gameState.happiness = Math.min(100, gameState.happiness + 12);
         gameState.energy = Math.max(0, gameState.energy - 6);
-        Bars();
+        //Bars();
         
         // Terminar estado de juego
         finishPlaying(true);
