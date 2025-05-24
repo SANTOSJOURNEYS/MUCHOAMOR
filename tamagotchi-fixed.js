@@ -391,7 +391,6 @@ function showGameMenu() {
     if (existingMenu) {
         document.body.removeChild(existingMenu);
         console.log("Menú anterior eliminado");
-        document.getElementById('cancel-game').addEventListener('click', () => {
         document.body.removeChild(menuContainer);
         finishPlaying(false); // No dar recompensa si cancela
     });
