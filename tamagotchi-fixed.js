@@ -1161,25 +1161,32 @@ function playFlappyRabbit() {
     cancelAnimationFrame(animationFrame);
 
     // Mostrar mensaje de fin
-startMessage.innerHTML = `
-    <div style="text-align: center;">
-        <h3 style="margin-bottom: 10px;">¡Juego terminado!</h3>
-        <p style="font-size: 20px; margin-bottom: 10px;">Puntuación: <strong>${score}</strong></p>
-        <p style="font-size: 14px;">¡Has ganado ${score * 5} puntos de experiencia!</p>
-        <button id="flappy-exit-btn" style="
-            margin-top: 18px; padding: 12px 30px;
-            background: #f44336; border: none; border-radius: 22px;
-            color: white; font-weight: bold; cursor: pointer; font-size: 16px;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-        ">Cerrar</button>
-    </div>
-`;
-const exitBtn = document.getElementById('flappy-exit-btn');
-if (exitBtn) exitBtn.addEventListener('click', closeGame);
-// Si el botón principal sigue visible
-const closeFlappyBtn = document.getElementById('close-flappy');
-if (closeFlappyBtn) closeFlappyBtn.onclick = closeGame;
-    
+    startMessage.innerHTML = `
+        <div style="text-align: center;">
+            <h3 style="margin-bottom: 10px;">¡Juego terminado!</h3>
+            <p style="font-size: 20px; margin-bottom: 10px;">Puntuación: <strong>${score}</strong></p>
+            <p style="font-size: 14px;">¡Has ganado ${score * 5} puntos de experiencia!</p>
+            <button id="flappy-exit-btn" style="
+                margin-top: 18px; padding: 12px 30px;
+                background: #f44336; border: none; border-radius: 22px;
+                color: white; font-weight: bold; cursor: pointer; font-size: 16px;
+                box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+            ">Cerrar</button>
+        </div>
+    `;
+
+    // Añadir experiencia basada en la puntuación
+    const expGained = score * 5;
+    addExperience(expGained);
+
+    // Solo una vez el exitBtn:
+    const exitBtn = document.getElementById('flappy-exit-btn');
+    if (exitBtn) exitBtn.addEventListener('click', closeGame);
+
+    // También permitir cerrar con el botón principal si sigue visible
+    const closeFlappyBtn = document.getElementById('close-flappy');
+    if (closeFlappyBtn) closeFlappyBtn.onclick = closeGame;
+}
     
     // Añadir experiencia basada en la puntuación
     const expGained = score * 5;
