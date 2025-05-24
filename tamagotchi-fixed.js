@@ -1994,6 +1994,9 @@ function loadGameState() {
             console.error("Error al cargar recompensas:", e);
         }
     }
+
+    // --- AQUI SIEMPRE RESETEA EL ESTADO DE JUEGO ---
+    gameState.isPlaying = false;
 }
 
 // Función para reiniciar el estado del juego
