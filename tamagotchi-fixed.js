@@ -878,7 +878,8 @@ function playRockPaperScissors() {
     }
     document.body.removeChild(gameContainer);
     finishPlaying(true);
-});
+    });
+} 
 // tamagotchi-fixed.js - PARTE 5: Juego Flappy Rabbit
 console.log("Cargando PARTE 5 - Juego Flappy Rabbit...");
 
