@@ -1156,36 +1156,59 @@ function playFlappyRabbit() {
     }
     
     // Fin del juego
-    function endGame() {
-        gameOver = true;
-        cancelAnimationFrame(animationFrame);
-        
-        // Mostrar mensaje de fin
-        startMessage.innerHTML = `
-            <div style="text-align: center;">
-                <h3 style="margin-bottom: 10px;">¡Juego terminado!</h3>
-                <p style="font-size: 20px; margin-bottom: 10px;">Puntuación: <strong>${score}</strong></p>
-                <p style="font-size: 14px;">¡Has ganado ${score * 5} puntos de experiencia!</p>
-            </div>
-        `;
-        startMessage.style.display = 'block';
-        
-        // Añadir experiencia basada en la puntuación
-        const expGained = score * 5;
-        addExperience(expGained);
-        
-        console.log("Flappy Rabbit terminado, puntuación:", score);
-    }
+   function endGame() {
+    gameOver = true;
+    cancelAnimationFrame(animationFrame);
+
+    // Mostrar mensaje de fin
+startMessage.innerHTML = `
+    <div style="text-align: center;">
+        <h3 style="margin-bottom: 10px;">¡Juego terminado!</h3>
+        <p style="font-size: 20px; margin-bottom: 10px;">Puntuación: <strong>${score}</strong></p>
+        <p style="font-size: 14px;">¡Has ganado ${score * 5} puntos de experiencia!</p>
+        <button id="flappy-exit-btn" style="
+            margin-top: 18px; padding: 12px 30px;
+            background: #f44336; border: none; border-radius: 22px;
+            color: white; font-weight: bold; cursor: pointer; font-size: 16px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+        ">Cerrar</button>
+    </div>
+`;
+const exitBtn = document.getElementById('flappy-exit-btn');
+if (exitBtn) exitBtn.addEventListener('click', closeGame);
+// Si el botón principal sigue visible
+const closeFlappyBtn = document.getElementById('close-flappy');
+if (closeFlappyBtn) closeFlappyBtn.onclick = closeGame;
     
-    // Cerrar juego
-    function closeGame() {
+    
+    // Añadir experiencia basada en la puntuación
+    const expGained = score * 5;
+    addExperience(expGained);
+       
+    // Permitir cerrar el juego cuando termina
+    const exitBtn = document.getElementById('flappy-exit-btn');
+    if (exitBtn) {
+        exitBtn.addEventListener('click', () => {
+            closeGame(); // Llama al cierre seguro del minijuego
+        });
+    }
+
+    // También permitir cerrar con el botón principal si sigue visible
+    if (document.getElementById('close-flappy')) {
+        document.getElementById('close-flappy').onclick = closeGame;
+    }
+}
+function closeGame() {
     console.log("Cerrando Flappy Rabbit");
     cancelAnimationFrame(animationFrame);
-    document.body.removeChild(gameContainer);
-    finishPlaying(true);
+    // Limpia el overlay del juego si sigue presente
+    if (document.body.contains(gameContainer)) {
+        document.body.removeChild(gameContainer);
     }
-} 
-console.log("Cargando PARTE 6 - Juego Snake...");
+    // Asegura que el estado vuelva a la normalidad
+    gameState.isPlaying = false;
+    finishPlaying(true); // finishPlaying ya debería manejar el sprite y el guardado
+}   
 
 // tamagotchi-fixed.js - PARTE 6: Juego Snake
 console.log("Cargando PARTE 6 - Juego Snake...");
