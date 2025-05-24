@@ -1156,66 +1156,50 @@ function playFlappyRabbit() {
     }
     
     // Fin del juego
-   function endGame() {
-    gameOver = true;
-    cancelAnimationFrame(animationFrame);
+    function endGame() {
+        gameOver = true;
+        cancelAnimationFrame(animationFrame);
 
-    // Mostrar mensaje de fin
-    startMessage.innerHTML = `
-        <div style="text-align: center;">
-            <h3 style="margin-bottom: 10px;">¡Juego terminado!</h3>
-            <p style="font-size: 20px; margin-bottom: 10px;">Puntuación: <strong>${score}</strong></p>
-            <p style="font-size: 14px;">¡Has ganado ${score * 5} puntos de experiencia!</p>
-            <button id="flappy-exit-btn" style="
-                margin-top: 18px; padding: 12px 30px;
-                background: #f44336; border: none; border-radius: 22px;
-                color: white; font-weight: bold; cursor: pointer; font-size: 16px;
-                box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-            ">Cerrar</button>
-        </div>
-    `;
+        // Mostrar mensaje de fin
+        startMessage.innerHTML = `
+            <div style="text-align: center;">
+                <h3 style="margin-bottom: 10px;">¡Juego terminado!</h3>
+                <p style="font-size: 20px; margin-bottom: 10px;">Puntuación: <strong>${score}</strong></p>
+                <p style="font-size: 14px;">¡Has ganado ${score * 5} puntos de experiencia!</p>
+                <button id="flappy-exit-btn" style="
+                    margin-top: 18px; padding: 12px 30px;
+                    background: #f44336; border: none; border-radius: 22px;
+                    color: white; font-weight: bold; cursor: pointer; font-size: 16px;
+                    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+                ">Cerrar</button>
+            </div>
+        `;
+        
+        // Solo una vez el exitBtn:
+        const exitBtn = document.getElementById('flappy-exit-btn');
+        if (exitBtn) exitBtn.addEventListener('click', closeGame);
 
-    // Añadir experiencia basada en la puntuación
-    const expGained = score * 5;
-    addExperience(expGained);
+        // Añadir experiencia basada en la puntuación
+        const expGained = score * 5;
+        addExperience(expGained);
 
-    // Solo una vez el exitBtn:
-    const exitBtn = document.getElementById('flappy-exit-btn');
-    if (exitBtn) exitBtn.addEventListener('click', closeGame);
-
-    // También permitir cerrar con el botón principal si sigue visible
-    const closeFlappyBtn = document.getElementById('close-flappy');
-    if (closeFlappyBtn) closeFlappyBtn.onclick = closeGame;
-}
-    
-    // Añadir experiencia basada en la puntuación
-    const expGained = score * 5;
-    addExperience(expGained);
-       
-    // Permitir cerrar el juego cuando termina
-    const exitBtn = document.getElementById('flappy-exit-btn');
-    if (exitBtn) {
-        exitBtn.addEventListener('click', () => {
-            closeGame(); // Llama al cierre seguro del minijuego
-        });
+        // También permitir cerrar con el botón principal si sigue visible
+        const closeFlappyBtn = document.getElementById('close-flappy');
+        if (closeFlappyBtn) closeFlappyBtn.onclick = closeGame;
     }
 
-    // También permitir cerrar con el botón principal si sigue visible
-    if (document.getElementById('close-flappy')) {
-        document.getElementById('close-flappy').onclick = closeGame;
+    function closeGame() {
+        console.log("Cerrando Flappy Rabbit");
+        cancelAnimationFrame(animationFrame);
+        // Limpia el overlay del juego si sigue presente
+        if (document.body.contains(gameContainer)) {
+            document.body.removeChild(gameContainer);
+        }
+        // Asegura que el estado vuelva a la normalidad
+        gameState.isPlaying = false;
+        finishPlaying(true); // finishPlaying ya debería manejar el sprite y el guardado
     }
 }
-function closeGame() {
-    console.log("Cerrando Flappy Rabbit");
-    cancelAnimationFrame(animationFrame);
-    // Limpia el overlay del juego si sigue presente
-    if (document.body.contains(gameContainer)) {
-        document.body.removeChild(gameContainer);
-    }
-    // Asegura que el estado vuelva a la normalidad
-    gameState.isPlaying = false;
-    finishPlaying(true); // finishPlaying ya debería manejar el sprite y el guardado
-}   
 
 // tamagotchi-fixed.js - PARTE 6: Juego Snake
 console.log("Cargando PARTE 6 - Juego Snake...");
@@ -1596,28 +1580,48 @@ console.log("Cargando PARTE 7 - Álbum de Fotos y Sistema de Guardado...");
 function showPhotoAlbum() {
     console.log("Mostrando álbum de fotos");
     
-    // Crear álbum
+   // Crear álbum
     const album = document.createElement('div');
-    album.className = 'photo-album';
+    album.id = 'album-modal'; // Asegúrate de usar este id para el cierre
     album.style.cssText = `
         position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: linear-gradient(135deg, #FF6B6B 0%, #FFE66D 100%);
-        padding: 25px;
-        border-radius: 20px;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-        z-index: 1000;
-        width: 90vw;
-        max-width: 500px;
-        max-height: 80vh;
-        overflow: auto;
-        text-align: center;
-        border: 3px solid #E53E3E;
-        animation: slideInFromTop 0.4s ease-out;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0,0,0,0.7);
+        z-index: 1100;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
     `;
-    
+     // Contenido scrolleable
+    let albumHTML = `
+      <div id="album-content" style="
+          width: 90%;
+          max-width: 400px;
+          max-height: 70vh;
+          overflow-y: auto;
+          background: white;
+          border-radius: 20px;
+          padding: 20px;
+          position: relative;
+      ">
+        <button id="close-album" style="position:absolute;top:15px;right:20px;font-size:22px;background:none;border:none;cursor:pointer;">✖</button>
+        <h2>Nuestro Álbum de Recuerdos</h2>
+        <!-- Aquí va tu contenido de imágenes y recuerdos -->
+        <!-- Ejemplo de imagen desbloqueada -->
+        ${
+          REWARDS_SYSTEM.availableImages.map(img => 
+            REWARDS_SYSTEM.unlockedImages.includes(img.id)
+              ? `<div style="margin-bottom:12px;"><img src="${img.url}" alt="${img.name}" style="width:100%;border-radius:12px;"><div>${img.name}</div></div>`
+              : `<div style="margin-bottom:12px;opacity:0.5;"><div style="width:100%;height:120px;background:#eee;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:2em;">🔒</div><div>${img.name}</div></div>`
+          ).join('')
+        }
+      </div>
+    `;
+
     // Contador de desbloqueos
     const unlockedCount = REWARDS_SYSTEM.unlockedImages.length;
     const totalCount = REWARDS_SYSTEM.availableImages.length;
@@ -1725,31 +1729,19 @@ function showPhotoAlbum() {
                 ¡Sigue jugando para desbloquear más recuerdos especiales!
             </p>
         </div>
-        <button id="close-album" style="
-            background: linear-gradient(45deg, #4CAF50, #45A049);
-            border: none;
-            padding: 12px 24px;
-            border-radius: 25px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        ">Cerrar Álbum</button>
+        <button id="close-album" style="position:absolute;top:15px;right:20px;font-size:22px;background:none;border:none;cursor:pointer;">✖</button>
+         
     `;
     
-    album.innerHTML = albumHTML;
+      album.innerHTML = albumHTML;
     document.body.appendChild(album);
-    
-    // Evento para cerrar
-    document.getElementById('close-album').addEventListener('click', () => {
-        document.body.removeChild(album);
-        finishPlaying(true);
+
+    document.getElementById('close-album').addEventListener('click', function() {
+      album.remove();
+      finishPlaying(true);
     });
-    
     console.log("Álbum de fotos mostrado exitosamente");
 }
-
 // Mostrar notificación de desbloqueo de imagen
 function showUnlockNotification(image) {
     console.log("Mostrando notificación de desbloqueo para:", image.name);
@@ -1844,14 +1836,6 @@ function showUnlockNotification(image) {
         document.head.removeChild(style);
         showPhotoAlbum();
     });
-    
-    // Auto-cerrar después de 10 segundos
-    setTimeout(() => {
-        if (document.body.contains(notification)) {
-            document.body.removeChild(notification);
-            document.head.removeChild(style);
-        }
-    }, 10000);
 }
 
 // Guardar el estado de recompensas
