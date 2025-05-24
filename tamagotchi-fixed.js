@@ -391,9 +391,6 @@ function showGameMenu() {
     if (existingMenu) {
         document.body.removeChild(existingMenu);
         console.log("Menú anterior eliminado");
-        document.body.removeChild(menuContainer);
-        finishPlaying(false); // No dar recompensa si cancela
-    });
     }
     
     // Crear el contenedor del menú
@@ -875,19 +872,13 @@ function playRockPaperScissors() {
     
     // Botón para cerrar
     document.getElementById('close-rps').addEventListener('click', () => {
-        // Dar experiencia si no se han jugado 5 rondas
-        if (rounds > 0 && rounds < 5) {
-            addExperience(score);
-        }
-        
-        document.body.removeChild(gameContainer);
-        finishPlaying(true);
-        document.getElementById('cancel-game').addEventListener('click', () => {
-        document.body.removeChild(menuContainer);
-        finishPlaying(false); // No dar recompensa si cancela
-
-    });
-}
+    // Dar experiencia si no se han jugado 5 rondas
+    if (rounds > 0 && rounds < 5) {
+        addExperience(score);
+    }
+    document.body.removeChild(gameContainer);
+    finishPlaying(true);
+});
 // tamagotchi-fixed.js - PARTE 5: Juego Flappy Rabbit
 console.log("Cargando PARTE 5 - Juego Flappy Rabbit...");
 
@@ -1189,19 +1180,11 @@ function playFlappyRabbit() {
     
     // Cerrar juego
     function closeGame() {
-        console.log("Cerrando Flappy Rabbit");
-        cancelAnimationFrame(animationFrame);
-        document.body.removeChild(gameContainer);
-        finishPlaying(true);
-        }
-
-        // Dar recompensas por jugar
-        gameState.happiness = Math.min(100, gameState.happiness + 12);
-        gameState.energy = Math.max(0, gameState.energy - 6);
-        //Bars();
-        
-        // Terminar estado de juego
-        finishPlaying(true);
+    console.log("Cerrando Flappy Rabbit");
+    cancelAnimationFrame(animationFrame);
+    document.body.removeChild(gameContainer);
+    finishPlaying(true);
+}
  // Botón para cerrar
     document.getElementById('close-rps').addEventListener('click', () => {
         // Dar experiencia si no se han jugado 5 rondas
@@ -1211,13 +1194,8 @@ function playFlappyRabbit() {
         
         document.body.removeChild(gameContainer);
         finishPlaying(true);
-        document.getElementById('cancel-game').addEventListener('click', () => {
-        document.body.removeChild(menuContainer);
-        finishPlaying(false); // No dar recompensa si cancela
-
-    });
     }
-}
+
 // tamagotchi-fixed.js - PARTE 6: Juego Snake
 console.log("Cargando PARTE 6 - Juego Snake...");
 
