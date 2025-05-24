@@ -215,14 +215,27 @@ function changeSprite(state) {
 
 // FUNCIÓN CORREGIDA: Actualizar barras de estado
 function updateStatusBars() {
-    console.log("Actualizando barras - H:", gameState.hunger, "F:", gameState.happiness, "E:", gameState.energy);
+    console.log("Actualizando barras - hambre:", gameState.hunger, "felicidad:", gameState.happiness, "energía:", gameState.energy);
+    // Asegura que los valores nunca sean negativos
+    gameState.hunger = Math.max(0, gameState.hunger);
+    gameState.happiness = Math.max(0, gameState.happiness);
+    gameState.energy = Math.max(0, gameState.energy);
     
+// === AQUI INSERTA EL BLOQUE DE RESETEO AUTOMÁTICO ===
+    if (gameState.hunger <= 0 && gameState.happiness <= 0 && gameState.energy <= 0) {
+        showMessage("¡Oh no! Estaba muy mal... ¡Gracias por venir a rescatarme!", 4000);
+        gameState.hunger = CONFIG.initialHunger / 2;
+        gameState.happiness = CONFIG.initialHappiness / 2;
+        gameState.energy = CONFIG.initialEnergy / 2;
+        // Llama de nuevo a updateStatusBars para reflejar el cambio
+        setTimeout(updateStatusBars, 100);
+        return;
+    }
     // Obtener referencias si no existen
     if (!hungerBar || !happinessBar || !energyBar) {
         hungerBar = document.getElementById('hunger-bar');
         happinessBar = document.getElementById('happiness-bar');
         energyBar = document.getElementById('energy-bar');
-        
         if (!hungerBar || !happinessBar || !energyBar) {
             console.error("Error: No se pudieron encontrar las barras de estado");
             return;
@@ -233,15 +246,6 @@ function updateStatusBars() {
     gameState.hunger = Math.max(0, Math.min(100, gameState.hunger));
     gameState.happiness = Math.max(0, Math.min(100, gameState.happiness));
     gameState.energy = Math.max(0, Math.min(100, gameState.energy));
-    
-    // Si todos los valores están muy bajos, dar una ayuda
-    if (gameState.hunger <= 5 && gameState.happiness <= 5 && gameState.energy <= 5) {
-        console.log("Valores críticos detectados, aplicando recuperación de emergencia");
-        gameState.hunger = 30;
-        gameState.happiness = 30;
-        gameState.energy = 30;
-        showMessage("¡Oh no! Estaba muy mal... ¡Gracias por rescatarme!", 5000);
-    }
     
     // Actualizar ancho de las barras
     hungerBar.style.width = `${gameState.hunger}%`;
@@ -330,89 +334,55 @@ console.log("Cargando PARTE 3 - Acciones del Tamagotchi...");
 
 // FUNCIÓN CORREGIDA: Alimentar al conejo
 function feedPet() {
-    console.log("Función feedPet ejecutada");
-    
-    if (gameState.isEating) {
-        console.log("Ya está comiendo, ignorando acción");
-        return;
-    }
-    
-    if (gameState.isSleeping) {
-        showMessage("Zzz... Estoy durmiendo Gorda, después te como...");
-        return;
-    }
-    
-    // Marcar como comiendo
-    gameState.isEating = true;
-    
-    // Añadir efecto visual al botón
-    const feedBtn = document.getElementById('feed-btn');
-    if (feedBtn) {
-        feedBtn.classList.add('active');
-        setTimeout(() => feedBtn.classList.remove('active'), 600);
-    }
-    
-    // Mostrar animación de comiendo
-    changeSprite(PET_STATES.EATING);
-    
-    // Mostrar mensaje
-    showMessage(getRandomMessage(feedMessages));
-    
-    // Aumentar nivel de hambre
-    gameState.hunger = Math.min(100, gameState.hunger + 20);
-    
-    // Aumentar felicidad un poco
-    gameState.happiness = Math.min(100, gameState.happiness + 5);
-    
-    // Dar experiencia por alimentar
-    addExperience(2);
-    
-    // Actualizar barras inmediatamente
-    updateStatusBars();
-    
-    // Volver al estado normal después de la animación
-    clearTimeout(timers.eating);
-    timers.eating = setTimeout(() => {
-        gameState.isEating = false;
-        
-        // Volver al estado apropiado según valores actuales
-        updateStatusBars(); // Esto ya maneja el cambio de sprite
-        
-        console.log("Alimentación completada");
-    }, CONFIG.animationDuration);
-    
-    // Guardar el estado
-    saveGameState();
-}
+  console.log("Función feedPet ejecutada");
+  if (gameState.isEating) {
+    console.log("Ya está comiendo, ignorando acción");
+    return;
+  }
+  gameState.isEating = true;
 
+  // Permitir alimentar incluso si hunger es 0
+  changeSprite(PET_STATES.EATING);
+  showMessage(getRandomMessage(feedMessages));
+  gameState.hunger = Math.min(100, gameState.hunger + 20);
+  gameState.happiness = Math.min(100, gameState.happiness + 5);
+
+  updateStatusBars();
+
+  clearTimeout(timers.eating);
+  timers.eating = setTimeout(() => {
+    gameState.isEating = false;
+    // Cambiar sprite según el estado actual
+    if (gameState.hunger <= CONFIG.sadThreshold || 
+        gameState.happiness <= CONFIG.sadThreshold || 
+        gameState.energy <= CONFIG.sadThreshold) {
+      changeSprite(PET_STATES.SAD);
+    } else {
+      changeSprite(PET_STATES.NORMAL);
+    }
+  }, CONFIG.animationDuration);
+
+  saveGameState();
+}
 // FUNCIÓN CORREGIDA: Jugar con el conejo - AHORA MUESTRA EL MENÚ
 function playWithPet() {
-    console.log("Función playWithPet ejecutada");
-    
-    if (gameState.isPlaying) {
-        console.log("Ya está jugando, ignorando acción");
-        return;
-    }
-    
-    if (gameState.isSleeping) {
-        showMessage("Zzz... Estoy soñando contigo, luego hablamos...");
-        return;
-    }
-    
-    if (gameState.energy <= CONFIG.criticalThreshold) {
-        showMessage("ESTOY LOW BATTERY, necesito dormir un poquito...");
-        return;
-    }
-    
-    // Añadir efecto visual al botón
-    const playBtn = document.getElementById('play-btn');
-    if (playBtn) {
-        playBtn.classList.add('active');
-        setTimeout(() => playBtn.classList.remove('active'), 600);
-    }
-    
-    // Mostrar el menú de juegos
-    showGameMenu();
+  console.log("Función playWithPet ejecutada");
+  if (gameState.isPlaying) {
+    console.log("Ya está jugando, ignorando acción");
+    return;
+  }
+  if (gameState.isSleeping) {
+    showMessage("Zzz... Estoy soñando contigo, luego hablamos...");
+    return;
+  }
+  // Permitir jugar aunque la energía sea baja, solo muestra aviso pero no bloquea por siempre
+  if (gameState.energy <= CONFIG.criticalThreshold) {
+    showMessage("ESTOY LOW BATTERY, ¿NOS VAMOS DE AVENTURA?...");
+    // Si quieres bloquear, puedes usar return aquí, pero si quieres permitir, solo avisa
+    // return;
+  }
+  // Mostrar el menú de juegos
+  showGameMenu();
 }
 
 // FUNCIÓN CORREGIDA: Mostrar menú de juegos
@@ -707,7 +677,7 @@ function showSpecialMessage() {
     addExperience(1);
     
     // Actualizar barras
-    updateStatusBars();
+    Bars();
     
     // Guardar estado
     saveGameState();
@@ -1238,7 +1208,7 @@ function playFlappyRabbit() {
         // Dar recompensas por jugar
         gameState.happiness = Math.min(100, gameState.happiness + 12);
         gameState.energy = Math.max(0, gameState.energy - 6);
-        updateStatusBars();
+        Bars();
         
         // Terminar estado de juego
         finishPlaying(true);
