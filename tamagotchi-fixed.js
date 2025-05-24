@@ -1185,16 +1185,6 @@ function closeGame() {
     document.body.removeChild(gameContainer);
     finishPlaying(true);
 }
- // Botón para cerrar
-    document.getElementById('close-rps').addEventListener('click', () => {
-        // Dar experiencia si no se han jugado 5 rondas
-        if (rounds > 0 && rounds < 5) {
-            addExperience(score);
-        }
-        
-        document.body.removeChild(gameContainer);
-        finishPlaying(true);
-        }
 
 // tamagotchi-fixed.js - PARTE 6: Juego Snake
 console.log("Cargando PARTE 6 - Juego Snake...");
