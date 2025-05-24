@@ -334,54 +334,54 @@ console.log("Cargando PARTE 3 - Acciones del Tamagotchi...");
 
 // FUNCIÓN CORREGIDA: Alimentar al conejo
 function feedPet() {
-  console.log("Función feedPet ejecutada");
-  if (gameState.isEating) {
-    console.log("Ya está comiendo, ignorando acción");
-    return;
-  }
-  gameState.isEating = true;
-
-  changeSprite(PET_STATES.EATING);
-  showMessage(getRandomMessage(feedMessages));
-  gameState.hunger = Math.min(100, gameState.hunger + 20);
-  gameState.happiness = Math.min(100, gameState.happiness + 5);
-
-  updateStatusBars();
-
-  clearTimeout(timers.eating);
-  timers.eating = setTimeout(() => {
-    gameState.isEating = false;
-    if (gameState.hunger <= CONFIG.sadThreshold || 
-        gameState.happiness <= CONFIG.sadThreshold || 
-        gameState.energy <= CONFIG.sadThreshold) {
-      changeSprite(PET_STATES.SAD);
-    } else {
-      changeSprite(PET_STATES.NORMAL);
+    console.log("Función feedPet ejecutada");
+    // Permitir alimentar solo si NO está comiendo ni jugando ni dormido
+    if (gameState.isEating || gameState.isPlaying || gameState.isSleeping) {
+        console.log("No se puede alimentar ahora (isEating, isPlaying o isSleeping activo), ignorando acción");
+        return;
     }
-  }, CONFIG.animationDuration);
+    gameState.isEating = true;
+    changeSprite(PET_STATES.EATING);
+    showMessage(getRandomMessage(feedMessages));
+    gameState.hunger = Math.min(100, gameState.hunger + 20);
+    gameState.happiness = Math.min(100, gameState.happiness + 5);
+    updateStatusBars();
 
-  saveGameState();
+    // Limpiar cualquier timeout previo
+    if (timers.eating) clearTimeout(timers.eating);
+
+    timers.eating = setTimeout(() => {
+        gameState.isEating = false;
+        // Si aún tiene hambre o está triste/dormido, actualiza sprite
+        if (gameState.isSleeping) {
+            changeSprite(PET_STATES.SLEEPING);
+        } else if (gameState.hunger <= CONFIG.sadThreshold ||
+            gameState.happiness <= CONFIG.sadThreshold ||
+            gameState.energy <= CONFIG.sadThreshold) {
+            changeSprite(PET_STATES.SAD);
+        } else {
+            changeSprite(PET_STATES.NORMAL);
+        }
+        updateStatusBars();
+    }, CONFIG.animationDuration);
+
+    saveGameState();
 }
 // FUNCIÓN CORREGIDA: Jugar con el conejo - AHORA MUESTRA EL MENÚ
 function playWithPet() {
-  console.log("Función playWithPet ejecutada");
-  if (gameState.isPlaying) {
-    console.log("Ya está jugando, ignorando acción");
-    return;
-  }
-  if (gameState.isSleeping) {
-    showMessage("Zzz... Estoy soñando contigo, luego hablamos...");
-    return;
-  }
-  if (gameState.energy <= CONFIG.criticalThreshold) {
-    showMessage("ESTOY LOW BATTERY, ¿NOS VAMOS DE AVENTURA?...");
-    // Si quieres permitir jugar igual, NO uses return aquí.
-  }
-  // Marcar como jugando
-  gameState.isPlaying = true;
-  showGameMenu();
+    console.log("Función playWithPet ejecutada");
+    // Permitir jugar solo si NO está jugando ni dormido ni comiendo
+    if (gameState.isPlaying || gameState.isSleeping || gameState.isEating) {
+        console.log("No se puede jugar ahora (isPlaying, isSleeping o isEating activo), ignorando acción");
+        return;
+    }
+    if (gameState.energy <= CONFIG.criticalThreshold) {
+        showMessage("ESTOY LOW BATTERY, ¿NOS VAMOS DE AVENTURA?...");
+        // Si quieres permitir jugar igual, no hagas return aquí.
+    }
+    gameState.isPlaying = true;
+    showGameMenu();
 }
-
 // FUNCIÓN CORREGIDA: Mostrar menú de juegos
 function showGameMenu() {
     console.log("Mostrando menú de juegos - FUNCIÓN CORREGIDA");
@@ -541,6 +541,7 @@ function showGameMenu() {
                 console.log("Juego cancelado");
                 document.body.removeChild(menuContainer);
                 finishPlaying(false); // No dar recompensa si cancela
+                gameState.isPlaying = false; 
             });
         }
         
@@ -556,6 +557,7 @@ function showGameMenu() {
             console.log("Tiempo de menú agotado, cerrando automáticamente");
             document.body.removeChild(menuContainer);
             finishPlaying(false);
+            gameState.isPlaying = false;
         }
     }, 30000);
 }
@@ -569,15 +571,17 @@ function finishPlaying(withReward = true) {
     updateStatusBars();
   }
   gameState.isPlaying = false;
-  if (gameState.hunger <= CONFIG.sadThreshold || 
-      gameState.happiness <= CONFIG.sadThreshold || 
-      gameState.energy <= CONFIG.sadThreshold) {
-    changeSprite(PET_STATES.SAD);
-  } else {
-    changeSprite(PET_STATES.NORMAL);
-  }
-  saveGameState();
-  console.log("Juego finalizado exitosamente");
+ if (gameState.isSleeping) {
+        changeSprite(PET_STATES.SLEEPING);
+    } else if (gameState.hunger <= CONFIG.sadThreshold || 
+        gameState.happiness <= CONFIG.sadThreshold || 
+        gameState.energy <= CONFIG.sadThreshold) {
+        changeSprite(PET_STATES.SAD);
+    } else {
+        changeSprite(PET_STATES.NORMAL);
+    }
+    saveGameState();
+    console.log("Juego finalizado exitosamente");
 }
 
 // FUNCIÓN CORREGIDA: Hacer dormir/despertar al conejo
@@ -599,7 +603,7 @@ function toggleSleep() {
         
         // Mostrar mensaje de despertar
         showMessage("¡Buenos diotaaas! Que no es lo mismo que Buenos Idiotaaas");
-        
+        changeSprite(PET_STATES.NORMAL); // <-- Quita el sprite de dormido
     } else {
         // DORMIR
         console.log("Durmiendo al conejo");
@@ -611,17 +615,13 @@ function toggleSleep() {
         
         // Mostrar mensaje de dormir
         showMessage(getRandomMessage(sleepMessages));
-        
         // IMPORTANTE: Aumentar energía al dormir
         gameState.energy = Math.min(100, gameState.energy + 25);
-        
         // Dar experiencia por cuidar
         addExperience(1);
-        
         // Cambiar sprite a durmiendo
         changeSprite(PET_STATES.SLEEPING);
     }
-    
     // Añadir efecto visual al botón
     if (sleepButton) {
         sleepButton.classList.add('active');
