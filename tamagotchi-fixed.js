@@ -190,7 +190,7 @@ function showMessage(message, duration = 3000) {
 // FUNCIÓN CORREGIDA: Cambiar sprite con animaciones mejoradas
 function changeSprite(state) {
     console.log("Cambiando sprite a estado:", state);
-    
+
     if (!petSprite) {
         petSprite = document.getElementById('pet-sprite');
         if (!petSprite) {
@@ -198,21 +198,42 @@ function changeSprite(state) {
             return;
         }
     }
-    
-    // Quitar TODAS las clases de estado anteriores
+
+    // Quitar clases anteriores
     const stateClasses = ['normal', 'eating', 'playing', 'sleeping', 'sad'];
     stateClasses.forEach(cls => petSprite.classList.remove(cls));
-    
-    // Añadir la nueva clase de estado
     petSprite.classList.add(state);
-    
-    // Actualizar el estado en gameState
+
+    // --- Animación de dormir bonita ---
+    let sleepOverlay = document.getElementById('sleep-overlay');
+    let zzz = document.getElementById('sleep-zzz');
+    if (state === 'sleeping') {
+        // Overlay de fondo
+        if (!sleepOverlay) {
+            sleepOverlay = document.createElement('div');
+            sleepOverlay.id = 'sleep-overlay';
+            sleepOverlay.className = 'sleep-overlay';
+            document.body.appendChild(sleepOverlay);
+        }
+        // Zzz animado
+        if (!zzz) {
+            zzz = document.createElement('div');
+            zzz.id = 'sleep-zzz';
+            zzz.className = 'sleep-zzz';
+            zzz.innerText = 'Zzz...';
+            document.body.appendChild(zzz);
+        }
+    } else {
+        // Quitar overlay y zzz animado si existen
+        if (sleepOverlay && sleepOverlay.parentNode) sleepOverlay.parentNode.removeChild(sleepOverlay);
+        if (zzz && zzz.parentNode) zzz.parentNode.removeChild(zzz);
+    }
+
+    // Actualiza estado en gameState
     gameState.state = state;
-    
     console.log("Sprite cambiado exitosamente a:", state);
     console.log("Clases actuales del sprite:", petSprite.className);
 }
-
 // FUNCIÓN CORREGIDA: Actualizar barras de estado
 function updateStatusBars() {
     console.log("Actualizando barras - hambre:", gameState.hunger, "felicidad:", gameState.happiness, "energía:", gameState.energy);
