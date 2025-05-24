@@ -1179,13 +1179,15 @@ function playFlappyRabbit() {
     }
     
     // Cerrar juego
-function closeGame() {
+    function closeGame() {
     console.log("Cerrando Flappy Rabbit");
     cancelAnimationFrame(animationFrame);
     document.body.removeChild(gameContainer);
     finishPlaying(true);
     }
-}
+} 
+console.log("Cargando PARTE 6 - Juego Snake...");
+
 // tamagotchi-fixed.js - PARTE 6: Juego Snake
 console.log("Cargando PARTE 6 - Juego Snake...");
 
