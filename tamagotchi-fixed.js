@@ -1206,7 +1206,7 @@ function playFlappyRabbit() {
         finishPlaying(true); // finishPlaying ya debería manejar el sprite y el guardado
     }
 }
-
+}
 // tamagotchi-fixed.js - PARTE 6: Juego Snake
 console.log("Cargando PARTE 6 - Juego Snake...");
 
