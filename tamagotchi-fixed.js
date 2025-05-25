@@ -1003,6 +1003,17 @@ function playFlappyRabbit() {
         }
     }
     
+    // Función para cerrar el juego
+    function closeGame() {
+        console.log("Cerrando Flappy Rabbit");
+        cancelAnimationFrame(animationFrame);
+        if (document.body.contains(gameContainer)) {
+            document.body.removeChild(gameContainer);
+        }
+        gameState.isPlaying = false;
+        finishPlaying(true);
+    }
+    
     // Event listeners
     gameContainer.addEventListener('click', jump);
     gameContainer.addEventListener('touchstart', jump);
@@ -1010,10 +1021,9 @@ function playFlappyRabbit() {
     
     // Prevenir scroll en móviles
     gameContainer.addEventListener('touchmove', function(e) {
-    // Permite scroll dentro del álbum de fotos
-    let el = e.target;
-    while (el) {
-        if (el.id === 'album-content') return; // deja que el usuario haga scroll en el álbum
+        let el = e.target;
+        while (el) {
+            if (el.id === 'album-content') return;
             el = el.parentElement;
         }
         e.preventDefault();
@@ -1047,7 +1057,7 @@ function playFlappyRabbit() {
         
         // Crear nuevos obstáculos
         const currentTime = Date.now();
-        if (currentTime - lastPipeTime > 2000) { // Cada 2 segundos
+        if (currentTime - lastPipeTime > 2000) {
             createPipe();
             lastPipeTime = currentTime;
         }
@@ -1055,7 +1065,7 @@ function playFlappyRabbit() {
         // Actualizar obstáculos
         for (let i = pipes.length - 1; i >= 0; i--) {
             const pipe = pipes[i];
-            pipe.x -= 3; // Velocidad de movimiento
+            pipe.x -= 3;
             
             const pipeTopElement = document.getElementById(`${pipe.id}-top`);
             const pipeBottomElement = document.getElementById(`${pipe.id}-bottom`);
@@ -1111,7 +1121,7 @@ function playFlappyRabbit() {
     // Crear obstáculo
     function createPipe() {
         const pipeId = 'pipe-' + Date.now();
-        const gapHeight = 180; // Espacio entre tuberías
+        const gapHeight = 180;
         const minHeight = 50;
         const maxHeight = window.innerHeight - gapHeight - minHeight;
         const pipeTop = Math.floor(Math.random() * (maxHeight - minHeight)) + minHeight;
@@ -1187,25 +1197,13 @@ function playFlappyRabbit() {
         // También permitir cerrar con el botón principal si sigue visible
         const closeBtn = document.getElementById('close-flappy');
         if (closeBtn) {
-        closeBtn.addEventListener('click', closeGame);
-        closeBtn.addEventListener('touchend', function(e) {
-            e.preventDefault();
-            closeGame();
+            closeBtn.addEventListener('click', closeGame);
+            closeBtn.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                closeGame();
             });
         }
-
-    function closeGame() {
-        console.log("Cerrando Flappy Rabbit");
-        cancelAnimationFrame(animationFrame);
-        // Limpia el overlay del juego si sigue presente
-        if (document.body.contains(gameContainer)) {
-            document.body.removeChild(gameContainer);
-        }
-        // Asegura que el estado vuelva a la normalidad
-        gameState.isPlaying = false;
-        finishPlaying(true); // finishPlaying ya debería manejar el sprite y el guardado
     }
-}
 }
 // tamagotchi-fixed.js - PARTE 6: Juego Snake
 console.log("Cargando PARTE 6 - Juego Snake...");
