@@ -595,7 +595,7 @@ if (gameState.isSleeping) {
 }
 saveGameState();
 console.log("Juego finalizado exitosamente");
-
+}
 // FUNCIÓN CORREGIDA: Hacer dormir/despertar al conejo
 function toggleSleep() {
     console.log("Función toggleSleep ejecutada, estado actual isSleeping:", gameState.isSleeping);
