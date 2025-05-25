@@ -1015,6 +1015,12 @@ function playFlappyRabbit() {
     
     // Prevenir scroll en móviles
     gameContainer.addEventListener('touchmove', function(e) {
+    // Permite scroll dentro del álbum de fotos
+    let el = e.target;
+    while (el) {
+        if (el.id === 'album-content') return; // deja que el usuario haga scroll en el álbum
+            el = el.parentElement;
+        }
         e.preventDefault();
     }, { passive: false });
     
@@ -1184,9 +1190,14 @@ function playFlappyRabbit() {
         addExperience(expGained);
 
         // También permitir cerrar con el botón principal si sigue visible
-        const closeFlappyBtn = document.getElementById('close-flappy');
-        if (closeFlappyBtn) closeFlappyBtn.onclick = closeGame;
-    }
+        const closeBtn = document.getElementById('close-flappy');
+        if (closeBtn) {
+        closeBtn.addEventListener('click', closeGame);
+        closeBtn.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            closeGame();
+            });
+        }
 
     function closeGame() {
         console.log("Cerrando Flappy Rabbit");
