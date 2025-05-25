@@ -587,19 +587,14 @@ function finishPlaying(withReward = true) {
     gameState.energy = Math.max(0, gameState.energy - 5);
     updateStatusBars();
   }
-  gameState.isPlaying = false;
- if (gameState.isSleeping) {
-        changeSprite(PET_STATES.SLEEPING);
-    } else if (gameState.hunger <= CONFIG.sadThreshold || 
-        gameState.happiness <= CONFIG.sadThreshold || 
-        gameState.energy <= CONFIG.sadThreshold) {
-        changeSprite(PET_STATES.SAD);
-    } else {
-        changeSprite(PET_STATES.NORMAL);
-    }
-    saveGameState();
-    console.log("Juego finalizado exitosamente");
+gameState.isPlaying = false;
+if (gameState.isSleeping) {
+    changeSprite(PET_STATES.SLEEPING);
+} else {
+    changeSprite(PET_STATES.NORMAL);
 }
+saveGameState();
+console.log("Juego finalizado exitosamente");
 
 // FUNCIÓN CORREGIDA: Hacer dormir/despertar al conejo
 function toggleSleep() {
