@@ -1591,7 +1591,10 @@ console.log("Cargando PARTE 7 - Álbum de Fotos y Sistema de Guardado...");
 function showPhotoAlbum() {
     console.log("Mostrando álbum de fotos");
     
-   // Crear álbum
+    // Bloquear scroll de fondo
+    document.body.style.overflow = 'hidden';
+    
+    // Crear álbum
     const album = document.createElement('div');
     album.id = 'album-modal'; // Asegúrate de usar este id para el cierre
     album.style.cssText = `
@@ -1619,6 +1622,7 @@ function showPhotoAlbum() {
           max-width: 400px;
           max-height: 70vh;
           overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
           background: white;
           border-radius: 20px;
           padding: 20px;
@@ -1636,7 +1640,7 @@ function showPhotoAlbum() {
             margin-bottom: 20px;
         ">
     `;
-     REWARDS_SYSTEM.availableImages.forEach((img) => {
+    REWARDS_SYSTEM.availableImages.forEach((img) => {
         const isUnlocked = REWARDS_SYSTEM.unlockedImages.includes(img.id);
         
         albumHTML += `
@@ -1715,15 +1719,25 @@ function showPhotoAlbum() {
       </div>
     `;
     
-      album.innerHTML = albumHTML;
+    album.innerHTML = albumHTML;
     document.body.appendChild(album);
 
+    // Permitir scroll sólo dentro del álbum en móvil
+    const albumContent = album.querySelector('#album-content');
+    if (albumContent) {
+        albumContent.addEventListener('touchmove', function(e) {
+            e.stopPropagation();
+        }, { passive: false });
+    }
+
     document.getElementById('close-album').addEventListener('click', function() {
-      album.remove();
-      finishPlaying(true);
+        album.remove();
+        document.body.style.overflow = ''; // Restaurar scroll del body
+        finishPlaying(true);
     });
     console.log("Álbum de fotos mostrado exitosamente");
 }
+
 // Mostrar notificación de desbloqueo de imagen
 function showUnlockNotification(image) {
     console.log("Mostrando notificación de desbloqueo para:", image.name);
