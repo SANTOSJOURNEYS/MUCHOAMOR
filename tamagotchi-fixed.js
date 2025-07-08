@@ -894,7 +894,7 @@ function playFlappyRabbit() {
         overflow: hidden;
     `;
     
-    // Añadir elementos del juego
+    // Añadir elementos del juego (sin botón cerrar inicial aquí)
     gameContainer.innerHTML = `
         <div id="flappy-game" style="
             width: 100%;
@@ -918,7 +918,7 @@ function playFlappyRabbit() {
                 position: absolute;
                 width: 50px;
                 height: 50px;
-                background-image: url('icon.png');
+                background-image: url('images/conejo.png');
                 background-size: contain;
                 background-repeat: no-repeat;
                 background-position: center;
@@ -945,24 +945,29 @@ function playFlappyRabbit() {
                 max-width: 80%;
             ">Toca en cualquier lugar para saltar<br><small>¡Evita los obstáculos!</small></div>
         </div>
-        <button id="close-flappy" style="
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255,255,255,0.9);
-            border: none;
-            padding: 12px 24px;
-            border-radius: 25px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            z-index: 10;
-        ">Cerrar Juego</button>
     `;
     
+    // Botón cerrar flotante, siempre visible (móvil/PC)
+    const closeBtn = document.createElement('button');
+    closeBtn.id = 'close-flappy';
+    closeBtn.innerText = 'Cerrar Juego';
+    closeBtn.style.position = 'fixed';
+    closeBtn.style.bottom = '30px';
+    closeBtn.style.left = '50%';
+    closeBtn.style.transform = 'translateX(-50%)';
+    closeBtn.style.background = 'rgba(255,255,255,0.96)';
+    closeBtn.style.border = 'none';
+    closeBtn.style.padding = '16px 32px';
+    closeBtn.style.borderRadius = '30px';
+    closeBtn.style.fontWeight = 'bold';
+    closeBtn.style.fontSize = '18px';
+    closeBtn.style.cursor = 'pointer';
+    closeBtn.style.zIndex = '10000';
+    closeBtn.style.boxShadow = '0 4px 12px rgba(0,0,0,0.25)';
+    gameContainer.appendChild(closeBtn);
     document.body.appendChild(gameContainer);
-    
+    document.body.style.overflow = 'hidden';
+
     // Variables del juego
     let gameStarted = false;
     let gameOver = false;
@@ -1010,6 +1015,7 @@ function playFlappyRabbit() {
         if (document.body.contains(gameContainer)) {
             document.body.removeChild(gameContainer);
         }
+        document.body.style.overflow = '';
         gameState.isPlaying = false;
         finishPlaying(true);
     }
@@ -1017,8 +1023,12 @@ function playFlappyRabbit() {
     // Event listeners
     gameContainer.addEventListener('click', jump);
     gameContainer.addEventListener('touchstart', jump);
-    document.getElementById('close-flappy').addEventListener('click', closeGame);
-    
+    closeBtn.addEventListener('click', closeGame);
+    closeBtn.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        closeGame();
+    });
+
     // Prevenir scroll en móviles
     gameContainer.addEventListener('touchmove', function(e) {
         let el = e.target;
@@ -1195,7 +1205,6 @@ function playFlappyRabbit() {
         addExperience(expGained);
 
         // También permitir cerrar con el botón principal si sigue visible
-        const closeBtn = document.getElementById('close-flappy');
         if (closeBtn) {
             closeBtn.addEventListener('click', closeGame);
             closeBtn.addEventListener('touchend', function(e) {
@@ -1205,6 +1214,7 @@ function playFlappyRabbit() {
         }
     }
 }
+// ...resto del archivo sin cambios...
 // tamagotchi-fixed.js - PARTE 6: Juego Snake
 console.log("Cargando PARTE 6 - Juego Snake...");
 
