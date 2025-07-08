@@ -873,6 +873,7 @@ function playRockPaperScissors() {
     finishPlaying(true);
     });
 } 
+ // FLAPPY RABBIT IMPLEMENTACIÓN
 function playFlappyRabbit() {
     console.log("Iniciando Flappy Rabbit");
 
@@ -890,7 +891,7 @@ function playFlappyRabbit() {
         overflow: hidden;
     `;
 
-    // Añadir elementos del juego (sin botón cerrar inicial aquí)
+    // Añadir elementos del juego, usando icon.png como sprite
     gameContainer.innerHTML = `
         <div id="flappy-game" style="
             width: 100vw;
@@ -914,7 +915,7 @@ function playFlappyRabbit() {
                 position: absolute;
                 width: 50px;
                 height: 50px;
-                background-image: url('images/conejo.png');
+                background-image: url('icon.png');
                 background-size: contain;
                 background-repeat: no-repeat;
                 background-position: center;
@@ -943,7 +944,7 @@ function playFlappyRabbit() {
         </div>
     `;
 
-    // Botón cerrar flotante, siempre visible (móvil/PC)
+    // Botón cerrar flotante
     const closeBtn = document.createElement('button');
     closeBtn.id = 'close-flappy';
     closeBtn.innerText = 'Cerrar Juego';
@@ -982,8 +983,14 @@ function playFlappyRabbit() {
     const startMessage = document.getElementById('flappy-start-message');
     const gameBoard = document.getElementById('flappy-game');
 
-    // Función para saltar
+    // SALTO ÚNICO (sin doble salto en móvil)
+    let lastJumpTime = 0;
     function jump(e) {
+        // Evita doble salto causado por 'touchstart' + 'click'
+        const now = Date.now();
+        if (now - lastJumpTime < 300) return; // 300ms de margen para evitar doble salto
+        lastJumpTime = now;
+
         if (e.target && e.target.id === 'close-flappy') return;
         if (!gameStarted) {
             gameStarted = true;
@@ -1000,8 +1007,11 @@ function playFlappyRabbit() {
             }
         }
     }
+    // Listeners
+    gameContainer.addEventListener('touchstart', jump, {passive: false});
+    gameContainer.addEventListener('click', jump);
 
-    // Función para cerrar el juego
+    // Cerrar juego
     function closeGame() {
         cancelAnimationFrame(animationFrame);
         if (document.body.contains(gameContainer)) {
@@ -1011,22 +1021,23 @@ function playFlappyRabbit() {
         gameState.isPlaying = false;
         finishPlaying(true);
     }
-
-    // Event listeners
-    gameContainer.addEventListener('click', jump);
-    gameContainer.addEventListener('touchstart', jump);
     closeBtn.addEventListener('click', closeGame);
     closeBtn.addEventListener('touchend', function(e) {
         e.preventDefault();
         closeGame();
     });
 
-    // Prevenir scroll en móviles
+    // Prevenir scroll en móviles (solo fuera del álbum)
     gameContainer.addEventListener('touchmove', function(e) {
+        let el = e.target;
+        while (el) {
+            if (el.id === 'album-content') return;
+            el = el.parentElement;
+        }
         e.preventDefault();
     }, { passive: false });
 
-    // Bucle principal del juego
+    // Bucle principal del juego y resto de lógica...
     function startGame() {
         gameLoop();
     }
@@ -1049,7 +1060,7 @@ function playFlappyRabbit() {
 
         // Crear nuevos obstáculos
         const currentTime = Date.now();
-        if (currentTime - lastPipeTime > 1600) { // menos tiempo entre tubos
+        if (currentTime - lastPipeTime > 1600) {
             createPipe();
             lastPipeTime = currentTime;
         }
@@ -1090,7 +1101,6 @@ function playFlappyRabbit() {
                     bottom: pipeBottomRect.bottom - gameRect.top
                 };
 
-                // Colisión solo si toca tubería
                 if (
                     (relRabbit.right > relPipeTop.left &&
                     relRabbit.left < relPipeTop.right &&
@@ -1103,7 +1113,6 @@ function playFlappyRabbit() {
                     return;
                 }
 
-                // Sumar punto si ha pasado obstáculo
                 if (!pipe.passed && pipe.x + 60 < relRabbit.left) {
                     pipe.passed = true;
                     score++;
@@ -1113,7 +1122,6 @@ function playFlappyRabbit() {
                 }
             }
 
-            // Eliminar obstáculo si está fuera de pantalla
             if (pipe.x < -80) {
                 if (pipeTopElement) pipeTopElement.remove();
                 if (pipeBottomElement) pipeBottomElement.remove();
