@@ -873,13 +873,9 @@ function playRockPaperScissors() {
     finishPlaying(true);
     });
 } 
-// tamagotchi-fixed.js - PARTE 5: Juego Flappy Rabbit
-console.log("Cargando PARTE 5 - Juego Flappy Rabbit...");
-
-// Juego estilo Flappy Bird con conejo
 function playFlappyRabbit() {
     console.log("Iniciando Flappy Rabbit");
-    
+
     // Crear contenedor del juego
     const gameContainer = document.createElement('div');
     gameContainer.id = 'flappy-game-container';
@@ -893,12 +889,12 @@ function playFlappyRabbit() {
         z-index: 1000;
         overflow: hidden;
     `;
-    
+
     // Añadir elementos del juego (sin botón cerrar inicial aquí)
     gameContainer.innerHTML = `
         <div id="flappy-game" style="
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
             position: relative;
             overflow: hidden;
         ">
@@ -946,7 +942,7 @@ function playFlappyRabbit() {
             ">Toca en cualquier lugar para saltar<br><small>¡Evita los obstáculos!</small></div>
         </div>
     `;
-    
+
     // Botón cerrar flotante, siempre visible (móvil/PC)
     const closeBtn = document.createElement('button');
     closeBtn.id = 'close-flappy';
@@ -968,37 +964,34 @@ function playFlappyRabbit() {
     document.body.appendChild(gameContainer);
     document.body.style.overflow = 'hidden';
 
-    // Variables del juego
-    let gameStarted = false;
-    let gameOver = false;
-    let score = 0;
-    let gravity = 0.6;
+    // Ajusta la física para hacerlo más rápido y divertido
+    let gravity = 1.8;
     let velocity = 0;
+    let jumpPower = -18;
+    let pipeSpeed = 7;
     let rabbitPosition = window.innerHeight / 2;
     let pipes = [];
     let animationFrame;
     let lastPipeTime = 0;
-    
+    let gameStarted = false;
+    let gameOver = false;
+    let score = 0;
+
     const rabbit = document.getElementById('flappy-rabbit');
     const scoreElement = document.getElementById('flappy-score');
     const startMessage = document.getElementById('flappy-start-message');
     const gameBoard = document.getElementById('flappy-game');
-    
+
     // Función para saltar
     function jump(e) {
-        // No saltar si se hace clic en el botón de cerrar
         if (e.target && e.target.id === 'close-flappy') return;
-        
         if (!gameStarted) {
             gameStarted = true;
             startMessage.style.display = 'none';
             startGame();
         }
-        
         if (!gameOver) {
-            velocity = -12; // Salto más fuerte
-            
-            // Efecto visual de rotación
+            velocity = jumpPower;
             if (rabbit) {
                 rabbit.style.transform = 'translateY(-50%) rotate(-20deg)';
                 setTimeout(() => {
@@ -1007,10 +1000,9 @@ function playFlappyRabbit() {
             }
         }
     }
-    
+
     // Función para cerrar el juego
     function closeGame() {
-        console.log("Cerrando Flappy Rabbit");
         cancelAnimationFrame(animationFrame);
         if (document.body.contains(gameContainer)) {
             document.body.removeChild(gameContainer);
@@ -1019,7 +1011,7 @@ function playFlappyRabbit() {
         gameState.isPlaying = false;
         finishPlaying(true);
     }
-    
+
     // Event listeners
     gameContainer.addEventListener('click', jump);
     gameContainer.addEventListener('touchstart', jump);
@@ -1031,90 +1023,96 @@ function playFlappyRabbit() {
 
     // Prevenir scroll en móviles
     gameContainer.addEventListener('touchmove', function(e) {
-        let el = e.target;
-        while (el) {
-            if (el.id === 'album-content') return;
-            el = el.parentElement;
-        }
         e.preventDefault();
     }, { passive: false });
-    
+
     // Bucle principal del juego
     function startGame() {
-        console.log("Iniciando bucle de Flappy Rabbit");
         gameLoop();
     }
-    
+
     function gameLoop() {
         if (gameOver) return;
-        
-        // Actualizar física del conejo
         velocity += gravity;
         rabbitPosition += velocity;
-        
-        // Limitar posición del conejo
-        rabbitPosition = Math.max(25, Math.min(window.innerHeight - 75, rabbitPosition));
-        
-        if (rabbit) {
-            rabbit.style.top = rabbitPosition + 'px';
-        }
-        
-        // Comprobar colisión con bordes
-        if (rabbitPosition <= 25 || rabbitPosition >= window.innerHeight - 75) {
+
+        // Limitar posición del conejo dentro del gameBoard
+        const boardHeight = gameBoard.offsetHeight || window.innerHeight;
+        rabbitPosition = Math.max(25, Math.min(boardHeight - 75, rabbitPosition));
+        if (rabbit) rabbit.style.top = rabbitPosition + 'px';
+
+        // Colisión con bordes
+        if (rabbitPosition <= 25 || rabbitPosition >= boardHeight - 75) {
             endGame();
             return;
         }
-        
+
         // Crear nuevos obstáculos
         const currentTime = Date.now();
-        if (currentTime - lastPipeTime > 2000) {
+        if (currentTime - lastPipeTime > 1600) { // menos tiempo entre tubos
             createPipe();
             lastPipeTime = currentTime;
         }
-        
-        // Actualizar obstáculos
+
+        // Actualizar y comprobar obstáculos
         for (let i = pipes.length - 1; i >= 0; i--) {
             const pipe = pipes[i];
-            pipe.x -= 3;
-            
+            pipe.x -= pipeSpeed;
             const pipeTopElement = document.getElementById(`${pipe.id}-top`);
             const pipeBottomElement = document.getElementById(`${pipe.id}-bottom`);
-            
+
             if (pipeTopElement && pipeBottomElement) {
                 pipeTopElement.style.left = pipe.x + 'px';
                 pipeBottomElement.style.left = pipe.x + 'px';
-                
-                // Comprobar colisión
+
+                // Colisión exacta relativa al gameBoard
                 const rabbitRect = rabbit.getBoundingClientRect();
                 const pipeTopRect = pipeTopElement.getBoundingClientRect();
                 const pipeBottomRect = pipeBottomElement.getBoundingClientRect();
-                
+                const gameRect = gameBoard.getBoundingClientRect();
+
+                const relRabbit = {
+                    left: rabbitRect.left - gameRect.left,
+                    right: rabbitRect.right - gameRect.left,
+                    top: rabbitRect.top - gameRect.top,
+                    bottom: rabbitRect.bottom - gameRect.top
+                };
+                const relPipeTop = {
+                    left: pipeTopRect.left - gameRect.left,
+                    right: pipeTopRect.right - gameRect.left,
+                    top: pipeTopRect.top - gameRect.top,
+                    bottom: pipeTopRect.bottom - gameRect.top
+                };
+                const relPipeBottom = {
+                    left: pipeBottomRect.left - gameRect.left,
+                    right: pipeBottomRect.right - gameRect.left,
+                    top: pipeBottomRect.top - gameRect.top,
+                    bottom: pipeBottomRect.bottom - gameRect.top
+                };
+
+                // Colisión solo si toca tubería
                 if (
-                    (rabbitRect.right > pipeTopRect.left && 
-                     rabbitRect.left < pipeTopRect.right && 
-                     rabbitRect.top < pipeTopRect.bottom) ||
-                    (rabbitRect.right > pipeBottomRect.left && 
-                     rabbitRect.left < pipeBottomRect.right && 
-                     rabbitRect.bottom > pipeBottomRect.top)
+                    (relRabbit.right > relPipeTop.left &&
+                    relRabbit.left < relPipeTop.right &&
+                    relRabbit.top < relPipeTop.bottom) ||
+                    (relRabbit.right > relPipeBottom.left &&
+                    relRabbit.left < relPipeBottom.right &&
+                    relRabbit.bottom > relPipeBottom.top)
                 ) {
                     endGame();
                     return;
                 }
-                
+
                 // Sumar punto si ha pasado obstáculo
-                if (!pipe.passed && pipe.x + 60 < rabbitRect.left) {
+                if (!pipe.passed && pipe.x + 60 < relRabbit.left) {
                     pipe.passed = true;
                     score++;
                     scoreElement.textContent = score;
-                    
-                    // Efecto visual al conseguir punto
                     scoreElement.style.transform = 'scale(1.2)';
-                    setTimeout(() => {
-                        scoreElement.style.transform = 'scale(1)';
-                    }, 200);
+                    setTimeout(() => { scoreElement.style.transform = 'scale(1)'; }, 200);
                 }
             }
-            
+
             // Eliminar obstáculo si está fuera de pantalla
             if (pipe.x < -80) {
                 if (pipeTopElement) pipeTopElement.remove();
@@ -1122,20 +1120,20 @@ function playFlappyRabbit() {
                 pipes.splice(i, 1);
             }
         }
-        
+
         if (!gameOver) {
             animationFrame = requestAnimationFrame(gameLoop);
         }
     }
-    
+
     // Crear obstáculo
     function createPipe() {
         const pipeId = 'pipe-' + Date.now();
-        const gapHeight = 180;
-        const minHeight = 50;
-        const maxHeight = window.innerHeight - gapHeight - minHeight;
+        const gapHeight = 170;
+        const minHeight = 60;
+        const maxHeight = (gameBoard.offsetHeight || window.innerHeight) - gapHeight - minHeight;
         const pipeTop = Math.floor(Math.random() * (maxHeight - minHeight)) + minHeight;
-        
+
         // Tubería superior
         const pipeTopElement = document.createElement('div');
         pipeTopElement.id = `${pipeId}-top`;
@@ -1150,14 +1148,14 @@ function playFlappyRabbit() {
             border-radius: 0 0 8px 8px;
             box-shadow: inset 0 0 10px rgba(255,255,255,0.2);
         `;
-        
+
         // Tubería inferior
         const pipeBottomElement = document.createElement('div');
         pipeBottomElement.id = `${pipeId}-bottom`;
         pipeBottomElement.style.cssText = `
             position: absolute;
             width: 60px;
-            height: ${window.innerHeight - pipeTop - gapHeight}px;
+            height: ${(gameBoard.offsetHeight || window.innerHeight) - pipeTop - gapHeight}px;
             left: ${window.innerWidth}px;
             bottom: 0;
             background: linear-gradient(to right, #4CAF50, #45A049);
@@ -1165,17 +1163,17 @@ function playFlappyRabbit() {
             border-radius: 8px 8px 0 0;
             box-shadow: inset 0 0 10px rgba(255,255,255,0.2);
         `;
-        
+
         gameBoard.appendChild(pipeTopElement);
         gameBoard.appendChild(pipeBottomElement);
-        
+
         pipes.push({
             id: pipeId,
             x: window.innerWidth,
             passed: false
         });
     }
-    
+
     // Fin del juego
     function endGame() {
         gameOver = true;
@@ -1195,7 +1193,7 @@ function playFlappyRabbit() {
                 ">Cerrar</button>
             </div>
         `;
-        
+
         // Solo una vez el exitBtn:
         const exitBtn = document.getElementById('flappy-exit-btn');
         if (exitBtn) exitBtn.addEventListener('click', closeGame);
@@ -1214,7 +1212,6 @@ function playFlappyRabbit() {
         }
     }
 }
-// ...resto del archivo sin cambios...
 // tamagotchi-fixed.js - PARTE 6: Juego Snake
 console.log("Cargando PARTE 6 - Juego Snake...");
 
