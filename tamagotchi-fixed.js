@@ -152,12 +152,9 @@ const REWARDS_SYSTEM = {
 
 // 1) Función para construir la URL adecuada
 function getDriveLink(id, type) {
-  if (type === 'video') {
-    // Para streaming en <video>
-    return `https://drive.google.com/uc?export=download&id=${id}`;
-  }
-  // Para vista previa en <img>
-  return `https://drive.google.com/uc?export=view&id=${id}`;
+  return type === 'video'
+    ? `https://drive.google.com/uc?export=download&id=${id}`
+    : `https://drive.google.com/uc?export=view&id=${id}`;
 }
 
 // 2) Raw metadata (sin URL)
