@@ -30,7 +30,7 @@ const REWARDS_SYSTEM = {
   unlockedImages: [],
   availableImages: [
     // Día 1 con amor (video)
-    { id: "1-m_OTFT9riqgcVvgnbNteAxxlqJf5kNa", name: "día 1 con amor", url: "https://drive.google.com/uc?export=view&id=1-m_OTFT9riqgcVvgnbNteAxxlqJf5kNa/view?usp=sharing", exp: 10, type: "video" },
+    { id: "1-m_OTFT9riqgcVvgnbNteAxxlqJf5kNa", name: "día 1 con amor", url: "https://drive.google.com/uc?export=view&id=1-m_OTFT9riqgcVvgnbNteAxxlqJf5kNa", exp: 10, type: "video" },
     // Día 2 con amor (video)
     { id: "1-omSZPFtCDXU-y18bzLYKhSX27nSVKSp", name: "día 2 con amor", url: "https://drive.google.com/uc?export=view&id=1-omSZPFtCDXU-y18bzLYKhSX27nSVKSp/view?usp=sharing", exp: 20, type: "video" },
     // Día 3 con amor (video)
