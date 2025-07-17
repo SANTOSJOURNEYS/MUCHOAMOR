@@ -2263,18 +2263,23 @@ function loadGameState() {
     
     // Cargar estado de recompensas
     const savedRewards = localStorage.getItem('rachelTamagotchiRewards');
-    if (savedRewards) {
-        try {
-            const parsedRewards = JSON.parse(savedRewards);
-            REWARDS_SYSTEM.experience = parsedRewards.experience || 0;
-            REWARDS_SYSTEM.level = parsedRewards.level || 1;
-            REWARDS_SYSTEM.unlockedImages = parsedRewards.unlockedImages || [];
-            console.log("Recompensas cargadas:", parsedRewards);
-        } catch (e) {
-            console.error("Error al cargar recompensas:", e);
-        }
-    }
+if (savedRewards) {
+  try {
+    const parsedRewards = JSON.parse(savedRewards);
+    REWARDS_SYSTEM.experience = parsedRewards.experience || 0;
+    REWARDS_SYSTEM.level = parsedRewards.level || 1;
+    REWARDS_SYSTEM.unlockedImages = parsedRewards.unlockedImages || [];
+    console.log("Recompensas cargadas:", parsedRewards);
 
+    // ✅ Reconstruir availableImages con URLs correctas
+    REWARDS_SYSTEM.availableImages = rawRewards.map(item => ({
+      ...item,
+      url: getDriveLink(item.id, item.type)
+    }));
+  } catch (e) {
+    console.error("Error al cargar recompensas:", e);
+  }
+}
     // --- AQUI SIEMPRE RESETEA EL ESTADO DE JUEGO ---
     gameState.isPlaying = false;
 }
