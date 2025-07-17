@@ -1796,9 +1796,21 @@ function showPhotoAlbum() {
             " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
         `;
         
-        if (isUnlocked) {
+       if (isUnlocked) {
+            if (img.type === "video") {
+                albumHTML += `
+                    <video controls style="width:100%;max-height:150px;border-radius:10px;margin-bottom:7px;">
+                        <source src="${img.url}" type="video/mp4">
+                        Tu navegador no soporta la reproducción de video.
+                    </video>
+                `;
+            } else {
+                albumHTML += `
+                    <img src="${img.url}" alt="${img.name}" style="width:100%;max-height:100px;object-fit:cover;border-radius:10px;margin-bottom:7px;">
+                `;
+            }
+
             albumHTML += `
-                <img src="${img.url}" alt="${img.name}" style="width:100%;max-height:100px;object-fit:cover;border-radius:10px;margin-bottom:7px;">
                 <div style="font-weight:bold;color:#2E7D32;margin-bottom:3px;">${img.name}</div>
                 <div style="font-size:12px;color:#666;">✓ Desbloqueado</div>
             `;
@@ -1836,9 +1848,7 @@ function showPhotoAlbum() {
                 </div>
             `;
         }
-        
-        albumHTML += `</div>`;
-    });
+
     
     // Cerrar grid y añadir información adicional
     albumHTML += `
