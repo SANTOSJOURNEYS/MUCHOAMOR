@@ -51,6 +51,9 @@ const randomMessages = [
     "¡Lo que te quiero yo GORDAAAA!",
     "¿Publicidad? ¡YO SOY DIRECTORA CREATIVA!",
     "Eres mi persona favorita 💙"
+    "¿Nos echamos un Mario kart?",
+    "¡VINITO, CARTAS Y TÚ!",
+    "¡La próxima vez jugamos al Kamasutra!"
 ];
 
 const feedMessages = [
@@ -70,6 +73,7 @@ const sleepMessages = [
     "Zzz... soñando con mi DRAGÓN ROJO...",
     "Zzz... dormimos juntitos, abrazaditos...",
     "Zzz... en mi propia casa JUAN PABLO LORENZO..."
+    "Zzz... Durmiendo con mi princesa de Chichinabo..."
 ];
 
 const sadMessages = [
@@ -84,25 +88,41 @@ const specialMessages = [
     "Cada día te quiero más, MI MUJER, MI ESPOSA MI WIFE",
     "Tu creatividad me inspira siempre",
     "Eres la mujer más EMPOWERGIRL del mundo",
-    "¿HACEMOS UN HIJO?"
+    "Gordoooo!! Gordaaaaa!!"
+     "¡Qué te gustaaa ehh!!",
+    "Mi mujer, mi esposa, MI WIFE",
+    "¡Que lokita nooo??",
+    "¿Nos hacemos un té lésbico?",
+    "¡Mi Queen!",
+    "¡Putada mano!",
+    "¿Nos hacemos un tattoo?, soy adicta a la tinta",
+    "¿No te apetece querer rebobinar el ahora?",
+    "¡Lo que te quiero yo GORDAAAA!",
+    "¿Publicidad? ¡YO SOY DIRECTORA CREATIVA!",
+    "Eres mi persona favorita 💙"
+    "¿Nos echamos un Mario kart?",
+    "¡VINITO, CARTAS Y TÚ!",
+    "¡La próxima vez jugamos al Kamasutra!"
 ];
 
 // Resultados del mini-juego
 const gameResultMessages = {
     win: [
-        "¡Ganaste! Eres mi campeona",
-        "Wow, me has vencido, eres la mejor.",
-        "¡Increíble! ¿Cómo lo has hecho?"
+        "Rachel bailando samba expresando felicidad máxima",
+        "La partes GIIIIRL.",
+        "No me calientes lo mio"
+        "YA BAAASTA"
     ],
     lose: [
-        "¡Ja! Te gané, pero te dejo revancha",
-        "¡Perdiste! Aunque sigues siendo mi WIFE",
+        "Santos perreando sin ningun tipo de contexto",
+        "¡Perdiste! Aunque seguiras siendo mi WIFE",
         "Gané yo, ahora dame un besito"
+        "Espabila que no espabilas"
     ],
     tie: [
-        "¡Empate! Nuestras mentes están conectadas",
+        "¡Empate! Nuestras mentes lésbicas están conectadas",
         "Empate... Esto es el destino, somos una",
-        "¡Nos leemos la mente! Empate"
+        "¡Somos como el ying y el chinchanchun"
     ]
 };
 
