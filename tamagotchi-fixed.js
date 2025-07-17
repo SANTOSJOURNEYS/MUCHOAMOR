@@ -157,8 +157,6 @@ const rawRewards = [
     // Día 59 con amor (image)
     { id: "1xJrxBUDL9YTctStVn4mTgA5CwcRGLntU", name: "día 59 con amor", exp: 590, type: "image" }
 ];
-];
-
 // Reconstruir availableImages
 REWARDS_SYSTEM.availableImages = rawRewards.map(item => ({
   ...item,
