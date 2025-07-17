@@ -332,7 +332,7 @@ function addExperience(amount) {
         showMessage(`¡Subiste de nivel! Ahora eres nivel ${REWARDS_SYSTEM.level}`, 4000);
     }
     
-    // Verificar si se desbloqueó alguna imagen
+    // Verifica y desbloquea imágenes según experiencia
     checkUnlockedImages();
     
     // Guardar progreso de recompensas
@@ -344,15 +344,16 @@ function addExperience(amount) {
     }
 }
 
-// Verificar imágenes desbloqueadas
+// Desbloquea una imagen cada 10 puntos de experiencia
 function checkUnlockedImages() {
-    REWARDS_SYSTEM.availableImages.forEach(image => {
-        if (REWARDS_SYSTEM.experience >= image.exp && 
-            !REWARDS_SYSTEM.unlockedImages.includes(image.id)) {
+    const toUnlock = Math.floor(REWARDS_SYSTEM.experience / 10);
+    for (let i = 0; i < toUnlock && i < REWARDS_SYSTEM.availableImages.length; i++) {
+        const image = REWARDS_SYSTEM.availableImages[i];
+        if (!REWARDS_SYSTEM.unlockedImages.includes(image.id)) {
             REWARDS_SYSTEM.unlockedImages.push(image.id);
             showUnlockNotification(image);
         }
-    });
+    }
 }
 // tamagotchi-fixed.js - PARTE 3: Acciones del Tamagotchi
 console.log("Cargando PARTE 3 - Acciones del Tamagotchi...");
