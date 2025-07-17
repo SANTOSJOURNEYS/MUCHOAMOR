@@ -25,17 +25,130 @@ const PET_STATES = {
 
 // Sistema de experiencia y recompensas
 const REWARDS_SYSTEM = {
-    experience: 0,
-    level: 1,
-    unlockedImages: [],
-    // Imágenes que se pueden desbloquear
-    availableImages: [
-        {id: "image1", name: "Primer recuerdo juntos", exp: 50, url: "memory1.jpg"},
-        {id: "image2", name: "Viaje romántico", exp: 100, url: "memory2.jpg"},
-        {id: "image3", name: "Foto favorita de Rachel", exp: 200, url: "memory3.jpg"},
-        {id: "image4", name: "Momento especial", exp: 300, url: "memory4.jpg"},
-        {id: "image5", name: "Lo mejor está por venir", exp: 500, url: "memory5.jpg"}
-    ]
+  experience: 0,
+  level: 1,
+  unlockedImages: [],
+  availableImages: [
+    // Día 1 con amor (video)
+    { id: "1-m_OTFT9riqgcVvgnbNteAxxlqJf5kNa", name: "día 1 con amor", url: "https://drive.google.com/uc?export=view&id=1-m_OTFT9riqgcVvgnbNteAxxlqJf5kNa", exp: 10, type: "video" },
+    // Día 2 con amor (video)
+    { id: "1-omSZPFtCDXU-y18bzLYKhSX27nSVKSp", name: "día 2 con amor", url: "https://drive.google.com/uc?export=view&id=1-omSZPFtCDXU-y18bzLYKhSX27nSVKSp", exp: 20, type: "video" },
+    // Día 3 con amor (video)
+    { id: "12-brMeBkUpWu1my3JvVlM5e4RRFND9sW", name: "día 3 con amor", url: "https://drive.google.com/uc?export=view&id=12-brMeBkUpWu1my3JvVlM5e4RRFND9sW", exp: 30, type: "video" },
+    // Día 4 con amor (video)
+    { id: "127WxpIokOV0mPpfFzk6HkgRMv2I6g05C", name: "día 4 con amor", url: "https://drive.google.com/uc?export=view&id=127WxpIokOV0mPpfFzk6HkgRMv2I6g05C", exp: 40, type: "video" },
+    // Día 5 con amor (video)
+    { id: "12k5cA5NOf7tsysilqjh95Uwg4g6VjOe5", name: "día 5 con amor", url: "https://drive.google.com/uc?export=view&id=12k5cA5NOf7tsysilqjh95Uwg4g6VjOe5", exp: 50, type: "video" },
+    // Día 6 con amor (video)
+    { id: "13B98jRczyr04MXTt8EPNuAOB_4P80tfn", name: "día 6 con amor", url: "https://drive.google.com/uc?export=view&id=13B98jRczyr04MXTt8EPNuAOB_4P80tfn", exp: 60, type: "video" },
+    // Día 7 con amor (video)
+    { id: "16BcQ3MQJgeJLwYkuId45KnxnKuuSZLfA", name: "día 7 con amor", url: "https://drive.google.com/uc?export=view&id=16BcQ3MQJgeJLwYkuId45KnxnKuuSZLfA", exp: 70, type: "video" },
+    // Día 8 con amor (video)
+    { id: "16LhNSS1XWF5ITMJP8ScHVVgr5dgFWeyr", name: "día 8 con amor", url: "https://drive.google.com/uc?export=view&id=16LhNSS1XWF5ITMJP8ScHVVgr5dgFWeyr", exp: 80, type: "video" },
+    // Día 9 con amor (video)
+    { id: "17zIYY1Vk1GCOYEepf1GBaFX4rQtLHtH-", name: "día 9 con amor", url: "https://drive.google.com/uc?export=view&id=17zIYY1Vk1GCOYEepf1GBaFX4rQtLHtH-", exp: 90, type: "video" },
+    // Día 10 con amor (video)
+    { id: "19e58FOdv7wFJSejGie_ClvonIRf4ooB7", name: "día 10 con amor", url: "https://drive.google.com/uc?export=view&id=19e58FOdv7wFJSejGie_ClvonIRf4ooB7", exp: 100, type: "video" },
+    // Día 11 con amor (video)
+    { id: "19fOVQs0ViLN-CJjv0oEdw9088WAV2MkI", name: "día 11 con amor", url: "https://drive.google.com/uc?export=view&id=19fOVQs0ViLN-CJjv0oEdw9088WAV2MkI", exp: 110, type: "video" },
+    // Día 12 con amor (video)
+    { id: "19pZ8G_rce_XmpAhxoETLGfzbHiDLAS1c", name: "día 12 con amor", url: "https://drive.google.com/uc?export=view&id=19pZ8G_rce_XmpAhxoETLGfzbHiDLAS1c", exp: 120, type: "video" },
+
+    // Día 13 con amor (image)
+    { id: "1ASd4aoYfAioGI762TlmIwhG1CZ_UI8WW", name: "día 13 con amor", url: "https://drive.google.com/uc?export=view&id=1ASd4aoYfAioGI762TlmIwhG1CZ_UI8WW", exp: 130, type: "image" },
+    // Día 14 con amor (image)
+    { id: "1AvUKRpo1alSl-Ay2B6BoSluybG_qLFe2", name: "día 14 con amor", url: "https://drive.google.com/uc?export=view&id=1AvUKRpo1alSl-Ay2B6BoSluybG_qLFe2", exp: 140, type: "image" },
+    // Día 15 con amor (image)
+    { id: "1BDzzJLd_2P5HR5QU0u185ULZsIz2fTGH", name: "día 15 con amor", url: "https://drive.google.com/uc?export=view&id=1BDzzJLd_2P5HR5QU0u185ULZsIz2fTGH", exp: 150, type: "image" },
+    // Día 16 con amor (image)
+    { id: "1BvXXX18IEY3WJZRCKlxTBJJOp2CXMjRC", name: "día 16 con amor", url: "https://drive.google.com/uc?export=view&id=1BvXXX18IEY3WJZRCKlxTBJJOp2CXMjRC", exp: 160, type: "image" },
+    // Día 17 con amor (image)
+    { id: "1CxjKXKy7bJTo64Lg7LKT6wYu3QQgBhI8", name: "día 17 con amor", url: "https://drive.google.com/uc?export=view&id=1CxjKXKy7bJTo64Lg7LKT6wYu3QQgBhI8", exp: 170, type: "image" },
+    // Día 18 con amor (image)
+    { id: "1DYqXLZb7tLGSfxA2PmCj77w4wHnb2-Sw", name: "día 18 con amor", url: "https://drive.google.com/uc?export=view&id=1DYqXLZb7tLGSfxA2PmCj77w4wHnb2-Sw", exp: 180, type: "image" },
+    // Día 19 con amor (image)
+    { id: "1E_znAl9N8vj3MTydCO0n_18RZnpoC8Be", name: "día 19 con amor", url: "https://drive.google.com/uc?export=view&id=1E_znAl9N8vj3MTydCO0n_18RZnpoC8Be", exp: 190, type: "image" },
+    // Día 20 con amor (image)
+    { id: "1GBSPaFFtxTVnWbjN7YDPz78s7-OyaLyr", name: "día 20 con amor", url: "https://drive.google.com/uc?export=view&id=1GBSPaFFtxTVnWbjN7YDPz78s7-OyaLyr", exp: 200, type: "image" },
+    // Día 21 con amor (image)
+    { id: "1Gh02YdeAWS9qfU6FbBO6AEIMOP36Vfy0", name: "día 21 con amor", url: "https://drive.google.com/uc?export=view&id=1Gh02YdeAWS9qfU6FbBO6AEIMOP36Vfy0", exp: 210, type: "image" },
+    // Día 22 con amor (image)
+    { id: "1HGScn23mWjMe0VCcF92LZ2FJWxoQvJiA", name: "día 22 con amor", url: "https://drive.google.com/uc?export=view&id=1HGScn23mWjMe0VCcF92LZ2FJWxoQvJiA", exp: 220, type: "image" },
+    // Día 23 con amor (image)
+    { id: "1HxTTbOFbIEXzuxmUnkMesIkL7oLOKgaV", name: "día 23 con amor", url: "https://drive.google.com/uc?export=view&id=1HxTTbOFbIEXzuxmUnkMesIkL7oLOKgaV", exp: 230, type: "image" },
+    // Día 24 con amor (image)
+    { id: "1IPRW_SNdq3K8fLp3ClTaZK411Q_YRGZt", name: "día 24 con amor", url: "https://drive.google.com/uc?export=view&id=1IPRW_SNdq3K8fLp3ClTaZK411Q_YRGZt", exp: 240, type: "image" },
+    // Día 25 con amor (image)
+    { id: "1MF0mF4wRYzDgCqdM5N_7T8c8Slf4wHN7", name: "día 25 con amor", url: "https://drive.google.com/uc?export=view&id=1MF0mF4wRYzDgCqdM5N_7T8c8Slf4wHN7", exp: 250, type: "image" },
+    // Día 26 con amor (image)
+    { id: "1MZfFnBJZz2khvMiR--Nt6RSgHdIkj9x8", name: "día 26 con amor", url: "https://drive.google.com/uc?export=view&id=1MZfFnBJZz2khvMiR--Nt6RSgHdIkj9x8", exp: 260, type: "image" },
+    // Día 27 con amor (image)
+    { id: "1N6FkxHJ-g3kzBnwIWS2Lvq3WdbcYiAXW", name: "día 27 con amor", url: "https://drive.google.com/uc?export=view&id=1N6FkxHJ-g3kzBnwIWS2Lvq3WdbcYiAXW", exp: 270, type: "image" },
+    // Día 28 con amor (image)
+    { id: "1NRIMXZbj5pBE82DYsujEM04y1wzEchJN", name: "día 28 con amor", url: "https://drive.google.com/uc?export=view&id=1NRIMXZbj5pBE82DYsujEM04y1wzEchJN", exp: 280, type: "image" },
+    // Día 29 con amor (image)
+    { id: "1O80iQGyoDOEKGImShj2j8ePFemdRsqxW", name: "día 29 con amor", url: "https://drive.google.com/uc?export=view&id=1O80iQGyoDOEKGImShj2j8ePFemdRsqxW", exp: 290, type: "image" },
+    // Día 30 con amor (image)
+    { id: "1PJ7OCRQjhwle43bnfiAsSL-vM6cgRfu9", name: "día 30 con amor", url: "https://drive.google.com/uc?export=view&id=1PJ7OCRQjhwle43bnfiAsSL-vM6cgRfu9", exp: 300, type: "image" },
+    // Día 31 con amor (image)
+    { id: "1Q367PeQBkzSfDk4Y4yvKTgnDmeq33VV2", name: "día 31 con amor", url: "https://drive.google.com/uc?export=view&id=1Q367PeQBkzSfDk4Y4yvKTgnDmeq33VV2", exp: 310, type: "image" },
+    // Día 32 con amor (image)
+    { id: "1Q_VOjjFoLkG5FhlD1Z-wzKyawCxPgrib", name: "día 32 con amor", url: "https://drive.google.com/uc?export=view&id=1Q_VOjjFoLkG5FhlD1Z-wzKyawCxPgrib", exp: 320, type: "image" },
+    // Día 33 con amor (image)
+    { id: "1Qk5u9CzTxVzAS4cdUq3g50ktHwvTyM2d", name: "día 33 con amor", url: "https://drive.google.com/uc?export=view&id=1Qk5u9CzTxVzAS4cdUq3g50ktHwvTyM2d", exp: 330, type: "image" },
+    // Día 34 con amor (image)
+    { id: "1RHpfHi6YGGvIkBv3w7DKsoMz5oXLLO-Y", name: "día 34 con amor", url: "https://drive.google.com/uc?export=view&id=1RHpfHi6YGGvIkBv3w7DKsoMz5oXLLO-Y", exp: 340, type: "image" },
+    // Día 35 con amor (image)
+    { id: "1SoPYQnc5VZY1_KTqDCCD_kwlc6K6OZr0", name: "día 35 con amor", url: "https://drive.google.com/uc?export=view&id=1SoPYQnc5VZY1_KTqDCCD_kwlc6K6OZr0", exp: 350, type: "image" },
+    // Día 36 con amor (image)
+    { id: "1TAWvsk3fIyQ3fHp2eS_fYTPIkWTz_7UI", name: "día 36 con amor", url: "https://drive.google.com/uc?export=view&id=1TAWvsk3fIyQ3fHp2eS_fYTPIkWTz_7UI", exp: 360, type: "image" },
+    // Día 37 con amor (image)
+    { id: "1TIuC_6q6hm8SuXB_PZgx9EjygbGfKdzx", name: "día 37 con amor", url: "https://drive.google.com/uc?export=view&id=1TIuC_6q6hm8SuXB_PZgx9EjygbGfKdzx", exp: 370, type: "image" },
+    // Día 38 con amor (image)
+    { id: "1V-ldSjxn_LkVBLc-Lima2oMoYK_KQRTb", name: "día 38 con amor", url: "https://drive.google.com/uc?export=view&id=1V-ldSjxn_LkVBLc-Lima2oMoYK_KQRTb", exp: 380, type: "image" },
+    // Día 39 con amor (image)
+    { id: "1VL-Ime7PeroFW5OdfQcFoNs7hUVYcGPb", name: "día 39 con amor", url: "https://drive.google.com/uc?export=view&id=1VL-Ime7PeroFW5OdfQcFoNs7hUVYcGPb", exp: 390, type: "image" },
+    // Día 40 con amor (image)
+    { id: "1WGRPecaxNobWdmg1wSsjnotrCH-r6UDV", name: "día 40 con amor", url: "https://drive.google.com/uc?export=view&id=1WGRPecaxNobWdmg1wSsjnotrCH-r6UDV", exp: 400, type: "image" },
+    // Día 41 con amor (image)
+    { id: "1WZz1WXdG0dv1cCK3uOLJuiyAMVCwVfU_", name: "día 41 con amor", url: "https://drive.google.com/uc?export=view&id=1WZz1WXdG0dv1cCK3uOLJuiyAMVCwVfU_", exp: 410, type: "image" },
+    // Día 42 con amor (image)
+    { id: "1WtYz_NgwVgKpLuiO49ZGy4YkAVYI5qSo", name: "día 42 con amor", url: "https://drive.google.com/uc?export=view&id=1WtYz_NgwVgKpLuiO49ZGy4YkAVYI5qSo", exp: 420, type: "image" },
+    // Día 43 con amor (image)
+    { id: "1b2PAfys51mp3dg0T1mkDdlxJqfbepR2E", name: "día 43 con amor", url: "https://drive.google.com/uc?export=view&id=1b2PAfys51mp3dg0T1mkDdlxJqfbepR2E", exp: 430, type: "image" },
+    // Día 44 con amor (image)
+    { id: "1bmJd-NcVesRXykImLnOo32en-CRo6Zov", name: "día 44 con amor", url: "https://drive.google.com/uc?export=view&id=1bmJd-NcVesRXykImLnOo32en-CRo6Zov", exp: 440, type: "image" },
+    // Día 45 con amor (image)
+    { id: "1co0qG6UtF5PnigiBZXkLQeLFCH31AIuw", name: "día 45 con amor", url: "https://drive.google.com/uc?export=view&id=1co0qG6UtF5PnigiBZXkLQeLFCH31AIuw", exp: 450, type: "image" },
+    // Día 46 con amor (image)
+    { id: "1fZzx86JpmlWU1ciYaf5rjrnbxm1byom8", name: "día 46 con amor", url: "https://drive.google.com/uc?export=view&id=1fZzx86JpmlWU1ciYaf5rjrnbxm1byom8", exp: 460, type: "image" },
+    // Día 47 con amor (image)
+    { id: "1g7q6asfeak-b3VROp6QgxCQWeT-sQ1Hv", name: "día 47 con amor", url: "https://drive.google.com/uc?export=view&id=1g7q6asfeak-b3VROp6QgxCQWeT-sQ1Hv", exp: 470, type: "image" },
+    // Día 48 con amor (image)
+    { id: "1hXitukyVPab68XDag08TkY3nz23BSR7S", name: "día 48 con amor", url: "https://drive.google.com/uc?export=view&id=1hXitukyVPab68XDag08TkY3nz23BSR7S", exp: 480, type: "image" },
+    // Día 49 con amor (image)
+    { id: "1lZgXXCmSrqEjxm_CQlMv14NGLzCBnZMm", name: "día 49 con amor", url: "https://drive.google.com/uc?export=view&id=1lZgXXCmSrqEjxm_CQlMv14NGLzCBnZMm", exp: 490, type: "image" },
+    // Día 50 con amor (image)
+    { id: "1lnhSY7eZGfBYp_PQHNSz56DngFNXUSOH", name: "día 50 con amor", url: "https://drive.google.com/uc?export=view&id=1lnhSY7eZGfBYp_PQHNSz56DngFNXUSOH", exp: 500, type: "image" },
+    // Día 51 con amor (image)
+    { id: "1lrIb4lwGgeUMD_59MXvB9E3AviCyIAHb", name: "día 51 con amor", url: "https://drive.google.com/uc?export=view&id=1lrIb4lwGgeUMD_59MXvB9E3AviCyIAHb", exp: 510, type: "image" },
+    // Día 52 con amor (image)
+    { id: "1nQemee7s1xuYm-FKvZL7AZE_1wRIGKS9", name: "día 52 con amor", url: "https://drive.google.com/uc?export=view&id=1nQemee7s1xuYm-FKvZL7AZE_1wRIGKS9", exp: 520, type: "image" },
+    // Día 53 con amor (image)
+    { id: "1nRLd3tEI-Xz9u-LkuL8CO7V6QqMrnxa4", name: "día 53 con amor", url: "https://drive.google.com/uc?export=view&id=1nRLd3tEI-Xz9u-LkuL8CO7V6QqMrnxa4", exp: 530, type: "image" },
+    // Día 54 con amor (image)
+    { id: "1pV7X21eSnqiKOSoC-0qOyqGB3lDGoBP_", name: "día 54 con amor", url: "https://drive.google.com/uc?export=view&id=1pV7X21eSnqiKOSoC-0qOyqGB3lDGoBP_", exp: 540, type: "image" },
+    // Día 55 con amor (image)
+    { id: "1snzPVeo0dpuiIpoPeoHNM0CCnRW6y5t0", name: "día 55 con amor", url: "https://drive.google.com/uc?export=view&id=1snzPVeo0dpuiIpoPeoHNM0CCnRW6y5t0", exp: 550, type: "image" },
+    // Día 56 con amor (image)
+    { id: "1tXxKl9pafiK1F6eDaUCNUULNBV2_B8yW", name: "día 56 con amor", url: "https://drive.google.com/uc?export=view&id=1tXxKl9pafiK1F6eDaUCNUULNBV2_B8yW", exp: 560, type: "image" },
+    // Día 57 con amor (image)
+    { id: "1wE9ABov8ETKWHfsvxcuKv1NiJxs5EaKV", name: "día 57 con amor", url: "https://drive.google.com/uc?export=view&id=1wE9ABov8ETKWHfsvxcuKv1NiJxs5EaKV", exp: 570, type: "image" },
+    // Día 58 con amor (image)
+    { id: "1woxitNAZXpzEgV6dlOQXcu8aq_LSbv-_", name: "día 58 con amor", url: "https://drive.google.com/uc?export=view&id=1woxitNAZXpzEgV6dlOQXcu8aq_LSbv-_", exp: 580, type: "image" },
+    // Día 59 con amor (image)
+    { id: "1xJrxBUDL9YTctStVn4mTgA5CwcRGLntU", name: "día 59 con amor", url: "https://drive.google.com/uc?export=view&id=1xJrxBUDL9YTctStVn4mTgA5CwcRGLntU", exp: 590, type: "image" }
+  ]
 };
 
 // Mensajes del juego
