@@ -1727,168 +1727,175 @@ function playSnakeGame() {
     gameInterval = setInterval(update, 200); // Velocidad del juego
 }
 // tamagotchi-fixed.js - PARTE 7: Álbum de Fotos y Sistema de Guardado
-console.log("Cargando PARTE 7 - Álbum de Fotos y Sistema de Guardado...");
-
 // Mostrar álbum de fotos
 function showPhotoAlbum() {
-    console.log("Mostrando álbum de fotos");
-    
-    // Bloquear scroll de fondo
-    document.body.style.overflow = 'hidden';
-    
-    // Crear álbum
-    const album = document.createElement('div');
-    album.id = 'album-modal'; // Asegúrate de usar este id para el cierre
-    album.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: rgba(0,0,0,0.7);
-        z-index: 1100;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
+  console.log("Mostrando álbum de fotos");
+
+  // Bloquear scroll de fondo
+  document.body.style.overflow = 'hidden';
+
+  // Crear capa del modal
+  const album = document.createElement('div');
+  album.id = 'album-modal';
+  album.style.cssText = `
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.7);
+    z-index: 1100;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+  `;
+
+  // Contador de desbloqueos
+  const unlockedCount = REWARDS_SYSTEM.unlockedImages.length;
+  const totalCount    = REWARDS_SYSTEM.availableImages.length;
+
+  // Inicio del contenido
+  let albumHTML = `
+    <div id="album-content" style="
+      width: 90%; max-width: 400px; max-height: 70vh;
+      overflow-y: auto; -webkit-overflow-scrolling: touch;
+      background: white; border-radius: 20px; padding: 20px;
+      position: relative;
+    ">
+      <button id="close-album" style="
+        position:absolute; top:15px; right:20px;
+        font-size:22px; background:none; border:none; cursor:pointer;
+      ">✖</button>
+      <h2 style="color:#E53E3E; margin-bottom:8px;">
+        Nuestro Álbum de Recuerdos
+      </h2>
+      <p style="color:#333; font-weight:bold; margin-bottom:12px;">
+        Has desbloqueado ${unlockedCount} de ${totalCount} recuerdos
+      </p>
+      <div style="
+        display:grid;
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        gap:12px;
+        margin-bottom:20px;
+      ">
+  `;
+
+  // Recorremos cada imagen/video
+  REWARDS_SYSTEM.availableImages.forEach(img => {
+    const isUnlocked = REWARDS_SYSTEM.unlockedImages.includes(img.id);
+    albumHTML += `
+      <div style="
+        border-radius:15px; padding:15px;
+        background-color:${isUnlocked
+          ? 'rgba(255,255,255,0.95)'
+          : 'rgba(255,255,255,0.7)'};
+        box-shadow:0 4px 8px rgba(0,0,0,0.2);
+        transition:transform 0.3s ease;
+        border:2px solid ${isUnlocked ? '#4CAF50' : '#ccc'};
+      " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
     `;
 
-    // Contador de desbloqueos
-    const unlockedCount = REWARDS_SYSTEM.unlockedImages.length;
-    const totalCount = REWARDS_SYSTEM.availableImages.length;
-    
-    // Construir el HTML del álbum (SOLO UNA VEZ)
-    let albumHTML = `
-      <div id="album-content" style="
-          width: 90%;
-          max-width: 400px;
-          max-height: 70vh;
-          overflow-y: auto;
-          -webkit-overflow-scrolling: touch;
-          background: white;
-          border-radius: 20px;
-          padding: 20px;
-          position: relative;
-      ">
-        <button id="close-album" style="position:absolute;top:15px;right:20px;font-size:22px;background:none;border:none;cursor:pointer;">✖</button>
-        <h2 style="color: #E53E3E; margin-bottom: 8px;">Nuestro Álbum de Recuerdos</h2>
-        <p style="color: #333; font-weight: bold;">
-          Has desbloqueado ${unlockedCount} de ${totalCount} recuerdos
+    if (isUnlocked) {
+      // Desbloqueado: video o imagen
+      if (img.type === 'video') {
+        albumHTML += `
+          <video controls style="
+            width:100%; max-height:150px;
+            border-radius:10px; margin-bottom:7px;
+          ">
+            <source src="${img.url}" type="video/mp4">
+            Tu navegador no soporta video.
+          </video>
+        `;
+      } else {
+        albumHTML += `
+          <img src="${img.url}" alt="${img.name}" style="
+            width:100%; max-height:100px;
+            object-fit:cover; border-radius:10px;
+            margin-bottom:7px;
+          ">
+        `;
+      }
+      albumHTML += `
+        <div style="font-weight:bold; color:#2E7D32; margin-bottom:3px;">
+          ${img.name}
+        </div>
+        <div style="font-size:12px; color:#666;">
+          ✓ Desbloqueado
+        </div>
+      `;
+    } else {
+      // Bloqueado: ícono + progreso
+      const lockedIcon = img.type === 'video' ? '🎬' : '🔒';
+      albumHTML += `
+        <div style="
+          width:100%; height:120px;
+          display:flex; align-items:center; justify-content:center;
+          font-size:50px;
+          background: linear-gradient(45deg, #ddd, #f0f0f0);
+          border-radius:10px; border:2px dashed #999;
+          margin-bottom:10px;
+        ">${lockedIcon}</div>
+        <p style="font-weight:bold; color:#666; margin-bottom:5px;">
+          ${img.name}
+        </p>
+        <p style="font-size:12px; color:#E53E3E;">
+          Necesitas ${img.exp} exp
         </p>
         <div style="
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-            gap: 12px;
-            margin-bottom: 20px;
+          width:100%; height:6px;
+          background:#eee; border-radius:3px;
+          overflow:hidden; margin-top:5px;
         ">
-    `;
-    REWARDS_SYSTEM.availableImages.forEach((img) => {
-        const isUnlocked = REWARDS_SYSTEM.unlockedImages.includes(img.id);
-        
-        albumHTML += `
-            <div style="
-                border-radius: 15px;
-                padding: 15px;
-                background-color: ${isUnlocked ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.7)'};
-                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-                transition: transform 0.3s ease;
-                border: 2px solid ${isUnlocked ? '#4CAF50' : '#ccc'};
-            " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-        `;
-        
-       if (isUnlocked) {
-            if (img.type === "video") {
-                albumHTML += `
-                    <video controls style="width:100%;max-height:150px;border-radius:10px;margin-bottom:7px;">
-                        <source src="${img.url}" type="video/mp4">
-                        Tu navegador no soporta la reproducción de video.
-                    </video>
-                `;
-            } else {
-                albumHTML += `
-                    <img src="${img.url}" alt="${img.name}" style="width:100%;max-height:100px;object-fit:cover;border-radius:10px;margin-bottom:7px;">
-                `;
-            }
-
-            albumHTML += `
-                <div style="font-weight:bold;color:#2E7D32;margin-bottom:3px;">${img.name}</div>
-                <div style="font-size:12px;color:#666;">✓ Desbloqueado</div>
-            `;
-        } else {
-            albumHTML += `
-                <div style="
-                    width: 100%;
-                    height: 120px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 50px;
-                    background: linear-gradient(45deg, #ddd, #f0f0f0);
-                    border-radius: 10px;
-                    border: 2px dashed #999;
-                    margin-bottom: 10px;
-                ">🔒</div>
-                <p style="font-weight: bold; color: #666; margin-bottom: 5px;">${img.name}</p>
-                <p style="font-size: 12px; color: #E53E3E;">Necesitas ${img.exp} exp</p>
-                <div style="
-                    width: 100%;
-                    height: 6px;
-                    background: #eee;
-                    border-radius: 3px;
-                    overflow: hidden;
-                    margin-top: 5px;
-                ">
-                    <div style="
-                        width: ${Math.min(100, (REWARDS_SYSTEM.experience / img.exp) * 100)}%;
-                        height: 100%;
-                        background: linear-gradient(to right, #FFE66D, #FF6B6B);
-                        border-radius: 3px;
-                        transition: width 0.3s ease;
-                    "></div>
-                </div>
-            `;
-        }
-
-    
-    // Cerrar grid y añadir información adicional
-    albumHTML += `
+          <div style="
+            width:${Math.min(100, (REWARDS_SYSTEM.experience/img.exp)*100)}%;
+            height:100%;
+            background: linear-gradient(to right, #FFE66D, #FF6B6B);
+            border-radius:3px;
+            transition:width 0.3s ease;
+          "></div>
         </div>
-        <div style="
-            background: rgba(255,255,255,0.93);
-            padding: 12px;
-            border-radius: 10px;
-            margin-bottom: 5px;
-            border: 2px solid #87CEEB;
-        ">
-            <span style="color: #333; font-weight: bold;">
-                Experiencia actual: ${REWARDS_SYSTEM.experience} puntos
-            </span>
-            <br>
-            <span style="color: #666; font-size: 13px;">
-                ¡Sigue jugando para desbloquear más recuerdos especiales!
-            </span>
-        </div>
-      </div>
-    `;
-    
-    album.innerHTML = albumHTML;
-    document.body.appendChild(album);
-
-    // Permitir scroll sólo dentro del álbum en móvil
-    const albumContent = album.querySelector('#album-content');
-    if (albumContent) {
-        albumContent.addEventListener('touchmove', function(e) {
-            e.stopPropagation();
-        }, { passive: false });
+      `;
     }
 
-    document.getElementById('close-album').addEventListener('click', function() {
-        album.remove();
-        document.body.style.overflow = ''; // Restaurar scroll del body
-        finishPlaying(true);
-    });
-    console.log("Álbum de fotos mostrado exitosamente");
+    albumHTML += `</div>`;
+  });
+
+  // Cierre del grid y pie de página
+  albumHTML += `
+      </div>
+      <div style="
+        background: rgba(255,255,255,0.93);
+        padding:12px; border-radius:10px;
+        border:2px solid #87CEEB;
+      ">
+        <span style="color:#333; font-weight:bold;">
+          Experiencia actual: ${REWARDS_SYSTEM.experience} puntos
+        </span><br>
+        <span style="color:#666; font-size:13px;">
+          ¡Sigue jugando para desbloquear más recuerdos especiales!
+        </span>
+      </div>
+    </div>
+  `;
+
+  // Insertar en el DOM
+  album.innerHTML = albumHTML;
+  document.body.appendChild(album);
+
+  // Scroll solo dentro del modal en móvil
+  const albumContent = album.querySelector('#album-content');
+  if (albumContent) {
+    albumContent.addEventListener('touchmove', e => e.stopPropagation(), { passive: false });
+  }
+
+  // Evento cierre
+  document.getElementById('close-album').addEventListener('click', () => {
+    album.remove();
+    document.body.style.overflow = '';
+    finishPlaying(true);
+  });
+
+  console.log("Álbum de fotos mostrado exitosamente");
 }
+
 
 // Mostrar notificación de desbloqueo de imagen
 function showUnlockNotification(image) {
