@@ -30,6 +30,24 @@ const REWARDS_SYSTEM = {
   unlockedImages: [],
   availableImages: []
 };
+// Función para generar la URL correcta
+function getDriveLink(id, type) {
+  return type === 'video'
+    ? `https://drive.google.com/uc?export=download&id=${id}`
+    : `https://drive.google.com/uc?export=view&id=${id}`;
+}
+
+// Lista completa de recompensas (ejemplo con 2 días)
+const rawRewards = [
+  { id: "1woxitNAZXpzEgV6dlOQXcu8aq_LSbv-_", name: "día 58 con amor", exp: 580, type: "image" },
+  { id: "1xJrxBUDL9YTctStVn4mTgA5CwcRGLntU", name: "día 59 con amor", exp: 590, type: "image" }
+];
+
+// Reconstruir availableImages
+REWARDS_SYSTEM.availableImages = rawRewards.map(item => ({
+  ...item,
+  url: getDriveLink(item.id, item.type)
+}));
 
 // Mensajes del juego
 const randomMessages = [
