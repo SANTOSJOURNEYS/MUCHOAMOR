@@ -2044,122 +2044,75 @@ function decreaseValues() {
 
 // Guardar el estado del juego
 function saveGameState() {
-    const stateToSave = {
-        ...gameState,
-        lastUpdate: Date.now()
-    };
-    
-    .setItem('rachelTamagotchiState', JSON.stringify(stateToSave));
-    console.log("Estado del juego guardado");
+  const stateToSave = {
+    ...gameState,
+    lastUpdate: Date.now()
+  };
+  localStorage.setItem('rachelTamagotchiState', JSON.stringify(stateToSave));
+  console.log("Estado del juego guardado");
 }
-
-// Verificar fechas especiales
-function checkSpecialDates() {
-    const today = new Date();
-    const month = today.getMonth() + 1; // Los meses en JS van de 0-11
-    const day = today.getDate();
-    
-    const dateKey = `${month}-${day}`;
-    
-    if (anniversaryMessages[dateKey]) {
-        console.log("Fecha especial detectada:", dateKey);
-        // Mostrar mensaje de fecha especial
-        setTimeout(() => {
-            showMessage(`${anniversaryMessages[dateKey].title} ${anniversaryMessages[dateKey].message}`, 8000);
-        }, 2000);
-    }
-}
-
-// Función para simular tiempo transcurrido mientras estaba ausente
-function simulateTimeElapsed(timeDiff) {
-    console.log("Simulando tiempo transcurrido:", timeDiff, "ms");
-    
-    // Número de decrementos que habrían ocurrido
-    const decrements = Math.floor(timeDiff / CONFIG.decreaseInterval);
-    
-    // Aplicar decrementos, pero con un límite para que no sea demasiado cruel
-    const maxDecreasePerStat = 50; // Máximo 50% de reducción mientras está ausente
-    
-    if (gameState.isSleeping) {
-        // Si estaba durmiendo, disminuye la felicidad ligeramente y aumenta la energía
-        gameState.happiness = Math.max(30, gameState.happiness - Math.min(maxDecreasePerStat, decrements * (CONFIG.decreaseAmount / 4)));
-        gameState.energy = 100; // Recupera toda la energía
-        gameState.hunger = Math.max(20, gameState.hunger - Math.min(maxDecreasePerStat, decrements * (CONFIG.decreaseAmount / 2)));
-    } else {
-        // Si no estaba durmiendo, disminuye todos los valores
-        gameState.hunger = Math.max(20, gameState.hunger - Math.min(maxDecreasePerStat, decrements * CONFIG.decreaseAmount / 2));
-        gameState.happiness = Math.max(20, gameState.happiness - Math.min(maxDecreasePerStat, decrements * CONFIG.decreaseAmount / 2));
-        gameState.energy = Math.max(20, gameState.energy - Math.min(maxDecreasePerStat, decrements * CONFIG.decreaseAmount / 2));
-    }
-    
-    console.log("Simulación completada - H:", gameState.hunger, "F:", gameState.happiness, "E:", gameState.energy);
-}
-// tamagotchi-fixed.js - PARTE 8: Inicialización y Event Listeners
-console.log("Cargando PARTE 8 - Inicialización y Event Listeners...");
 
 // Función para cargar el estado guardado
 function loadGameState() {
-    console.log("Cargando estado guardado del juego");
-    
-    // Cargar estado normal del juego
-    const savedState = .getItem('rachelTamagotchiState');
-    
-    if (savedState) {
-        try {
-            const parsedState = JSON.parse(savedState);
-            
-            // Calcular tiempo transcurrido desde la última actualización
-            const currentTime = Date.now();
-            const timeDiff = currentTime - parsedState.lastUpdate;
-            
-            console.log("Tiempo transcurrido desde última sesión:", timeDiff, "ms");
-            
-            // Actualizar estado con valores guardados
-            gameState = {
-                ...parsedState,
-                lastUpdate: currentTime
-            };
-            
-            // Si pasó mucho tiempo (más de 8 horas), aplicar simulación del tiempo
-            if (timeDiff > 8 * 60 * 60 * 1000) {
-                console.log("Aplicando simulación de tiempo por ausencia prolongada");
-                simulateTimeElapsed(timeDiff);
-            }
-            
-            console.log("Estado cargado exitosamente:", gameState);
-            
-        } catch (e) {
-            console.error("Error al cargar el estado guardado:", e);
-            // Usar valores por defecto si hay un error
-            resetGameState();
-        }
-    } else {
-        console.log("No se encontró estado guardado, usando valores iniciales");
-        // Si no hay estado guardado, usar valores iniciales
-        resetGameState();
+  console.log("Cargando estado guardado del juego");
+
+  const savedState = localStorage.getItem('rachelTamagotchiState');
+  if (savedState) {
+    try {
+      const parsedState = JSON.parse(savedState);
+      const currentTime = Date.now();
+      const timeDiff = currentTime - parsedState.lastUpdate;
+
+      console.log("Tiempo transcurrido desde última sesión:", timeDiff, "ms");
+
+      gameState = {
+        ...parsedState,
+        lastUpdate: currentTime
+      };
+
+      if (timeDiff > 8 * 60 * 60 * 1000) {
+        console.log("Aplicando simulación de tiempo por ausencia prolongada");
+        simulateTimeElapsed(timeDiff);
+      }
+
+      console.log("Estado cargado exitosamente:", gameState);
+    } catch (e) {
+      console.error("Error al cargar el estado guardado:", e);
+      resetGameState();
     }
-
-const savedRewards = localStorage.getItem('rachelTamagotchiRewards');
-if (savedRewards) {
-  try {
-    const parsedRewards = JSON.parse(savedRewards);
-    REWARDS_SYSTEM.experience = parsedRewards.experience || 0;
-    REWARDS_SYSTEM.level = parsedRewards.level || 1;
-    REWARDS_SYSTEM.unlockedImages = parsedRewards.unlockedImages || [];
-    console.log("Recompensas cargadas:", parsedRewards);
-  } catch (e) {
-    console.error("Error al cargar recompensas:", e);
+  } else {
+    console.log("No se encontró estado guardado, usando valores iniciales");
+    resetGameState();
   }
-} else {
-  // Si no hay datos guardados, inicializar por defecto
-  REWARDS_SYSTEM.experience = 0;
-  REWARDS_SYSTEM.level = 1;
-  REWARDS_SYSTEM.unlockedImages = [];
+
+  // Cargar recompensas
+  const savedRewards = localStorage.getItem('rachelTamagotchiRewards');
+  if (savedRewards) {
+    try {
+      const parsedRewards = JSON.parse(savedRewards);
+      REWARDS_SYSTEM.experience = parsedRewards.experience || 0;
+      REWARDS_SYSTEM.level = parsedRewards.level || 1;
+      REWARDS_SYSTEM.unlockedImages = parsedRewards.unlockedImages || [];
+      console.log("Recompensas cargadas:", parsedRewards);
+    } catch (e) {
+      console.error("Error al cargar recompensas:", e);
+    }
+  } else {
+    REWARDS_SYSTEM.experience = 0;
+    REWARDS_SYSTEM.level = 1;
+    REWARDS_SYSTEM.unlockedImages = [];
+  }
+
+  // Reconstruir availableImages
+  REWARDS_SYSTEM.availableImages = rawRewards.map(item => ({
+    ...item,
+    url: getDriveLink(item.id, item.type)
+  }));
+
+  // --- AQUI SIEMPRE RESETEA EL ESTADO DE JUEGO ---
+  gameState.isPlaying = false;
 }
 
-    // --- AQUI SIEMPRE RESETEA EL ESTADO DE JUEGO ---
-    gameState.isPlaying = false;
-}
 
 // Función para reiniciar el estado del juego
 function resetGameState() {
