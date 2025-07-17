@@ -163,7 +163,7 @@ const randomMessages = [
     "¿No te apetece querer rebobinar el ahora?",
     "¡Lo que te quiero yo GORDAAAA!",
     "¿Publicidad? ¡YO SOY DIRECTORA CREATIVA!",
-    "Eres mi persona favorita 💙"
+    "Eres mi persona favorita 💙",
     "¿Nos echamos un Mario kart?",
     "¡VINITO, CARTAS Y TÚ!",
     "¡La próxima vez jugamos al Kamasutra!"
@@ -185,7 +185,7 @@ const playMessages = [
 const sleepMessages = [
     "Zzz... soñando con mi DRAGÓN ROJO...",
     "Zzz... dormimos juntitos, abrazaditos...",
-    "Zzz... en mi propia casa JUAN PABLO LORENZO..."
+    "Zzz... en mi propia casa JUAN PABLO LORENZO...",
     "Zzz... Durmiendo con mi princesa de Chichinabo..."
 ];
 
@@ -202,7 +202,7 @@ const specialMessages = [
     "Tu creatividad me inspira siempre",
     "Eres la mujer más EMPOWERGIRL del mundo",
     "Gordoooo!! Gordaaaaa!!"
-     "¡Qué te gustaaa ehh!!",
+    "¡Qué te gustaaa ehh!!",
     "Mi mujer, mi esposa, MI WIFE",
     "¡Que lokita nooo??",
     "¿Nos hacemos un té lésbico?",
@@ -212,7 +212,7 @@ const specialMessages = [
     "¿No te apetece querer rebobinar el ahora?",
     "¡Lo que te quiero yo GORDAAAA!",
     "¿Publicidad? ¡YO SOY DIRECTORA CREATIVA!",
-    "Eres mi persona favorita 💙"
+    "Eres mi persona favorita 💙",
     "¿Nos echamos un Mario kart?",
     "¡VINITO, CARTAS Y TÚ!",
     "¡La próxima vez jugamos al Kamasutra!"
@@ -223,19 +223,19 @@ const gameResultMessages = {
     win: [
         "Rachel bailando samba expresando felicidad máxima",
         "La partes GIIIIRL.",
-        "No me calientes lo mio"
+        "No me calientes lo mio",
         "YA BAAASTA"
     ],
     lose: [
         "Santos perreando sin ningun tipo de contexto",
         "¡Perdiste! Aunque seguiras siendo mi WIFE",
-        "Gané yo, ahora dame un besito"
+        "Gané yo, ahora dame un besito",
         "Espabila que no espabilas"
     ],
     tie: [
         "¡Empate! Nuestras mentes lésbicas están conectadas",
         "Empate... Esto es el destino, somos una",
-        "¡Somos como el ying y el chinchanchun"
+        "¡Somos como el ying y el chinchanchun!"
     ]
 };
 
