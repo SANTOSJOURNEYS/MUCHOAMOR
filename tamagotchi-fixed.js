@@ -201,7 +201,7 @@ const specialMessages = [
     "Cada día te quiero más, MI MUJER, MI ESPOSA MI WIFE",
     "Tu creatividad me inspira siempre",
     "Eres la mujer más EMPOWERGIRL del mundo",
-    "Gordoooo!! Gordaaaaa!!"
+    "Gordoooo!! Gordaaaaa!!",
     "¡Qué te gustaaa ehh!!",
     "Mi mujer, mi esposa, MI WIFE",
     "¡Que lokita nooo??",
