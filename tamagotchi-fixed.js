@@ -2320,7 +2320,7 @@ function debugInfo() {
 // Función para reiniciar todo (solo para desarrollo)
 function resetAllData() {
     if (confirm('¿Estás seguro/a de querer reiniciar todo el progreso? Esta acción no se puede deshacer.')) {
-        .removeItem('rachelTamagotchiState');
+        localStorage.removeItem('rachelTamagotchiState');
         localStorage.removeItem('rachelTamagotchiRewards');
         alert('¡Datos reiniciados! Recarga la página para ver los cambios.');
         location.reload();
