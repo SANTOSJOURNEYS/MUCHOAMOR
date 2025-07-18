@@ -28,140 +28,128 @@ const REWARDS_SYSTEM = {
   experience: 0,
   level: 1,
   unlockedImages: [],
-  availableImages: []
-};
-// Función para generar la URL correcta
-function getDriveLink(id, type) {
-  return type === 'video'
-    ? `https://drive.google.com/uc?export=download&id=${id}`
-    : `https://drive.google.com/uc?export=view&id=${id}`;
-}
-
-// Lista completa de recompensas (ejemplo con 2 días)
-const rawRewards = [
-  { id: "1-m_OTFT9riqgcVvgnbNteAxxlqJf5kNa", name: "día 1 con amor", exp: 10, type: "video" },
+  availableImages: [
+    // Día 1 con amor (video)
+    { id: "1-m_OTFT9riqgcVvgnbNteAxxlqJf5kNa", name: "día 1 con amor", url: "https://drive.google.com/uc?export=view&id=1-m_OTFT9riqgcVvgnbNteAxxlqJf5kNa", exp: 10, type: "video" },
     // Día 2 con amor (video)
-    { id: "1-omSZPFtCDXU-y18bzLYKhSX27nSVKSp", name: "día 2 con amor", exp: 20, type: "video" },
+    { id: "1-omSZPFtCDXU-y18bzLYKhSX27nSVKSp", name: "día 2 con amor", url: "https://drive.google.com/uc?export=view&id=1-omSZPFtCDXU-y18bzLYKhSX27nSVKSp", exp: 20, type: "video" },
     // Día 3 con amor (video)
-    { id: "12-brMeBkUpWu1my3JvVlM5e4RRFND9sW", name: "día 3 con amor", exp: 30, type: "video" },
+    { id: "12-brMeBkUpWu1my3JvVlM5e4RRFND9sW", name: "día 3 con amor", url: "https://drive.google.com/uc?export=view&id=12-brMeBkUpWu1my3JvVlM5e4RRFND9sW", exp: 30, type: "video" },
     // Día 4 con amor (video)
-    { id: "127WxpIokOV0mPpfFzk6HkgRMv2I6g05C", name: "día 4 con amor", exp: 40, type: "video" },
+    { id: "127WxpIokOV0mPpfFzk6HkgRMv2I6g05C", name: "día 4 con amor", url: "https://drive.google.com/uc?export=view&id=127WxpIokOV0mPpfFzk6HkgRMv2I6g05C", exp: 40, type: "video" },
     // Día 5 con amor (video)
-    { id: "12k5cA5NOf7tsysilqjh95Uwg4g6VjOe5", name: "día 5 con amor", exp: 50, type: "video" },
+    { id: "12k5cA5NOf7tsysilqjh95Uwg4g6VjOe5", name: "día 5 con amor", url: "https://drive.google.com/uc?export=view&id=12k5cA5NOf7tsysilqjh95Uwg4g6VjOe5", exp: 50, type: "video" },
     // Día 6 con amor (video)
-    { id: "13B98jRczyr04MXTt8EPNuAOB_4P80tfn", name: "día 6 con amor", exp: 60, type: "video" },
+    { id: "13B98jRczyr04MXTt8EPNuAOB_4P80tfn", name: "día 6 con amor", url: "https://drive.google.com/uc?export=view&id=13B98jRczyr04MXTt8EPNuAOB_4P80tfn", exp: 60, type: "video" },
     // Día 7 con amor (video)
-    { id: "16BcQ3MQJgeJLwYkuId45KnxnKuuSZLfA", name: "día 7 con amor", exp: 70, type: "video" },
+    { id: "16BcQ3MQJgeJLwYkuId45KnxnKuuSZLfA", name: "día 7 con amor", url: "https://drive.google.com/uc?export=view&id=16BcQ3MQJgeJLwYkuId45KnxnKuuSZLfA", exp: 70, type: "video" },
     // Día 8 con amor (video)
-    { id: "16LhNSS1XWF5ITMJP8ScHVVgr5dgFWeyr", name: "día 8 con amor", exp: 80, type: "video" },
+    { id: "16LhNSS1XWF5ITMJP8ScHVVgr5dgFWeyr", name: "día 8 con amor", url: "https://drive.google.com/uc?export=view&id=16LhNSS1XWF5ITMJP8ScHVVgr5dgFWeyr", exp: 80, type: "video" },
     // Día 9 con amor (video)
-    { id: "17zIYY1Vk1GCOYEepf1GBaFX4rQtLHtH-", name: "día 9 con amor", exp: 90, type: "video" },
+    { id: "17zIYY1Vk1GCOYEepf1GBaFX4rQtLHtH-", name: "día 9 con amor", url: "https://drive.google.com/uc?export=view&id=17zIYY1Vk1GCOYEepf1GBaFX4rQtLHtH-", exp: 90, type: "video" },
     // Día 10 con amor (video)
-    { id: "19e58FOdv7wFJSejGie_ClvonIRf4ooB7", name: "día 10 con amor", exp: 100, type: "video" },
+    { id: "19e58FOdv7wFJSejGie_ClvonIRf4ooB7", name: "día 10 con amor", url: "https://drive.google.com/uc?export=view&id=19e58FOdv7wFJSejGie_ClvonIRf4ooB7", exp: 100, type: "video" },
     // Día 11 con amor (video)
-    { id: "19fOVQs0ViLN-CJjv0oEdw9088WAV2MkI", name: "día 11 con amor", exp: 110, type: "video" },
+    { id: "19fOVQs0ViLN-CJjv0oEdw9088WAV2MkI", name: "día 11 con amor", url: "https://drive.google.com/uc?export=view&id=19fOVQs0ViLN-CJjv0oEdw9088WAV2MkI", exp: 110, type: "video" },
     // Día 12 con amor (video)
-    { id: "19pZ8G_rce_XmpAhxoETLGfzbHiDLAS1c", name: "día 12 con amor", exp: 120, type: "video" },
+    { id: "19pZ8G_rce_XmpAhxoETLGfzbHiDLAS1c", name: "día 12 con amor", url: "https://drive.google.com/uc?export=view&id=19pZ8G_rce_XmpAhxoETLGfzbHiDLAS1c", exp: 120, type: "video" },
+
     // Día 13 con amor (image)
-    { id: "1ASd4aoYfAioGI762TlmIwhG1CZ_UI8WW", name: "día 13 con amor", exp: 130, type: "image" },
+    { id: "1ASd4aoYfAioGI762TlmIwhG1CZ_UI8WW", name: "día 13 con amor", url: "https://drive.google.com/uc?export=view&id=1ASd4aoYfAioGI762TlmIwhG1CZ_UI8WW", exp: 130, type: "image" },
     // Día 14 con amor (image)
-    { id: "1AvUKRpo1alSl-Ay2B6BoSluybG_qLFe2", name: "día 14 con amor", exp: 140, type: "image" },
+    { id: "1AvUKRpo1alSl-Ay2B6BoSluybG_qLFe2", name: "día 14 con amor", url: "https://drive.google.com/uc?export=view&id=1AvUKRpo1alSl-Ay2B6BoSluybG_qLFe2", exp: 140, type: "image" },
     // Día 15 con amor (image)
-    { id: "1BDzzJLd_2P5HR5QU0u185ULZsIz2fTGH", name: "día 15 con amor", exp: 150, type: "image" },
+    { id: "1BDzzJLd_2P5HR5QU0u185ULZsIz2fTGH", name: "día 15 con amor", url: "https://drive.google.com/uc?export=view&id=1BDzzJLd_2P5HR5QU0u185ULZsIz2fTGH", exp: 150, type: "image" },
     // Día 16 con amor (image)
-    { id: "1BvXXX18IEY3WJZRCKlxTBJJOp2CXMjRC", name: "día 16 con amor", exp: 160, type: "image" },
+    { id: "1BvXXX18IEY3WJZRCKlxTBJJOp2CXMjRC", name: "día 16 con amor", url: "https://drive.google.com/uc?export=view&id=1BvXXX18IEY3WJZRCKlxTBJJOp2CXMjRC", exp: 160, type: "image" },
     // Día 17 con amor (image)
-    { id: "1CxjKXKy7bJTo64Lg7LKT6wYu3QQgBhI8", name: "día 17 con amor", exp: 170, type: "image" },
+    { id: "1CxjKXKy7bJTo64Lg7LKT6wYu3QQgBhI8", name: "día 17 con amor", url: "https://drive.google.com/uc?export=view&id=1CxjKXKy7bJTo64Lg7LKT6wYu3QQgBhI8", exp: 170, type: "image" },
     // Día 18 con amor (image)
-    { id: "1DYqXLZb7tLGSfxA2PmCj77w4wHnb2-Sw", name: "día 18 con amor", exp: 180, type: "image" },
+    { id: "1DYqXLZb7tLGSfxA2PmCj77w4wHnb2-Sw", name: "día 18 con amor", url: "https://drive.google.com/uc?export=view&id=1DYqXLZb7tLGSfxA2PmCj77w4wHnb2-Sw", exp: 180, type: "image" },
     // Día 19 con amor (image)
-    { id: "1E_znAl9N8vj3MTydCO0n_18RZnpoC8Be", name: "día 19 con amor", exp: 190, type: "image" },
+    { id: "1E_znAl9N8vj3MTydCO0n_18RZnpoC8Be", name: "día 19 con amor", url: "https://drive.google.com/uc?export=view&id=1E_znAl9N8vj3MTydCO0n_18RZnpoC8Be", exp: 190, type: "image" },
     // Día 20 con amor (image)
-    { id: "1GBSPaFFtxTVnWbjN7YDPz78s7-OyaLyr", name: "día 20 con amor", exp: 200, type: "image" },
+    { id: "1GBSPaFFtxTVnWbjN7YDPz78s7-OyaLyr", name: "día 20 con amor", url: "https://drive.google.com/uc?export=view&id=1GBSPaFFtxTVnWbjN7YDPz78s7-OyaLyr", exp: 200, type: "image" },
     // Día 21 con amor (image)
-    { id: "1Gh02YdeAWS9qfU6FbBO6AEIMOP36Vfy0", name: "día 21 con amor", exp: 210, type: "image" },
+    { id: "1Gh02YdeAWS9qfU6FbBO6AEIMOP36Vfy0", name: "día 21 con amor", url: "https://drive.google.com/uc?export=view&id=1Gh02YdeAWS9qfU6FbBO6AEIMOP36Vfy0", exp: 210, type: "image" },
     // Día 22 con amor (image)
-    { id: "1HGScn23mWjMe0VCcF92LZ2FJWxoQvJiA", name: "día 22 con amor", exp: 220, type: "image" },
+    { id: "1HGScn23mWjMe0VCcF92LZ2FJWxoQvJiA", name: "día 22 con amor", url: "https://drive.google.com/uc?export=view&id=1HGScn23mWjMe0VCcF92LZ2FJWxoQvJiA", exp: 220, type: "image" },
     // Día 23 con amor (image)
-    { id: "1HxTTbOFbIEXzuxmUnkMesIkL7oLOKgaV", name: "día 23 con amor", exp: 230, type: "image" },
+    { id: "1HxTTbOFbIEXzuxmUnkMesIkL7oLOKgaV", name: "día 23 con amor", url: "https://drive.google.com/uc?export=view&id=1HxTTbOFbIEXzuxmUnkMesIkL7oLOKgaV", exp: 230, type: "image" },
     // Día 24 con amor (image)
-    { id: "1IPRW_SNdq3K8fLp3ClTaZK411Q_YRGZt", name: "día 24 con amor", exp: 240, type: "image" },
+    { id: "1IPRW_SNdq3K8fLp3ClTaZK411Q_YRGZt", name: "día 24 con amor", url: "https://drive.google.com/uc?export=view&id=1IPRW_SNdq3K8fLp3ClTaZK411Q_YRGZt", exp: 240, type: "image" },
     // Día 25 con amor (image)
-    { id: "1MF0mF4wRYzDgCqdM5N_7T8c8Slf4wHN7", name: "día 25 con amor", exp: 250, type: "image" },
+    { id: "1MF0mF4wRYzDgCqdM5N_7T8c8Slf4wHN7", name: "día 25 con amor", url: "https://drive.google.com/uc?export=view&id=1MF0mF4wRYzDgCqdM5N_7T8c8Slf4wHN7", exp: 250, type: "image" },
     // Día 26 con amor (image)
-    { id: "1MZfFnBJZz2khvMiR--Nt6RSgHdIkj9x8", name: "día 26 con amor", exp: 260, type: "image" },
+    { id: "1MZfFnBJZz2khvMiR--Nt6RSgHdIkj9x8", name: "día 26 con amor", url: "https://drive.google.com/uc?export=view&id=1MZfFnBJZz2khvMiR--Nt6RSgHdIkj9x8", exp: 260, type: "image" },
     // Día 27 con amor (image)
-    { id: "1N6FkxHJ-g3kzBnwIWS2Lvq3WdbcYiAXW", name: "día 27 con amor", exp: 270, type: "image" },
+    { id: "1N6FkxHJ-g3kzBnwIWS2Lvq3WdbcYiAXW", name: "día 27 con amor", url: "https://drive.google.com/uc?export=view&id=1N6FkxHJ-g3kzBnwIWS2Lvq3WdbcYiAXW", exp: 270, type: "image" },
     // Día 28 con amor (image)
-    { id: "1NRIMXZbj5pBE82DYsujEM04y1wzEchJN", name: "día 28 con amor", exp: 280, type: "image" },
+    { id: "1NRIMXZbj5pBE82DYsujEM04y1wzEchJN", name: "día 28 con amor", url: "https://drive.google.com/uc?export=view&id=1NRIMXZbj5pBE82DYsujEM04y1wzEchJN", exp: 280, type: "image" },
     // Día 29 con amor (image)
-    { id: "1O80iQGyoDOEKGImShj2j8ePFemdRsqxW", name: "día 29 con amor", exp: 290, type: "image" },
+    { id: "1O80iQGyoDOEKGImShj2j8ePFemdRsqxW", name: "día 29 con amor", url: "https://drive.google.com/uc?export=view&id=1O80iQGyoDOEKGImShj2j8ePFemdRsqxW", exp: 290, type: "image" },
     // Día 30 con amor (image)
-    { id: "1PJ7OCRQjhwle43bnfiAsSL-vM6cgRfu9", name: "día 30 con amor", exp: 300, type: "image" },
+    { id: "1PJ7OCRQjhwle43bnfiAsSL-vM6cgRfu9", name: "día 30 con amor", url: "https://drive.google.com/uc?export=view&id=1PJ7OCRQjhwle43bnfiAsSL-vM6cgRfu9", exp: 300, type: "image" },
     // Día 31 con amor (image)
-    { id: "1Q367PeQBkzSfDk4Y4yvKTgnDmeq33VV2", name: "día 31 con amor", exp: 310, type: "image" },
+    { id: "1Q367PeQBkzSfDk4Y4yvKTgnDmeq33VV2", name: "día 31 con amor", url: "https://drive.google.com/uc?export=view&id=1Q367PeQBkzSfDk4Y4yvKTgnDmeq33VV2", exp: 310, type: "image" },
     // Día 32 con amor (image)
-    { id: "1Q_VOjjFoLkG5FhlD1Z-wzKyawCxPgrib", name: "día 32 con amor", exp: 320, type: "image" },
+    { id: "1Q_VOjjFoLkG5FhlD1Z-wzKyawCxPgrib", name: "día 32 con amor", url: "https://drive.google.com/uc?export=view&id=1Q_VOjjFoLkG5FhlD1Z-wzKyawCxPgrib", exp: 320, type: "image" },
     // Día 33 con amor (image)
-    { id: "1Qk5u9CzTxVzAS4cdUq3g50ktHwvTyM2d", name: "día 33 con amor", exp: 330, type: "image" },
+    { id: "1Qk5u9CzTxVzAS4cdUq3g50ktHwvTyM2d", name: "día 33 con amor", url: "https://drive.google.com/uc?export=view&id=1Qk5u9CzTxVzAS4cdUq3g50ktHwvTyM2d", exp: 330, type: "image" },
     // Día 34 con amor (image)
-    { id: "1RHpfHi6YGGvIkBv3w7DKsoMz5oXLLO-Y", name: "día 34 con amor", exp: 340, type: "image" },
+    { id: "1RHpfHi6YGGvIkBv3w7DKsoMz5oXLLO-Y", name: "día 34 con amor", url: "https://drive.google.com/uc?export=view&id=1RHpfHi6YGGvIkBv3w7DKsoMz5oXLLO-Y", exp: 340, type: "image" },
     // Día 35 con amor (image)
-    { id: "1SoPYQnc5VZY1_KTqDCCD_kwlc6K6OZr0", name: "día 35 con amor", exp: 350, type: "image" },
+    { id: "1SoPYQnc5VZY1_KTqDCCD_kwlc6K6OZr0", name: "día 35 con amor", url: "https://drive.google.com/uc?export=view&id=1SoPYQnc5VZY1_KTqDCCD_kwlc6K6OZr0", exp: 350, type: "image" },
     // Día 36 con amor (image)
-    { id: "1TAWvsk3fIyQ3fHp2eS_fYTPIkWTz_7UI", name: "día 36 con amor", exp: 360, type: "image" },
+    { id: "1TAWvsk3fIyQ3fHp2eS_fYTPIkWTz_7UI", name: "día 36 con amor", url: "https://drive.google.com/uc?export=view&id=1TAWvsk3fIyQ3fHp2eS_fYTPIkWTz_7UI", exp: 360, type: "image" },
     // Día 37 con amor (image)
-    { id: "1TIuC_6q6hm8SuXB_PZgx9EjygbGfKdzx", name: "día 37 con amor", exp: 370, type: "image" },
+    { id: "1TIuC_6q6hm8SuXB_PZgx9EjygbGfKdzx", name: "día 37 con amor", url: "https://drive.google.com/uc?export=view&id=1TIuC_6q6hm8SuXB_PZgx9EjygbGfKdzx", exp: 370, type: "image" },
     // Día 38 con amor (image)
-    { id: "1V-ldSjxn_LkVBLc-Lima2oMoYK_KQRTb", name: "día 38 con amor", exp: 380, type: "image" },
+    { id: "1V-ldSjxn_LkVBLc-Lima2oMoYK_KQRTb", name: "día 38 con amor", url: "https://drive.google.com/uc?export=view&id=1V-ldSjxn_LkVBLc-Lima2oMoYK_KQRTb", exp: 380, type: "image" },
     // Día 39 con amor (image)
-    { id: "1VL-Ime7PeroFW5OdfQcFoNs7hUVYcGPb", name: "día 39 con amor", exp: 390, type: "image" },
+    { id: "1VL-Ime7PeroFW5OdfQcFoNs7hUVYcGPb", name: "día 39 con amor", url: "https://drive.google.com/uc?export=view&id=1VL-Ime7PeroFW5OdfQcFoNs7hUVYcGPb", exp: 390, type: "image" },
     // Día 40 con amor (image)
-    { id: "1WGRPecaxNobWdmg1wSsjnotrCH-r6UDV", name: "día 40 con amor", exp: 400, type: "image" },
+    { id: "1WGRPecaxNobWdmg1wSsjnotrCH-r6UDV", name: "día 40 con amor", url: "https://drive.google.com/uc?export=view&id=1WGRPecaxNobWdmg1wSsjnotrCH-r6UDV", exp: 400, type: "image" },
     // Día 41 con amor (image)
-    { id: "1WZz1WXdG0dv1cCK3uOLJuiyAMVCwVfU_", name: "día 41 con amor", exp: 410, type: "image" },
+    { id: "1WZz1WXdG0dv1cCK3uOLJuiyAMVCwVfU_", name: "día 41 con amor", url: "https://drive.google.com/uc?export=view&id=1WZz1WXdG0dv1cCK3uOLJuiyAMVCwVfU_", exp: 410, type: "image" },
     // Día 42 con amor (image)
-    { id: "1WtYz_NgwVgKpLuiO49ZGy4YkAVYI5qSo", name: "día 42 con amor", exp: 420, type: "image" },
+    { id: "1WtYz_NgwVgKpLuiO49ZGy4YkAVYI5qSo", name: "día 42 con amor", url: "https://drive.google.com/uc?export=view&id=1WtYz_NgwVgKpLuiO49ZGy4YkAVYI5qSo", exp: 420, type: "image" },
     // Día 43 con amor (image)
-    { id: "1b2PAfys51mp3dg0T1mkDdlxJqfbepR2E", name: "día 43 con amor", exp: 430, type: "image" },
+    { id: "1b2PAfys51mp3dg0T1mkDdlxJqfbepR2E", name: "día 43 con amor", url: "https://drive.google.com/uc?export=view&id=1b2PAfys51mp3dg0T1mkDdlxJqfbepR2E", exp: 430, type: "image" },
     // Día 44 con amor (image)
-    { id: "1bmJd-NcVesRXykImLnOo32en-CRo6Zov", name: "día 44 con amor", exp: 440, type: "image" },
+    { id: "1bmJd-NcVesRXykImLnOo32en-CRo6Zov", name: "día 44 con amor", url: "https://drive.google.com/uc?export=view&id=1bmJd-NcVesRXykImLnOo32en-CRo6Zov", exp: 440, type: "image" },
     // Día 45 con amor (image)
-    { id: "1co0qG6UtF5PnigiBZXkLQeLFCH31AIuw", name: "día 45 con amor", exp: 450, type: "image" },
+    { id: "1co0qG6UtF5PnigiBZXkLQeLFCH31AIuw", name: "día 45 con amor", url: "https://drive.google.com/uc?export=view&id=1co0qG6UtF5PnigiBZXkLQeLFCH31AIuw", exp: 450, type: "image" },
     // Día 46 con amor (image)
-    { id: "1fZzx86JpmlWU1ciYaf5rjrnbxm1byom8", name: "día 46 con amor", exp: 460, type: "image" },
+    { id: "1fZzx86JpmlWU1ciYaf5rjrnbxm1byom8", name: "día 46 con amor", url: "https://drive.google.com/uc?export=view&id=1fZzx86JpmlWU1ciYaf5rjrnbxm1byom8", exp: 460, type: "image" },
     // Día 47 con amor (image)
-    { id: "1g7q6asfeak-b3VROp6QgxCQWeT-sQ1Hv", name: "día 47 con amor", exp: 470, type: "image" },
+    { id: "1g7q6asfeak-b3VROp6QgxCQWeT-sQ1Hv", name: "día 47 con amor", url: "https://drive.google.com/uc?export=view&id=1g7q6asfeak-b3VROp6QgxCQWeT-sQ1Hv", exp: 470, type: "image" },
     // Día 48 con amor (image)
-    { id: "1hXitukyVPab68XDag08TkY3nz23BSR7S", name: "día 48 con amor", exp: 480, type: "image" },
+    { id: "1hXitukyVPab68XDag08TkY3nz23BSR7S", name: "día 48 con amor", url: "https://drive.google.com/uc?export=view&id=1hXitukyVPab68XDag08TkY3nz23BSR7S", exp: 480, type: "image" },
     // Día 49 con amor (image)
-    { id: "1lZgXXCmSrqEjxm_CQlMv14NGLzCBnZMm", name: "día 49 con amor", exp: 490, type: "image" },
+    { id: "1lZgXXCmSrqEjxm_CQlMv14NGLzCBnZMm", name: "día 49 con amor", url: "https://drive.google.com/uc?export=view&id=1lZgXXCmSrqEjxm_CQlMv14NGLzCBnZMm", exp: 490, type: "image" },
     // Día 50 con amor (image)
-    { id: "1lnhSY7eZGfBYp_PQHNSz56DngFNXUSOH", name: "día 50 con amor", exp: 500, type: "image" },
+    { id: "1lnhSY7eZGfBYp_PQHNSz56DngFNXUSOH", name: "día 50 con amor", url: "https://drive.google.com/uc?export=view&id=1lnhSY7eZGfBYp_PQHNSz56DngFNXUSOH", exp: 500, type: "image" },
     // Día 51 con amor (image)
-    { id: "1lrIb4lwGgeUMD_59MXvB9E3AviCyIAHb", name: "día 51 con amor", exp: 510, type: "image" },
+    { id: "1lrIb4lwGgeUMD_59MXvB9E3AviCyIAHb", name: "día 51 con amor", url: "https://drive.google.com/uc?export=view&id=1lrIb4lwGgeUMD_59MXvB9E3AviCyIAHb", exp: 510, type: "image" },
     // Día 52 con amor (image)
-    { id: "1nQemee7s1xuYm-FKvZL7AZE_1wRIGKS9", name: "día 52 con amor", exp: 520, type: "image" },
+    { id: "1nQemee7s1xuYm-FKvZL7AZE_1wRIGKS9", name: "día 52 con amor", url: "https://drive.google.com/uc?export=view&id=1nQemee7s1xuYm-FKvZL7AZE_1wRIGKS9", exp: 520, type: "image" },
     // Día 53 con amor (image)
-    { id: "1nRLd3tEI-Xz9u-LkuL8CO7V6QqMrnxa4", name: "día 53 con amor", exp: 530, type: "image" },
+    { id: "1nRLd3tEI-Xz9u-LkuL8CO7V6QqMrnxa4", name: "día 53 con amor", url: "https://drive.google.com/uc?export=view&id=1nRLd3tEI-Xz9u-LkuL8CO7V6QqMrnxa4", exp: 530, type: "image" },
     // Día 54 con amor (image)
-    { id: "1pV7X21eSnqiKOSoC-0qOyqGB3lDGoBP_", name: "día 54 con amor", exp: 540, type: "image" },
+    { id: "1pV7X21eSnqiKOSoC-0qOyqGB3lDGoBP_", name: "día 54 con amor", url: "https://drive.google.com/uc?export=view&id=1pV7X21eSnqiKOSoC-0qOyqGB3lDGoBP_", exp: 540, type: "image" },
     // Día 55 con amor (image)
-    { id: "1snzPVeo0dpuiIpoPeoHNM0CCnRW6y5t0", name: "día 55 con amor", exp: 550, type: "image" },
+    { id: "1snzPVeo0dpuiIpoPeoHNM0CCnRW6y5t0", name: "día 55 con amor", url: "https://drive.google.com/uc?export=view&id=1snzPVeo0dpuiIpoPeoHNM0CCnRW6y5t0", exp: 550, type: "image" },
     // Día 56 con amor (image)
-    { id: "1tXxKl9pafiK1F6eDaUCNUULNBV2_B8yW", name: "día 56 con amor", exp: 560, type: "image" },
+    { id: "1tXxKl9pafiK1F6eDaUCNUULNBV2_B8yW", name: "día 56 con amor", url: "https://drive.google.com/uc?export=view&id=1tXxKl9pafiK1F6eDaUCNUULNBV2_B8yW", exp: 560, type: "image" },
     // Día 57 con amor (image)
-    { id: "1wE9ABov8ETKWHfsvxcuKv1NiJxs5EaKV", name: "día 57 con amor", exp: 570, type: "image" },
+    { id: "1wE9ABov8ETKWHfsvxcuKv1NiJxs5EaKV", name: "día 57 con amor", url: "https://drive.google.com/uc?export=view&id=1wE9ABov8ETKWHfsvxcuKv1NiJxs5EaKV", exp: 570, type: "image" },
     // Día 58 con amor (image)
-    { id: "1woxitNAZXpzEgV6dlOQXcu8aq_LSbv-_", name: "día 58 con amor", exp: 580, type: "image" },
+    { id: "1woxitNAZXpzEgV6dlOQXcu8aq_LSbv-_", name: "día 58 con amor", url: "https://drive.google.com/uc?export=view&id=1woxitNAZXpzEgV6dlOQXcu8aq_LSbv-_", exp: 580, type: "image" },
     // Día 59 con amor (image)
-    { id: "1xJrxBUDL9YTctStVn4mTgA5CwcRGLntU", name: "día 59 con amor", exp: 590, type: "image" }
-];
-// Reconstruir availableImages
-REWARDS_SYSTEM.availableImages = rawRewards.map(item => ({
-  ...item,
-  url: getDriveLink(item.id, item.type)
-}));
+    { id: "1xJrxBUDL9YTctStVn4mTgA5CwcRGLntU", name: "día 59 con amor", url: "https://drive.google.com/uc?export=view&id=1xJrxBUDL9YTctStVn4mTgA5CwcRGLntU", exp: 590, type: "image" }
+  ]
+};
 
 // Mensajes del juego
 const randomMessages = [
@@ -1739,175 +1727,158 @@ function playSnakeGame() {
     gameInterval = setInterval(update, 200); // Velocidad del juego
 }
 // tamagotchi-fixed.js - PARTE 7: Álbum de Fotos y Sistema de Guardado
+console.log("Cargando PARTE 7 - Álbum de Fotos y Sistema de Guardado...");
+
 // Mostrar álbum de fotos
 function showPhotoAlbum() {
-  console.log("Mostrando álbum de fotos");
-
-  // Bloquear scroll de fondo
-  document.body.style.overflow = 'hidden';
-
-  // Crear capa del modal
-  const album = document.createElement('div');
-  album.id = 'album-modal';
-  album.style.cssText = `
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw; height: 100vh;
-    background: rgba(0,0,0,0.7);
-    z-index: 1100;
-    display: flex; flex-direction: column;
-    justify-content: center; align-items: center;
-  `;
-
-  // Contador de desbloqueos
-  const unlockedCount = REWARDS_SYSTEM.unlockedImages.length;
-  const totalCount    = REWARDS_SYSTEM.availableImages.length;
-
-  // Inicio del contenido
-  let albumHTML = `
-    <div id="album-content" style="
-      width: 90%; max-width: 400px; max-height: 70vh;
-      overflow-y: auto; -webkit-overflow-scrolling: touch;
-      background: white; border-radius: 20px; padding: 20px;
-      position: relative;
-    ">
-      <button id="close-album" style="
-        position:absolute; top:15px; right:20px;
-        font-size:22px; background:none; border:none; cursor:pointer;
-      ">✖</button>
-      <h2 style="color:#E53E3E; margin-bottom:8px;">
-        Nuestro Álbum de Recuerdos
-      </h2>
-      <p style="color:#333; font-weight:bold; margin-bottom:12px;">
-        Has desbloqueado ${unlockedCount} de ${totalCount} recuerdos
-      </p>
-      <div style="
-        display:grid;
-        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-        gap:12px;
-        margin-bottom:20px;
-      ">
-  `;
-
-  // Recorremos cada imagen/video
-  REWARDS_SYSTEM.availableImages.forEach(img => {
-    const isUnlocked = REWARDS_SYSTEM.unlockedImages.includes(img.id);
-    albumHTML += `
-      <div style="
-        border-radius:15px; padding:15px;
-        background-color:${isUnlocked
-          ? 'rgba(255,255,255,0.95)'
-          : 'rgba(255,255,255,0.7)'};
-        box-shadow:0 4px 8px rgba(0,0,0,0.2);
-        transition:transform 0.3s ease;
-        border:2px solid ${isUnlocked ? '#4CAF50' : '#ccc'};
-      " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+    console.log("Mostrando álbum de fotos");
+    
+    // Bloquear scroll de fondo
+    document.body.style.overflow = 'hidden';
+    
+    // Crear álbum
+    const album = document.createElement('div');
+    album.id = 'album-modal'; // Asegúrate de usar este id para el cierre
+    album.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0,0,0,0.7);
+        z-index: 1100;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
     `;
 
-    if (isUnlocked) {
-      // Desbloqueado: video o imagen
-      if (img.type === 'video') {
-        albumHTML += `
-          <video controls style="
-            width:100%; max-height:150px;
-            border-radius:10px; margin-bottom:7px;
-          ">
-            <source src="${img.url}" type="video/mp4">
-            Tu navegador no soporta video.
-          </video>
-        `;
-      } else {
-        albumHTML += `
-          <img src="${img.url}" alt="${img.name}" style="
-            width:100%; max-height:100px;
-            object-fit:cover; border-radius:10px;
-            margin-bottom:7px;
-          ">
-        `;
-      }
-      albumHTML += `
-        <div style="font-weight:bold; color:#2E7D32; margin-bottom:3px;">
-          ${img.name}
-        </div>
-        <div style="font-size:12px; color:#666;">
-          ✓ Desbloqueado
-        </div>
-      `;
-    } else {
-      // Bloqueado: ícono + progreso
-      const lockedIcon = img.type === 'video' ? '🎬' : '🔒';
-      albumHTML += `
-        <div style="
-          width:100%; height:120px;
-          display:flex; align-items:center; justify-content:center;
-          font-size:50px;
-          background: linear-gradient(45deg, #ddd, #f0f0f0);
-          border-radius:10px; border:2px dashed #999;
-          margin-bottom:10px;
-        ">${lockedIcon}</div>
-        <p style="font-weight:bold; color:#666; margin-bottom:5px;">
-          ${img.name}
-        </p>
-        <p style="font-size:12px; color:#E53E3E;">
-          Necesitas ${img.exp} exp
+    // Contador de desbloqueos
+    const unlockedCount = REWARDS_SYSTEM.unlockedImages.length;
+    const totalCount = REWARDS_SYSTEM.availableImages.length;
+    
+    // Construir el HTML del álbum (SOLO UNA VEZ)
+    let albumHTML = `
+      <div id="album-content" style="
+          width: 90%;
+          max-width: 400px;
+          max-height: 70vh;
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
+          background: white;
+          border-radius: 20px;
+          padding: 20px;
+          position: relative;
+      ">
+        <button id="close-album" style="position:absolute;top:15px;right:20px;font-size:22px;background:none;border:none;cursor:pointer;">✖</button>
+        <h2 style="color: #E53E3E; margin-bottom: 8px;">Nuestro Álbum de Recuerdos</h2>
+        <p style="color: #333; font-weight: bold;">
+          Has desbloqueado ${unlockedCount} de ${totalCount} recuerdos
         </p>
         <div style="
-          width:100%; height:6px;
-          background:#eee; border-radius:3px;
-          overflow:hidden; margin-top:5px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
         ">
-          <div style="
-            width:${Math.min(100, (REWARDS_SYSTEM.experience/img.exp)*100)}%;
-            height:100%;
-            background: linear-gradient(to right, #FFE66D, #FF6B6B);
-            border-radius:3px;
-            transition:width 0.3s ease;
-          "></div>
+    `;
+    REWARDS_SYSTEM.availableImages.forEach((img) => {
+        const isUnlocked = REWARDS_SYSTEM.unlockedImages.includes(img.id);
+        
+        albumHTML += `
+            <div style="
+                border-radius: 15px;
+                padding: 15px;
+                background-color: ${isUnlocked ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.7)'};
+                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+                transition: transform 0.3s ease;
+                border: 2px solid ${isUnlocked ? '#4CAF50' : '#ccc'};
+            " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+        `;
+        
+        if (isUnlocked) {
+            albumHTML += `
+                <img src="${img.url}" alt="${img.name}" style="width:100%;max-height:100px;object-fit:cover;border-radius:10px;margin-bottom:7px;">
+                <div style="font-weight:bold;color:#2E7D32;margin-bottom:3px;">${img.name}</div>
+                <div style="font-size:12px;color:#666;">✓ Desbloqueado</div>
+            `;
+        } else {
+            albumHTML += `
+                <div style="
+                    width: 100%;
+                    height: 120px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 50px;
+                    background: linear-gradient(45deg, #ddd, #f0f0f0);
+                    border-radius: 10px;
+                    border: 2px dashed #999;
+                    margin-bottom: 10px;
+                ">🔒</div>
+                <p style="font-weight: bold; color: #666; margin-bottom: 5px;">${img.name}</p>
+                <p style="font-size: 12px; color: #E53E3E;">Necesitas ${img.exp} exp</p>
+                <div style="
+                    width: 100%;
+                    height: 6px;
+                    background: #eee;
+                    border-radius: 3px;
+                    overflow: hidden;
+                    margin-top: 5px;
+                ">
+                    <div style="
+                        width: ${Math.min(100, (REWARDS_SYSTEM.experience / img.exp) * 100)}%;
+                        height: 100%;
+                        background: linear-gradient(to right, #FFE66D, #FF6B6B);
+                        border-radius: 3px;
+                        transition: width 0.3s ease;
+                    "></div>
+                </div>
+            `;
+        }
+        
+        albumHTML += `</div>`;
+    });
+    
+    // Cerrar grid y añadir información adicional
+    albumHTML += `
         </div>
-      `;
+        <div style="
+            background: rgba(255,255,255,0.93);
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 5px;
+            border: 2px solid #87CEEB;
+        ">
+            <span style="color: #333; font-weight: bold;">
+                Experiencia actual: ${REWARDS_SYSTEM.experience} puntos
+            </span>
+            <br>
+            <span style="color: #666; font-size: 13px;">
+                ¡Sigue jugando para desbloquear más recuerdos especiales!
+            </span>
+        </div>
+      </div>
+    `;
+    
+    album.innerHTML = albumHTML;
+    document.body.appendChild(album);
+
+    // Permitir scroll sólo dentro del álbum en móvil
+    const albumContent = album.querySelector('#album-content');
+    if (albumContent) {
+        albumContent.addEventListener('touchmove', function(e) {
+            e.stopPropagation();
+        }, { passive: false });
     }
 
-    albumHTML += `</div>`;
-  });
-
-  // Cierre del grid y pie de página
-  albumHTML += `
-      </div>
-      <div style="
-        background: rgba(255,255,255,0.93);
-        padding:12px; border-radius:10px;
-        border:2px solid #87CEEB;
-      ">
-        <span style="color:#333; font-weight:bold;">
-          Experiencia actual: ${REWARDS_SYSTEM.experience} puntos
-        </span><br>
-        <span style="color:#666; font-size:13px;">
-          ¡Sigue jugando para desbloquear más recuerdos especiales!
-        </span>
-      </div>
-    </div>
-  `;
-
-  // Insertar en el DOM
-  album.innerHTML = albumHTML;
-  document.body.appendChild(album);
-
-  // Scroll solo dentro del modal en móvil
-  const albumContent = album.querySelector('#album-content');
-  if (albumContent) {
-    albumContent.addEventListener('touchmove', e => e.stopPropagation(), { passive: false });
-  }
-
-  // Evento cierre
-  document.getElementById('close-album').addEventListener('click', () => {
-    album.remove();
-    document.body.style.overflow = '';
-    finishPlaying(true);
-  });
-
-  console.log("Álbum de fotos mostrado exitosamente");
+    document.getElementById('close-album').addEventListener('click', function() {
+        album.remove();
+        document.body.style.overflow = ''; // Restaurar scroll del body
+        finishPlaying(true);
+    });
+    console.log("Álbum de fotos mostrado exitosamente");
 }
-
 
 // Mostrar notificación de desbloqueo de imagen
 function showUnlockNotification(image) {
@@ -2007,14 +1978,14 @@ function showUnlockNotification(image) {
 
 // Guardar el estado de recompensas
 function saveRewardsState() {
-  const rewardsToSave = {
-    experience: REWARDS_SYSTEM.experience,
-    level: REWARDS_SYSTEM.level,
-    unlockedImages: REWARDS_SYSTEM.unlockedImages
-  };
-
-  localStorage.setItem('rachelTamagotchiRewards', JSON.stringify(rewardsToSave));
-  console.log("Estado de recompensas guardado:", rewardsToSave);
+    const rewardsToSave = {
+        experience: REWARDS_SYSTEM.experience,
+        level: REWARDS_SYSTEM.level,
+        unlockedImages: REWARDS_SYSTEM.unlockedImages
+    };
+    
+    localStorage.setItem('rachelTamagotchiRewards', JSON.stringify(rewardsToSave));
+    console.log("Estado de recompensas guardado:", rewardsToSave);
 }
 
 // Disminuir valores con el tiempo
@@ -2044,75 +2015,118 @@ function decreaseValues() {
 
 // Guardar el estado del juego
 function saveGameState() {
-  const stateToSave = {
-    ...gameState,
-    lastUpdate: Date.now()
-  };
-  localStorage.setItem('rachelTamagotchiState', JSON.stringify(stateToSave));
-  console.log("Estado del juego guardado");
+    const stateToSave = {
+        ...gameState,
+        lastUpdate: Date.now()
+    };
+    
+    localStorage.setItem('rachelTamagotchiState', JSON.stringify(stateToSave));
+    console.log("Estado del juego guardado");
 }
+
+// Verificar fechas especiales
+function checkSpecialDates() {
+    const today = new Date();
+    const month = today.getMonth() + 1; // Los meses en JS van de 0-11
+    const day = today.getDate();
+    
+    const dateKey = `${month}-${day}`;
+    
+    if (anniversaryMessages[dateKey]) {
+        console.log("Fecha especial detectada:", dateKey);
+        // Mostrar mensaje de fecha especial
+        setTimeout(() => {
+            showMessage(`${anniversaryMessages[dateKey].title} ${anniversaryMessages[dateKey].message}`, 8000);
+        }, 2000);
+    }
+}
+
+// Función para simular tiempo transcurrido mientras estaba ausente
+function simulateTimeElapsed(timeDiff) {
+    console.log("Simulando tiempo transcurrido:", timeDiff, "ms");
+    
+    // Número de decrementos que habrían ocurrido
+    const decrements = Math.floor(timeDiff / CONFIG.decreaseInterval);
+    
+    // Aplicar decrementos, pero con un límite para que no sea demasiado cruel
+    const maxDecreasePerStat = 50; // Máximo 50% de reducción mientras está ausente
+    
+    if (gameState.isSleeping) {
+        // Si estaba durmiendo, disminuye la felicidad ligeramente y aumenta la energía
+        gameState.happiness = Math.max(30, gameState.happiness - Math.min(maxDecreasePerStat, decrements * (CONFIG.decreaseAmount / 4)));
+        gameState.energy = 100; // Recupera toda la energía
+        gameState.hunger = Math.max(20, gameState.hunger - Math.min(maxDecreasePerStat, decrements * (CONFIG.decreaseAmount / 2)));
+    } else {
+        // Si no estaba durmiendo, disminuye todos los valores
+        gameState.hunger = Math.max(20, gameState.hunger - Math.min(maxDecreasePerStat, decrements * CONFIG.decreaseAmount / 2));
+        gameState.happiness = Math.max(20, gameState.happiness - Math.min(maxDecreasePerStat, decrements * CONFIG.decreaseAmount / 2));
+        gameState.energy = Math.max(20, gameState.energy - Math.min(maxDecreasePerStat, decrements * CONFIG.decreaseAmount / 2));
+    }
+    
+    console.log("Simulación completada - H:", gameState.hunger, "F:", gameState.happiness, "E:", gameState.energy);
+}
+// tamagotchi-fixed.js - PARTE 8: Inicialización y Event Listeners
+console.log("Cargando PARTE 8 - Inicialización y Event Listeners...");
 
 // Función para cargar el estado guardado
 function loadGameState() {
-  console.log("Cargando estado guardado del juego");
-
-  const savedState = localStorage.getItem('rachelTamagotchiState');
-  if (savedState) {
-    try {
-      const parsedState = JSON.parse(savedState);
-      const currentTime = Date.now();
-      const timeDiff = currentTime - parsedState.lastUpdate;
-
-      console.log("Tiempo transcurrido desde última sesión:", timeDiff, "ms");
-
-      gameState = {
-        ...parsedState,
-        lastUpdate: currentTime
-      };
-
-      if (timeDiff > 8 * 60 * 60 * 1000) {
-        console.log("Aplicando simulación de tiempo por ausencia prolongada");
-        simulateTimeElapsed(timeDiff);
-      }
-
-      console.log("Estado cargado exitosamente:", gameState);
-    } catch (e) {
-      console.error("Error al cargar el estado guardado:", e);
-      resetGameState();
+    console.log("Cargando estado guardado del juego");
+    
+    // Cargar estado normal del juego
+    const savedState = localStorage.getItem('rachelTamagotchiState');
+    
+    if (savedState) {
+        try {
+            const parsedState = JSON.parse(savedState);
+            
+            // Calcular tiempo transcurrido desde la última actualización
+            const currentTime = Date.now();
+            const timeDiff = currentTime - parsedState.lastUpdate;
+            
+            console.log("Tiempo transcurrido desde última sesión:", timeDiff, "ms");
+            
+            // Actualizar estado con valores guardados
+            gameState = {
+                ...parsedState,
+                lastUpdate: currentTime
+            };
+            
+            // Si pasó mucho tiempo (más de 8 horas), aplicar simulación del tiempo
+            if (timeDiff > 8 * 60 * 60 * 1000) {
+                console.log("Aplicando simulación de tiempo por ausencia prolongada");
+                simulateTimeElapsed(timeDiff);
+            }
+            
+            console.log("Estado cargado exitosamente:", gameState);
+            
+        } catch (e) {
+            console.error("Error al cargar el estado guardado:", e);
+            // Usar valores por defecto si hay un error
+            resetGameState();
+        }
+    } else {
+        console.log("No se encontró estado guardado, usando valores iniciales");
+        // Si no hay estado guardado, usar valores iniciales
+        resetGameState();
     }
-  } else {
-    console.log("No se encontró estado guardado, usando valores iniciales");
-    resetGameState();
-  }
-
-  // Cargar recompensas
-  const savedRewards = localStorage.getItem('rachelTamagotchiRewards');
-  if (savedRewards) {
-    try {
-      const parsedRewards = JSON.parse(savedRewards);
-      REWARDS_SYSTEM.experience = parsedRewards.experience || 0;
-      REWARDS_SYSTEM.level = parsedRewards.level || 1;
-      REWARDS_SYSTEM.unlockedImages = parsedRewards.unlockedImages || [];
-      console.log("Recompensas cargadas:", parsedRewards);
-    } catch (e) {
-      console.error("Error al cargar recompensas:", e);
+    
+    // Cargar estado de recompensas
+    const savedRewards = localStorage.getItem('rachelTamagotchiRewards');
+    if (savedRewards) {
+        try {
+            const parsedRewards = JSON.parse(savedRewards);
+            REWARDS_SYSTEM.experience = parsedRewards.experience || 0;
+            REWARDS_SYSTEM.level = parsedRewards.level || 1;
+            REWARDS_SYSTEM.unlockedImages = parsedRewards.unlockedImages || [];
+            console.log("Recompensas cargadas:", parsedRewards);
+        } catch (e) {
+            console.error("Error al cargar recompensas:", e);
+        }
     }
-  } else {
-    REWARDS_SYSTEM.experience = 0;
-    REWARDS_SYSTEM.level = 1;
-    REWARDS_SYSTEM.unlockedImages = [];
-  }
 
-  // Reconstruir availableImages
-  REWARDS_SYSTEM.availableImages = rawRewards.map(item => ({
-    ...item,
-    url: getDriveLink(item.id, item.type)
-  }));
-
-  // --- AQUI SIEMPRE RESETEA EL ESTADO DE JUEGO ---
-  gameState.isPlaying = false;
+    // --- AQUI SIEMPRE RESETEA EL ESTADO DE JUEGO ---
+    gameState.isPlaying = false;
 }
-
 
 // Función para reiniciar el estado del juego
 function resetGameState() {
