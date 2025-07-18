@@ -2007,14 +2007,14 @@ function showUnlockNotification(image) {
 
 // Guardar el estado de recompensas
 function saveRewardsState() {
-    const rewardsToSave = {
-        experience: REWARDS_SYSTEM.experience,
-        level: REWARDS_SYSTEM.level,
-        unlockedImages: REWARDS_SYSTEM.unlockedImages
-    };
-    
-    .setItem('rachelTamagotchiRewards', JSON.stringify(rewardsToSave));
-    console.log("Estado de recompensas guardado:", rewardsToSave);
+  const rewardsToSave = {
+    experience: REWARDS_SYSTEM.experience,
+    level: REWARDS_SYSTEM.level,
+    unlockedImages: REWARDS_SYSTEM.unlockedImages
+  };
+
+  localStorage.setItem('rachelTamagotchiRewards', JSON.stringify(rewardsToSave));
+  console.log("Estado de recompensas guardado:", rewardsToSave);
 }
 
 // Disminuir valores con el tiempo
